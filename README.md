@@ -1,3 +1,7 @@
+To compile:
+cmake build
+cmake --build build
+
 # Development timeline
 
 - Week 02：撰寫 Proposal、環境建置
