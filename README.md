@@ -1,4 +1,5 @@
 To compile:
+cmake -DCMAKE_BUILD_TYPE=Debug -B build -G Ninja
 cmake build
 cmake --build build
 
