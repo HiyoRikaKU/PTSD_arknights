@@ -18,6 +18,11 @@ void Enemy::Init(const std::vector<std::string>& animationPaths) {
     SetZIndex(1.5f);
     SetVisible(true);
 
+    // Shrink the enemy sprite so it takes less screen space.
+    constexpr float ENEMY_SCALE = 0.5F;
+    // Negative X to flip horizontally so the sprite faces left.
+    m_Transform.scale = glm::vec2{-ENEMY_SCALE, ENEMY_SCALE};
+
     if (!m_Waypoints.empty()) {
         m_Transform.translation = m_Waypoints[0]; // Spawn at first waypoint
     }
