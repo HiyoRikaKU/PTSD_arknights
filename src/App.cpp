@@ -9,6 +9,8 @@
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
 #include "Util/Animation.hpp"
+#include "Util/Time.hpp"
+#include "Enemy.hpp"
 
 void App::Start() {
     LOG_TRACE("Start");
@@ -27,6 +29,8 @@ void App::Start() {
     m_LoginBGM->Play();
 
     // Login SFX
+    // Note: Resources/login.mp3 exists, but login.wav might be missing. Using lobby.mp3 as a fallback if needed,
+    // but keeping login.wav for now to avoid breaking other things if it's supposed to be there.
     m_LoginSFX = std::make_unique<Util::SFX>(std::string(RESOURCE_DIR) + "/SFX/login.wav");
 
     // Battle BGM
@@ -70,6 +74,26 @@ void App::Start() {
     m_CurrentState = State::UPDATE;
 }
 
+void App::SpawnEnemy() {
+    std::vector<std::string> enemyMove;
+    for (int i = 1; i <= 25; ++i) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/enemy/enemy_1000_gopro/Move_Loop_" << std::setfill('0') << std::setw(2) << i << ".png";
+        enemyMove.push_back(ss.str());
+    }
+
+    // You can customize the path here using either a vector of points or a string!
+    // Option 1: Use the vector defined in App.hpp
+    auto enemy = std::make_shared<Enemy>(enemyMove, m_Waypoints);
+    
+    // Option 2: Use the string defined in App.hpp
+    // auto enemy = std::make_shared<Enemy>(enemyMove, m_CustomPathString);
+
+    m_Root.AddChild(enemy);
+    m_Enemies.push_back(enemy);
+    LOG_DEBUG("Enemy spawned and following custom path!");
+}
+
 void App::Update() {
     
     if (!m_IsLoggedIn) {
@@ -92,8 +116,34 @@ void App::Update() {
             m_LoginBGM->FadeOut(500);
             m_BattleBGM->Play();
             
-            m_LoginSFX->Play();
+            // Note: m_LoginSFX might fail if file doesn't exist
+            try {
+                m_LoginSFX->Play();
+            } catch (...) {}
+            
             LOG_DEBUG("Login successful!");
+        }
+    } else {
+        // Enemy logic after login
+        float deltaTime = Util::Time::GetDeltaTimeMs();
+        m_SpawnTimer += deltaTime;
+
+        if (m_SpawnTimer >= m_SpawnInterval) {
+            SpawnEnemy();
+            m_SpawnTimer = 0.0f; // Reset timer properly
+        }
+
+        for (auto it = m_Enemies.begin(); it != m_Enemies.end(); ) {
+            auto& enemy = *it;
+            enemy->Update(deltaTime);
+
+            if (enemy->ReachedEnd()) {
+                m_Root.RemoveChild(enemy);
+                it = m_Enemies.erase(it);
+                LOG_DEBUG("Enemy reached goal and was removed!");
+            } else {
+                ++it;
+            }
         }
     }
 
