@@ -10,6 +10,8 @@
 #include "Util/Image.hpp"
 #include "Util/Text.hpp"
 #include "Enemy.hpp"
+#include "EnemyPool.hpp"
+#include "Pathfinder.hpp"
 
 class App {
 public:
@@ -48,18 +50,23 @@ private:
 
     bool m_IsLoggedIn = false;
 
-    std::vector<std::shared_ptr<Enemy>> m_Enemies;
+    std::unique_ptr<EnemyPool> m_EnemyPool;
+    std::vector<Enemy*> m_ActiveEnemies; // Active list (O(1) remove via swap-pop)
+    std::vector<std::string> m_EnemyAnimationPaths;
+    std::vector<std::vector<Node>> m_Grid;
+    std::unique_ptr<Pathfinder> m_Pathfinder;
+    Node *m_SpawnNode = nullptr;
+    Node *m_GoalNode = nullptr;
     float m_SpawnTimer = 0.0f;
     const float m_SpawnInterval = 2000.0f; // 2 seconds
+    static constexpr std::size_t ENEMY_POOL_SIZE = 32;
+    static constexpr float TILE_SIZE = 100.0F;
 
     const std::vector<glm::vec2> m_Waypoints = {
         {800.0f, -100.0f},
         {0.0f, 200.0f},
         {-800.0f, -100.0f}
     };
-
-    // Example of a custom string-based path
-    const std::string m_CustomPathString = "800,-100; 400,200; 0,-200; -400,200; -800,-100";
 };
 
 #endif

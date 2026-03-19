@@ -16,11 +16,10 @@ Enemy::Enemy(const std::vector<std::string>& animationPaths, const std::string& 
 void Enemy::Init(const std::vector<std::string>& animationPaths) {
     SetDrawable(std::make_shared<Util::Animation>(animationPaths, true, 50, true, 100));
     SetZIndex(1.5f);
-    SetVisible(true);
+    SetVisible(false);
 
-    // Shrink the enemy sprite so it takes less screen space.
+    // Shrink the enemy sprite so it takes less screen space and face left.
     constexpr float ENEMY_SCALE = 0.5F;
-    // Negative X to flip horizontally so the sprite faces left.
     m_Transform.scale = glm::vec2{-ENEMY_SCALE, ENEMY_SCALE};
 
     if (!m_Waypoints.empty()) {
@@ -28,8 +27,28 @@ void Enemy::Init(const std::vector<std::string>& animationPaths) {
     }
 }
 
+void Enemy::Spawn(const glm::vec2 &startPos, const std::vector<glm::vec2> &path,
+                  float hp, float speed) {
+    m_Waypoints = path;
+    m_Transform.translation = startPos;
+    m_CurrentWaypointIndex = m_Waypoints.size() > 1 ? 1 : 0;
+    m_ReachedEnd = false;
+    m_IsActive = true;
+    m_Hp = hp;
+    m_Speed = speed;
+    SetVisible(true);
+}
+
+void Enemy::Despawn() {
+    m_IsActive = false;
+    m_ReachedEnd = true;
+    m_Hp = 0.0F;
+    m_Speed = 0.0F;
+    SetVisible(false);
+}
+
 void Enemy::Update(float deltaTime) {
-    if (m_ReachedEnd || m_Waypoints.size() < 2 || m_CurrentWaypointIndex >= m_Waypoints.size()) {
+    if (!m_IsActive || m_Waypoints.size() < 2 || m_CurrentWaypointIndex >= m_Waypoints.size()) {
         return;
     }
 
@@ -44,6 +63,7 @@ void Enemy::Update(float deltaTime) {
         m_CurrentWaypointIndex++;
         if (m_CurrentWaypointIndex >= m_Waypoints.size()) {
             m_ReachedEnd = true;
+            m_IsActive = false; // Mark inactive to allow pool return.
         }
     } else {
         m_Transform.translation += glm::normalize(direction) * step;
