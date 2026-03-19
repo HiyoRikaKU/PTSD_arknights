@@ -53,13 +53,13 @@ private:
     const float m_SpawnInterval = 2000.0f; // 2 seconds
 
     const std::vector<glm::vec2> m_Waypoints = {
-        {-800.0f, -100.0f},
+        {800.0f, -100.0f},
         {0.0f, 200.0f},
-        {800.0f, -100.0f}
+        {-800.0f, -100.0f}
     };
 
     // Example of a custom string-based path
-    const std::string m_CustomPathString = "-800,-100; -400,200; 0,-200; 400,200; 800,-100";
+    const std::string m_CustomPathString = "800,-100; 400,200; 0,-200; -400,200; -800,-100";
 };
 
 #endif
