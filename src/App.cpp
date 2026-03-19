@@ -55,6 +55,39 @@ void App::Start() {
     m_Text->SetVisible(false);
     m_Root.AddChild(m_Text);
 
+    // Build a simple grid for pathfinding (all walkable except spawn/goal markers).
+    const int gridW = 10;
+    const int gridH = 5;
+    m_Grid.assign(gridH, std::vector<Node>(gridW));
+    for (int y = 0; y < gridH; ++y) {
+        for (int x = 0; x < gridW; ++x) {
+            m_Grid[y][x].x = x;
+            m_Grid[y][x].y = y;
+            m_Grid[y][x].type = TileType::Walkable;
+        }
+    }
+    // Place spawn on the left-middle, goal on the right-middle.
+    m_SpawnNode = &m_Grid[gridH / 2][gridW - 1];
+    m_SpawnNode->type = TileType::Spawn;
+    m_GoalNode = &m_Grid[gridH / 2][0];
+    m_GoalNode->type = TileType::Goal;
+
+    m_Pathfinder = std::make_unique<Pathfinder>(m_Grid);
+
+    // Preload enemy animations and pre-allocate the pool (no new/delete during gameplay).
+    m_EnemyAnimationPaths.clear();
+    for (int i = 1; i <= 25; ++i) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/enemy/enemy_1000_gopro/Move_Loop_" << std::setfill('0') << std::setw(2) << i << ".png";
+        m_EnemyAnimationPaths.push_back(ss.str());
+    }
+
+    m_EnemyPool = std::make_unique<EnemyPool>(ENEMY_POOL_SIZE, m_EnemyAnimationPaths, m_Waypoints);
+
+    // Register all pooled enemies to the renderer once; visibility toggles on spawn/despawn.
+    for (const auto &handle : m_EnemyPool->GetRenderHandles()) {
+        m_Root.AddChild(handle);
+    }
 
     // Amiya Animation
     std::vector<std::string> amiyaIdle;
@@ -75,23 +108,38 @@ void App::Start() {
 }
 
 void App::SpawnEnemy() {
-    std::vector<std::string> enemyMove;
-    for (int i = 1; i <= 25; ++i) {
-        std::stringstream ss;
-        ss << RESOURCE_DIR << "/charactor/enemy/enemy_1000_gopro/Move_Loop_" << std::setfill('0') << std::setw(2) << i << ".png";
-        enemyMove.push_back(ss.str());
+    if (!m_EnemyPool) {
+        return;
     }
 
-    // You can customize the path here using either a vector of points or a string!
-    // Option 1: Use the vector defined in App.hpp
-    auto enemy = std::make_shared<Enemy>(enemyMove, m_Waypoints);
-    
-    // Option 2: Use the string defined in App.hpp
-    // auto enemy = std::make_shared<Enemy>(enemyMove, m_CustomPathString);
+    if (!m_Pathfinder || m_SpawnNode == nullptr || m_GoalNode == nullptr) {
+        LOG_WARN("Pathfinder not initialized; spawn skipped");
+        return;
+    }
 
-    m_Root.AddChild(enemy);
-    m_Enemies.push_back(enemy);
-    LOG_DEBUG("Enemy spawned and following custom path!");
+    std::vector<glm::vec2> tilePath = m_Pathfinder->FindPath(m_SpawnNode, m_GoalNode);
+    if (tilePath.empty()) {
+        LOG_WARN("No path found for enemy; spawn skipped");
+        return;
+    }
+
+    std::vector<glm::vec2> worldPath;
+    worldPath.reserve(tilePath.size());
+    for (const auto &p : tilePath) {
+        glm::vec2 mapOffset(550.0f, 230.0f); //圖片偏移
+        worldPath.emplace_back(p.x * TILE_SIZE - mapOffset.x, p.y * TILE_SIZE - mapOffset.y);
+    }
+
+    Enemy *enemy = m_EnemyPool->GetEnemy();
+    if (enemy == nullptr) {
+        LOG_WARN("Enemy pool exhausted; spawn skipped");
+        return;
+    }
+
+    const glm::vec2 start = worldPath.front();
+    enemy->Spawn(start, worldPath, 100.0F, 0.2F);
+    m_ActiveEnemies.push_back(enemy);
+    LOG_DEBUG("Enemy spawned from pool and following preset path");
 }
 
 void App::Update() {
@@ -133,17 +181,18 @@ void App::Update() {
             m_SpawnTimer = 0.0f; // Reset timer properly
         }
 
-        for (auto it = m_Enemies.begin(); it != m_Enemies.end(); ) {
-            auto& enemy = *it;
+        for (std::size_t i = 0; i < m_ActiveEnemies.size();) {
+            Enemy *enemy = m_ActiveEnemies[i];
             enemy->Update(deltaTime);
 
-            if (enemy->ReachedEnd()) {
-                m_Root.RemoveChild(enemy);
-                it = m_Enemies.erase(it);
-                LOG_DEBUG("Enemy reached goal and was removed!");
-            } else {
-                ++it;
+            if (!enemy->IsActive() || enemy->ReachedEnd()) {
+                m_EnemyPool->ReturnEnemy(enemy);
+                m_ActiveEnemies[i] = m_ActiveEnemies.back();
+                m_ActiveEnemies.pop_back();
+                LOG_DEBUG("Enemy returned to pool");
+                continue;
             }
+            ++i;
         }
     }
 

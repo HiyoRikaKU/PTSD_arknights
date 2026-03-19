@@ -3,11 +3,19 @@
 
 #include "Util/GameObject.hpp"
 #include "Util/Animation.hpp"
+#include <queue>
 #include <vector>
 #include <string>
 
 class Enemy : public Util::GameObject {
 public:
+    // Lifecycle helpers for object-pool usage.
+    void Spawn(const glm::vec2 &startPos, const std::vector<glm::vec2> &path,
+               float hp, float speed);
+    void Despawn();
+
+    bool IsActive() const { return m_IsActive; }
+
     /**
      * @brief Construct an Enemy with a vector of waypoints.
      * @param animationPaths Paths to animation frames.
@@ -23,9 +31,7 @@ public:
     Enemy(const std::vector<std::string>& animationPaths, const std::string& pathString);
 
     void Update(float deltaTime);
-
     bool ReachedEnd() const { return m_ReachedEnd; }
-
     void SetSpeed(float speed) { m_Speed = speed; }
 
 private:
@@ -33,8 +39,10 @@ private:
     static std::vector<glm::vec2> ParsePathString(const std::string& pathString);
 
     std::vector<glm::vec2> m_Waypoints;
-    size_t m_CurrentWaypointIndex = 1;
+    size_t m_CurrentWaypointIndex = 0;
     float m_Speed = 0.2f; // Pixels per ms
+    float m_Hp = 100.0F;
+    bool m_IsActive = false;
     bool m_ReachedEnd = false;
 };
 
