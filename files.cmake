@@ -2,14 +2,17 @@ set(SRC_FILES
     App.cpp
     Enemy.cpp
     EnemyPool.cpp
-    Pathfinder.cpp
+    Operation.cpp
+    Operator.cpp
 )
 
 set(INCLUDE_FILES
     App.hpp
     Enemy.hpp
     EnemyPool.hpp
-    Pathfinder.hpp
+    Operation.hpp
+    Operator.hpp
+    WaveManager.hpp
 )
 
 set(TEST_FILES
