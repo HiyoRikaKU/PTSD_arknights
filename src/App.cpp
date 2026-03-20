@@ -36,98 +36,66 @@ void App::Start() {
     // Battle BGM
     m_BattleBGM = std::make_unique<Util::BGM>(std::string(RESOURCE_DIR) + "/SFX/battle/battle.mp3");
 
-    // Map
-    m_Map = std::make_shared<Util::GameObject>(
-        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/map/operation1.jpg"),
-        0
-    );
-    // Scale map to 1600x900
-    m_Map->m_Transform.scale = glm::vec2(1600.0f, 900.0f) / m_Map->GetScaledSize();
-    m_Map->SetVisible(false);
-    m_Root.AddChild(m_Map);
+    // Operation
+    const std::vector<glm::vec2> waypoints = {
+        {570.0f, 120.0f}, // Spawn at red
+        {337, 120.0f},
+        {337, 20.0f},
+        {70, 20.0f},
+        {-70, 120.0f},
+        {-340, 120.0f},
+        {-360, 0.0f},
+        {-622, -11.0f},
+        {-570.0f, 120.0f} // Disappear at blue
+    };
+    m_CurrentOperation = std::make_unique<Operation>(std::string(RESOURCE_DIR) + "/map/operation1.jpg", waypoints);
+    m_Root.AddChild(m_CurrentOperation->GetMap());
 
     // Text demonstration
     m_Text = std::make_shared<Util::GameObject>(
-        std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/../PTSD/assets/fonts/Inter.ttf", 48, "Operation Level: 0-2", Util::Color(255, 255, 255)),
-        2 // Higher than Amiya
+        std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 48, "Operation Level: 0-2", Util::Color(255, 255, 255)),
+        2 // Higher than map and enemies
     );
     m_Text->m_Transform.translation = {0, 400}; // Top center
     m_Text->SetVisible(false);
     m_Root.AddChild(m_Text);
 
-    // Build a simple grid for pathfinding (all walkable except spawn/goal markers).
-    const int gridW = 10;
-    const int gridH = 5;
-    m_Grid.assign(gridH, std::vector<Node>(gridW));
-    for (int y = 0; y < gridH; ++y) {
-        for (int x = 0; x < gridW; ++x) {
-            m_Grid[y][x].x = x;
-            m_Grid[y][x].y = y;
-            m_Grid[y][x].type = TileType::Walkable;
-        }
-    }
-    // Place spawn on the left-middle, goal on the right-middle.
-    m_SpawnNode = &m_Grid[gridH / 2][gridW - 1];
-    m_SpawnNode->type = TileType::Spawn;
-    m_GoalNode = &m_Grid[gridH / 2][0];
-    m_GoalNode->type = TileType::Goal;
-
-    m_Pathfinder = std::make_unique<Pathfinder>(m_Grid);
-
-    // Preload enemy animations and pre-allocate the pool (no new/delete during gameplay).
-    m_EnemyAnimationPaths.clear();
+    // Preload enemy animations
+    m_EnemyAnimationPathsGopro.clear();
     for (int i = 1; i <= 25; ++i) {
         std::stringstream ss;
         ss << RESOURCE_DIR << "/charactor/enemy/enemy_1000_gopro/Move_Loop_" << std::setfill('0') << std::setw(2) << i << ".png";
-        m_EnemyAnimationPaths.push_back(ss.str());
+        m_EnemyAnimationPathsGopro.push_back(ss.str());
     }
 
-    m_EnemyPool = std::make_unique<EnemyPool>(ENEMY_POOL_SIZE, m_EnemyAnimationPaths, m_Waypoints);
+    m_EnemyAnimationPathsBigbo.clear();
+    for (int i = 1; i <= 31; ++i) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/enemy/enemy_1001_bigbo/Move_Loop_" << std::setfill('0') << std::setw(2) << i << ".png";
+        m_EnemyAnimationPathsBigbo.push_back(ss.str());
+    }
+
+    m_EnemyPool = std::make_unique<EnemyPool>(ENEMY_POOL_SIZE, m_EnemyAnimationPathsGopro, waypoints);
 
     // Register all pooled enemies to the renderer once; visibility toggles on spawn/despawn.
     for (const auto &handle : m_EnemyPool->GetRenderHandles()) {
         m_Root.AddChild(handle);
     }
 
-    // Amiya Animation
-    std::vector<std::string> amiyaIdle;
-    for (int i = 1; i <= 31; ++i) {
-        std::stringstream ss;
-        ss << RESOURCE_DIR << "/charactor/operator/char_002_amiya/Idle_" << std::setfill('0') << std::setw(2) << i << ".png";
-        amiyaIdle.push_back(ss.str());
-    }
-
-    m_Amiya = std::make_shared<Util::GameObject>(
-        std::make_shared<Util::Animation>(amiyaIdle, true, 50, true, 100),
-        1 // Slightly higher than map
-    );
-    m_Amiya->SetVisible(false); // Hide Amiya initially
-    m_Root.AddChild(m_Amiya);
+    // Initialize WaveManager with timeline
+    m_WaveManager = std::make_unique<WaveManager>();
+    m_WaveManager->AddSpawnEvent(2000.0f, "gopro", 100.0f, 0.2f);
+    m_WaveManager->AddSpawnEvent(4000.0f, "gopro", 100.0f, 0.2f);
+    m_WaveManager->AddSpawnEvent(6000.0f, "bigbo", 300.0f, 0.1f);
+    m_WaveManager->AddSpawnEvent(8000.0f, "bigbo", 300.0f, 0.1f);
+    m_WaveManager->AddSpawnEvent(10000.0f, "gopro", 150.0f, 0.3f);
 
     m_CurrentState = State::UPDATE;
 }
 
-void App::SpawnEnemy() {
-    if (!m_EnemyPool) {
+void App::SpawnEnemy(const SpawnEvent& event) {
+    if (!m_EnemyPool || !m_CurrentOperation) {
         return;
-    }
-
-    if (!m_Pathfinder || m_SpawnNode == nullptr || m_GoalNode == nullptr) {
-        LOG_WARN("Pathfinder not initialized; spawn skipped");
-        return;
-    }
-
-    std::vector<glm::vec2> tilePath = m_Pathfinder->FindPath(m_SpawnNode, m_GoalNode);
-    if (tilePath.empty()) {
-        LOG_WARN("No path found for enemy; spawn skipped");
-        return;
-    }
-
-    std::vector<glm::vec2> worldPath;
-    worldPath.reserve(tilePath.size());
-    for (const auto &p : tilePath) {
-        glm::vec2 mapOffset(550.0f, 230.0f); //圖片偏移
-        worldPath.emplace_back(p.x * TILE_SIZE - mapOffset.x, p.y * TILE_SIZE - mapOffset.y);
     }
 
     Enemy *enemy = m_EnemyPool->GetEnemy();
@@ -136,10 +104,18 @@ void App::SpawnEnemy() {
         return;
     }
 
-    const glm::vec2 start = worldPath.front();
-    enemy->Spawn(start, worldPath, 100.0F, 0.2F);
+    // Set animation based on type
+    if (event.enemyType == "gopro") {
+        enemy->SetAnimation(m_EnemyAnimationPathsGopro);
+    } else if (event.enemyType == "bigbo") {
+        enemy->SetAnimation(m_EnemyAnimationPathsBigbo);
+    }
+
+    const auto& waypoints = m_CurrentOperation->GetWaypoints();
+    const glm::vec2 start = waypoints.front();
+    enemy->Spawn(start, waypoints, event.hp, event.speed);
     m_ActiveEnemies.push_back(enemy);
-    LOG_DEBUG("Enemy spawned from pool and following preset path");
+    LOG_DEBUG("Enemy spawned: type={}, hp={}, speed={}", event.enemyType, event.hp, event.speed);
 }
 
 void App::Update() {
@@ -152,13 +128,17 @@ void App::Update() {
             m_LoginPage->SetVisible(false);
             
             // Map shows after login
-            m_Map->SetVisible(true);
+            if (m_CurrentOperation) {
+                m_CurrentOperation->GetMap()->SetVisible(true);
+            }
             
             // Show text after login
             m_Text->SetVisible(true);
             
-            // Amiya remains hidden as requested
-            m_Amiya->SetVisible(false); 
+            // Show operators after login
+            for (auto& op : m_Operators) {
+                op->SetVisible(true);
+            }
 
             // Music transition
             m_LoginBGM->FadeOut(500);
@@ -172,15 +152,16 @@ void App::Update() {
             LOG_DEBUG("Login successful!");
         }
     } else {
-        // Enemy logic after login
+        // Timeline-based enemy logic after login
         float deltaTime = Util::Time::GetDeltaTimeMs();
-        m_SpawnTimer += deltaTime;
+        m_WaveTimer += deltaTime;
 
-        if (m_SpawnTimer >= m_SpawnInterval) {
-            SpawnEnemy();
-            m_SpawnTimer = 0.0f; // Reset timer properly
+        SpawnEvent event;
+        while (m_WaveManager->ShouldSpawn(m_WaveTimer, event)) {
+            SpawnEnemy(event);
         }
 
+        // Update enemies
         for (std::size_t i = 0; i < m_ActiveEnemies.size();) {
             Enemy *enemy = m_ActiveEnemies[i];
             enemy->Update(deltaTime);
@@ -189,11 +170,19 @@ void App::Update() {
                 m_EnemyPool->ReturnEnemy(enemy);
                 m_ActiveEnemies[i] = m_ActiveEnemies.back();
                 m_ActiveEnemies.pop_back();
-                LOG_DEBUG("Enemy returned to pool");
                 continue;
             }
             ++i;
         }
+
+        // Update operators
+        for (auto& op : m_Operators) {
+            op->Update(deltaTime);
+        }
+    }
+
+    if (Util::Input::IsKeyDown(Util::Keycode::L)) {
+        LOG_DEBUG("Mouse Position: {}, {}", Util::Input::GetCursorPosition().x, Util::Input::GetCursorPosition().y);
     }
 
     m_Root.Update();

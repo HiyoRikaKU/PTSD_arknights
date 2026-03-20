@@ -19,7 +19,7 @@ void Enemy::Init(const std::vector<std::string>& animationPaths) {
     SetVisible(false);
 
     // Shrink the enemy sprite so it takes less screen space and face left.
-    constexpr float ENEMY_SCALE = 0.5F;
+    constexpr float ENEMY_SCALE = 0.3F;
     m_Transform.scale = glm::vec2{-ENEMY_SCALE, ENEMY_SCALE};
 
     if (!m_Waypoints.empty()) {
@@ -45,6 +45,10 @@ void Enemy::Despawn() {
     m_Hp = 0.0F;
     m_Speed = 0.0F;
     SetVisible(false);
+}
+
+void Enemy::SetAnimation(const std::vector<std::string>& animationPaths) {
+    SetDrawable(std::make_shared<Util::Animation>(animationPaths, true, 50, true, 100));
 }
 
 void Enemy::Update(float deltaTime) {
