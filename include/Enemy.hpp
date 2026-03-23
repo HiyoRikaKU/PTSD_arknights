@@ -33,6 +33,7 @@ public:
     void Update(float deltaTime);
     bool ReachedEnd() const { return m_ReachedEnd; }
     void SetSpeed(float speed) { m_Speed = speed; }
+    void SetAnimation(const std::vector<std::string>& animationPaths);
 
 private:
     void Init(const std::vector<std::string>& animationPaths);

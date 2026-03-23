@@ -11,7 +11,9 @@
 #include "Util/Text.hpp"
 #include "Enemy.hpp"
 #include "EnemyPool.hpp"
-#include "Pathfinder.hpp"
+#include "Operation.hpp"
+#include "WaveManager.hpp"
+#include "Operator.hpp"
 
 class App {
 public:
@@ -31,19 +33,18 @@ public:
 
 private:
     void ValidTask();
-    void SpawnEnemy();
+    void SpawnEnemy(const SpawnEvent& event);
 
 private:
     State m_CurrentState = State::START;
 
     Util::Renderer m_Root;
-    std::shared_ptr<Util::GameObject> m_Amiya;
 
     std::shared_ptr<Util::GameObject> m_LoginPage;
     std::unique_ptr<Util::BGM> m_LoginBGM;
     std::unique_ptr<Util::SFX> m_LoginSFX;
 
-    std::shared_ptr<Util::GameObject> m_Map;
+    std::unique_ptr<Operation> m_CurrentOperation;
     std::unique_ptr<Util::BGM> m_BattleBGM;
 
     std::shared_ptr<Util::GameObject> m_Text;
@@ -52,21 +53,16 @@ private:
 
     std::unique_ptr<EnemyPool> m_EnemyPool;
     std::vector<Enemy*> m_ActiveEnemies; // Active list (O(1) remove via swap-pop)
-    std::vector<std::string> m_EnemyAnimationPaths;
-    std::vector<std::vector<Node>> m_Grid;
-    std::unique_ptr<Pathfinder> m_Pathfinder;
-    Node *m_SpawnNode = nullptr;
-    Node *m_GoalNode = nullptr;
-    float m_SpawnTimer = 0.0f;
-    const float m_SpawnInterval = 2000.0f; // 2 seconds
+    std::vector<std::string> m_EnemyAnimationPathsGopro;
+    std::vector<std::string> m_EnemyAnimationPathsBigbo;
+    
+    std::unique_ptr<WaveManager> m_WaveManager;
+    float m_WaveTimer = 0.0f;
+
+    std::vector<std::shared_ptr<Operator>> m_Operators;
+
     static constexpr std::size_t ENEMY_POOL_SIZE = 32;
     static constexpr float TILE_SIZE = 100.0F;
-
-    const std::vector<glm::vec2> m_Waypoints = {
-        {800.0f, -100.0f},
-        {0.0f, 200.0f},
-        {-800.0f, -100.0f}
-    };
 };
 
 #endif
