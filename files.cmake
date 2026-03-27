@@ -1,18 +1,18 @@
 set(SRC_FILES
-    App.cpp
-    Enemy.cpp
-    EnemyPool.cpp
-    Operation.cpp
-    Operator.cpp
+    Arknights/App.cpp
+    Arknights/Enemy.cpp
+    Arknights/EnemyPool.cpp
+    Arknights/Operation.cpp
+    Arknights/Operator.cpp
 )
 
 set(INCLUDE_FILES
-    App.hpp
-    Enemy.hpp
-    EnemyPool.hpp
-    Operation.hpp
-    Operator.hpp
-    WaveManager.hpp
+    Arknights/App.hpp
+    Arknights/Enemy.hpp
+    Arknights/EnemyPool.hpp
+    Arknights/Operation.hpp
+    Arknights/Operator.hpp
+    Arknights/WaveManager.hpp
 )
 
 set(TEST_FILES
