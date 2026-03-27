@@ -14,9 +14,13 @@ Enemy::Enemy(const std::vector<std::string>& animationPaths, const std::string& 
 }
 
 void Enemy::Init(const std::vector<std::string>& animationPaths) {
-    SetDrawable(std::make_shared<Util::Animation>(animationPaths, true, 50, true, 100));
+    auto animation = std::make_shared<Util::Animation>(animationPaths, true, 50, true, 100);
+    SetDrawable(animation);
     SetZIndex(1.5f);
     SetVisible(false);
+
+    // Set pivot to bottom center (0, -height/2)
+    SetPivot({0, -animation->GetSize().y / 2.0f});
 
     // Shrink the enemy sprite so it takes less screen space and face left.
     constexpr float ENEMY_SCALE = 0.3F;
@@ -34,6 +38,7 @@ void Enemy::Spawn(const glm::vec2 &startPos, const std::vector<glm::vec2> &path,
     m_CurrentWaypointIndex = m_Waypoints.size() > 1 ? 1 : 0;
     m_ReachedEnd = false;
     m_IsActive = true;
+    m_IsBlocked = false;
     m_Hp = hp;
     m_Speed = speed;
     SetVisible(true);
@@ -42,6 +47,7 @@ void Enemy::Spawn(const glm::vec2 &startPos, const std::vector<glm::vec2> &path,
 void Enemy::Despawn() {
     m_IsActive = false;
     m_ReachedEnd = true;
+    m_IsBlocked = false;
     m_Hp = 0.0F;
     m_Speed = 0.0F;
     SetVisible(false);
@@ -52,7 +58,7 @@ void Enemy::SetAnimation(const std::vector<std::string>& animationPaths) {
 }
 
 void Enemy::Update(float deltaTime) {
-    if (!m_IsActive || m_Waypoints.size() < 2 || m_CurrentWaypointIndex >= m_Waypoints.size()) {
+    if (!m_IsActive || m_Waypoints.size() < 2 || m_CurrentWaypointIndex >= m_Waypoints.size() || m_IsBlocked) {
         return;
     }
 

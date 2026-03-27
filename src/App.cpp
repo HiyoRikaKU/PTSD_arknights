@@ -8,7 +8,6 @@
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
-#include "Util/Animation.hpp"
 #include "Util/Time.hpp"
 #include "Enemy.hpp"
 
@@ -29,8 +28,6 @@ void App::Start() {
     m_LoginBGM->Play();
 
     // Login SFX
-    // Note: Resources/login.mp3 exists, but login.wav might be missing. Using lobby.mp3 as a fallback if needed,
-    // but keeping login.wav for now to avoid breaking other things if it's supposed to be there.
     m_LoginSFX = std::make_unique<Util::SFX>(std::string(RESOURCE_DIR) + "/SFX/login.wav");
 
     // Battle BGM
@@ -46,8 +43,8 @@ void App::Start() {
         {-340, 120.0f},
         {-360, 0.0f},
         {-622, -11.0f},
-        {-570.0f, 120.0f} // Disappear at blue
     };
+    
     m_CurrentOperation = std::make_unique<Operation>(std::string(RESOURCE_DIR) + "/map/operation1.jpg", waypoints);
     m_Root.AddChild(m_CurrentOperation->GetMap());
 
@@ -81,6 +78,20 @@ void App::Start() {
     for (const auto &handle : m_EnemyPool->GetRenderHandles()) {
         m_Root.AddChild(handle);
     }
+
+    // Initialize operators (Amiya)
+    std::vector<std::string> amiyaIdlePaths;
+    for (int i = 1; i <= 31; ++i) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/operator/char_002_amiya/Idle_" << std::setfill('0') << std::setw(2) << i << ".png";
+        amiyaIdlePaths.push_back(ss.str());
+    }
+    auto amiya = std::make_shared<Operator>(amiyaIdlePaths, 1000.0f, 100.0f);
+    amiya->SetPosition({0.0f, 120.0f}); // On the path
+    amiya->m_Transform.scale = glm::vec2(-0.3f, 0.3f); // Match enemy scale and face left
+    amiya->SetVisible(false);
+    m_Operators.push_back(amiya);
+    m_Root.AddChild(amiya);
 
     // Initialize WaveManager with timeline
     m_WaveManager = std::make_unique<WaveManager>();
@@ -145,9 +156,11 @@ void App::Update() {
             m_BattleBGM->Play();
             
             // Note: m_LoginSFX might fail if file doesn't exist
-            try {
-                m_LoginSFX->Play();
-            } catch (...) {}
+            if (m_LoginSFX) {
+                try {
+                    m_LoginSFX->Play();
+                } catch (...) {}
+            }
             
             LOG_DEBUG("Login successful!");
         }
@@ -175,9 +188,58 @@ void App::Update() {
             ++i;
         }
 
-        // Update operators
+        // Reset blocking states and re-evaluate
+        for (auto& op : m_Operators) {
+            op->ClearBlockedEnemies();
+        }
+        for (auto& enemy : m_ActiveEnemies) {
+            enemy->SetBlocked(false);
+        }
+
+        // Update operators and check for blocking
+        glm::vec2 mousePos = Util::Input::GetCursorPosition();
+        if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
+            for (auto& op : m_Operators) {
+                if (glm::distance(mousePos, op->GetPosition()) < 50.0f) {
+                    m_DraggedOperator = op;
+                    break;
+                }
+            }
+        }
+        if (m_DraggedOperator) {
+            m_DraggedOperator->SetPosition(mousePos);
+            if (Util::Input::IsKeyUp(Util::Keycode::MOUSE_LB)) {
+                // Implement onDrop
+                int r, c;
+                if (m_CurrentOperation->GetTileIndices(mousePos, r, c)) {
+                    Operation::TileType type = m_CurrentOperation->GetTileType(r, c);
+                    // Check terrain legality: ground, high ground, and spawn (for testing) are allowed
+                    if (type == Operation::TileType::GROUND || 
+                        type == Operation::TileType::HIGH_GROUND || 
+                        type == Operation::TileType::SPAWN) {
+                        
+                        glm::vec2 snapPos = m_CurrentOperation->GetTileCenterPos(r, c);
+                        m_DraggedOperator->SetPosition(snapPos);
+                        LOG_DEBUG("Operator dropped at tile ({}, {}) type: {}", r, c, static_cast<int>(type));
+                    } else {
+                        LOG_DEBUG("Illegal terrain at ({}, {}) type: {}", r, c, static_cast<int>(type));
+                    }
+                }
+                m_DraggedOperator = nullptr;
+            }
+        }
+
+        constexpr float BLOCK_DISTANCE = 50.0f;
         for (auto& op : m_Operators) {
             op->Update(deltaTime);
+            for (auto& enemy : m_ActiveEnemies) {
+                if (!enemy->IsBlocked() && op->CanBlockMore()) {
+                    if (glm::distance(op->GetPosition(), enemy->GetPosition()) < BLOCK_DISTANCE) {
+                        enemy->SetBlocked(true);
+                        op->BlockEnemy(enemy);
+                    }
+                }
+            }
         }
     }
 

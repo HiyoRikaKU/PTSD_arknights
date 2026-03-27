@@ -35,6 +35,10 @@ public:
     void SetSpeed(float speed) { m_Speed = speed; }
     void SetAnimation(const std::vector<std::string>& animationPaths);
 
+    bool IsBlocked() const { return m_IsBlocked; }
+    void SetBlocked(bool blocked) { m_IsBlocked = blocked; }
+    glm::vec2 GetPosition() const { return m_Transform.translation; }
+
 private:
     void Init(const std::vector<std::string>& animationPaths);
     static std::vector<glm::vec2> ParsePathString(const std::string& pathString);
@@ -45,6 +49,7 @@ private:
     float m_Hp = 100.0F;
     bool m_IsActive = false;
     bool m_ReachedEnd = false;
+    bool m_IsBlocked = false;
 };
 
 #endif

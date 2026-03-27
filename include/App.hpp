@@ -60,6 +60,7 @@ private:
     float m_WaveTimer = 0.0f;
 
     std::vector<std::shared_ptr<Operator>> m_Operators;
+    std::shared_ptr<Operator> m_DraggedOperator = nullptr;
 
     static constexpr std::size_t ENEMY_POOL_SIZE = 32;
     static constexpr float TILE_SIZE = 100.0F;
