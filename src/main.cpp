@@ -1,23 +1,23 @@
-#include "App.hpp"
+#include "Arknights/App.hpp"
 
 #include "Core/Context.hpp"
 
 int main(int, char**) {
     auto context = Core::Context::GetInstance();
-    App app;
+    Arknights::App app;
 
     while (!context->GetExit()) {
-        switch (app.GetCurrentState()) {
-            case App::State::START:
-                app.Start();
+        switch (app.getCurrentState()) {
+            case Arknights::App::State::START:
+                app.start();
                 break;
 
-            case App::State::UPDATE:
-                app.Update();
+            case Arknights::App::State::UPDATE:
+                app.update();
                 break;
 
-            case App::State::END:
-                app.End();
+            case Arknights::App::State::END:
+                app.end();
                 context->SetExit(true);
                 break;
         }

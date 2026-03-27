@@ -1,19 +1,25 @@
-#ifndef APP_HPP
-#define APP_HPP
+#ifndef ARKNIGHTS_APP_HPP
+#define ARKNIGHTS_APP_HPP
+
+#include <vector>
+#include <string>
+#include <memory>
 
 #include "pch.hpp" // IWYU pragma: export
 #include "Util/Renderer.hpp"
 #include "Util/GameObject.hpp"
-
 #include "Util/BGM.hpp"
 #include "Util/SFX.hpp"
 #include "Util/Image.hpp"
 #include "Util/Text.hpp"
-#include "Enemy.hpp"
-#include "EnemyPool.hpp"
-#include "Operation.hpp"
-#include "WaveManager.hpp"
-#include "Operator.hpp"
+
+#include "Arknights/Enemy.hpp"
+#include "Arknights/EnemyPool.hpp"
+#include "Arknights/Operation.hpp"
+#include "Arknights/WaveManager.hpp"
+#include "Arknights/Operator.hpp"
+
+namespace Arknights {
 
 class App {
 public:
@@ -23,17 +29,15 @@ public:
         END,
     };
 
-    State GetCurrentState() const { return m_CurrentState; }
+    void start();
+    void update();
+    void end();
 
-    void Start();
-
-    void Update();
-
-    void End(); // NOLINT(readability-convert-member-functions-to-static)
+    State getCurrentState() const { return m_CurrentState; }
 
 private:
-    void ValidTask();
-    void SpawnEnemy(const SpawnEvent& event);
+    void validTask();
+    void spawnEnemy(const SpawnEvent& event);
 
 private:
     State m_CurrentState = State::START;
@@ -52,7 +56,7 @@ private:
     bool m_IsLoggedIn = false;
 
     std::unique_ptr<EnemyPool> m_EnemyPool;
-    std::vector<Enemy*> m_ActiveEnemies; // Active list (O(1) remove via swap-pop)
+    std::vector<Enemy*> m_ActiveEnemies; 
     std::vector<std::string> m_EnemyAnimationPathsGopro;
     std::vector<std::string> m_EnemyAnimationPathsBigbo;
     
@@ -65,5 +69,7 @@ private:
     static constexpr std::size_t ENEMY_POOL_SIZE = 32;
     static constexpr float TILE_SIZE = 100.0F;
 };
+
+} // namespace Arknights
 
 #endif

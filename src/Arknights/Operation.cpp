@@ -1,7 +1,10 @@
-#include "Operation.hpp"
+#include "Arknights/Operation.hpp"
+
 #include <array>
 #include <cmath>
 #include <algorithm>
+
+namespace Arknights {
 
 // Define TileType aliases to match instruction.md
 namespace {
@@ -29,29 +32,17 @@ Operation::Operation(const std::string& mapPath, const std::vector<glm::vec2>& w
     m_Map->m_Transform.scale = glm::vec2(1600.0f, 900.0f) / m_Map->GetScaledSize();
     m_Map->SetVisible(false);
 
-    ComputeHomography();
-    InitTiles();
+    computeHomography();
+    initTiles();
 }
 
-void Operation::ComputeHomography() {
-    // Four corner measurement points (x = col, y = row)
-    // P(row=0, col=1) = (-493, 253)
-    // P(row=0, col=7) = ( 255, 247)
-    // P(row=3, col=1) = (-574, -86)
-    // P(row=3, col=7) = ( 295, -87)
+void Operation::computeHomography() {
     std::array<glm::vec2, 4> src = {
         glm::vec2{1, 0}, {7, 0}, {1, 3}, {7, 3}
     };
     std::array<glm::vec2, 4> dst = {
         glm::vec2{-493, 253}, {255, 247}, {-574, -86}, {295, -87}
     };
-
-    // Construct 8x8 matrix to solve for homography parameters h0...h7 (h8=1)
-    // X = (h0*x + h1*y + h2) / (h6*x + h7*y + 1)
-    // Y = (h3*x + h4*y + h5) / (h6*x + h7*y + 1)
-    // Equations:
-    // x*h0 + y*h1 + 1*h2 + 0*h3 + 0*h4 + 0*h5 - x*X*h6 - y*X*h7 = X
-    // 0*h0 + 0*h1 + 0*h2 + x*h3 + y*h4 + 1*h5 - x*Y*h6 - y*Y*h7 = Y
 
     double A[8][9];
     for (int i = 0; i < 4; ++i) {
@@ -71,7 +62,6 @@ void Operation::ComputeHomography() {
         A[i * 2 + 1][8] = Y_dst;
     }
 
-    // Gaussian Elimination
     for (int i = 0; i < 8; ++i) {
         int pivot = i;
         for (int j = i + 1; j < 8; ++j) {
@@ -93,13 +83,6 @@ void Operation::ComputeHomography() {
     }
     h_res[8] = 1.0f;
 
-    // Build H matrix (column-major for GLM)
-    // h_res: h0 h1 h2 h3 h4 h5 h6 h7 h8
-    // Matrix:
-    // h0 h1 h2
-    // h3 h4 h5
-    // h6 h7 h8
-    // GLM mat3 is col-major: m[col][row]
     m_Homography = glm::mat3(
         h_res[0], h_res[3], h_res[6],
         h_res[1], h_res[4], h_res[7],
@@ -108,31 +91,35 @@ void Operation::ComputeHomography() {
     m_InvHomography = glm::inverse(m_Homography);
 }
 
-void Operation::InitTiles() {
+void Operation::initTiles() {
     for (int r_idx = 0; r_idx < 4; ++r_idx) {
         for (int c_idx = 0; c_idx < 10; ++c_idx) {
-            PlaceTile(s_MapMatrix[r_idx][c_idx], GetTileCenterPos(r_idx, c_idx));
+            placeTile(s_MapMatrix[r_idx][c_idx], getTileCenterPos(r_idx, c_idx));
         }
     }
 }
 
-void Operation::PlaceTile(TileType type, const glm::vec2& pos) {
+void Operation::placeTile(TileType type, const glm::vec2& pos) {
     (void)type;
     (void)pos;
 }
 
-Operation::TileType Operation::GetTileType(int r_idx, int c_idx) const {
+Operation::TileType Operation::getTileType(int r_idx, int c_idx) const {
     if (r_idx < 0 || r_idx >= 4 || c_idx < 0 || c_idx >= 10) return TileType::OBSTACLE;
     return s_MapMatrix[r_idx][c_idx];
 }
 
-glm::vec2 Operation::GetTileCenterPos(int r_idx, int c_idx) const {
-    // Tile center: (col + 0.5, row + 0.5)
-    glm::vec3 p = m_Homography * glm::vec3(static_cast<float>(c_idx) + 0.5f, static_cast<float>(r_idx) + 0.5f, 1.0f);
+glm::vec2 Operation::getTileCenterPos(int r_idx, int c_idx) const {
+    return getTileCenterPos(static_cast<float>(r_idx) + 0.5f, static_cast<float>(c_idx) + 0.5f);
+}
+
+glm::vec2 Operation::getTileCenterPos(float r, float c) const {
+    // Grid coordinates (c, r, 1) projected by Homography
+    glm::vec3 p = m_Homography * glm::vec3(c, r, 1.0f);
     return {p.x / p.z, p.y / p.z};
 }
 
-bool Operation::GetTileIndices(const glm::vec2& pos, int& r_idx, int& c_idx) const {
+bool Operation::getTileIndices(const glm::vec2& pos, int& r_idx, int& c_idx) const {
     glm::vec3 p = m_InvHomography * glm::vec3(pos.x, pos.y, 1.0f);
     float fc = p.x / p.z;
     float fr = p.y / p.z;
@@ -142,3 +129,5 @@ bool Operation::GetTileIndices(const glm::vec2& pos, int& r_idx, int& c_idx) con
 
     return (r_idx >= 0 && r_idx < 4 && c_idx >= 0 && c_idx < 10);
 }
+
+} // namespace Arknights
