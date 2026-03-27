@@ -30,12 +30,20 @@ public:
     void SetPosition(const glm::vec2& position) { m_Transform.translation = position; }
     glm::vec2 GetPosition() const { return m_Transform.translation; }
 
+    std::size_t GetBlockCount() const { return m_BlockCount; }
+    bool CanBlockMore() const { return m_BlockedEnemies.size() < m_BlockCount; }
+    void BlockEnemy(class Enemy* enemy) { m_BlockedEnemies.push_back(enemy); }
+    void ClearBlockedEnemies() { m_BlockedEnemies.clear(); }
+
 protected:
     void Init(const std::vector<std::string>& idleAnimationPaths);
 
     float m_Hp;
     float m_Attack;
     State m_State = State::IDLE;
+
+    std::size_t m_BlockCount = 1;
+    std::vector<class Enemy*> m_BlockedEnemies;
 
     std::shared_ptr<Util::Animation> m_IdleAnimation;
     // We can add AttackAnimation, SkillAnimation later
