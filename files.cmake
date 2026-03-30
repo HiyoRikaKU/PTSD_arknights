@@ -1,6 +1,5 @@
 set(SRC_FILES
     Arknights/App.cpp
-    Arknights/Enemy.cpp
     Arknights/EnemyPool.cpp
     Arknights/Operation.cpp
     Arknights/Operator.cpp
