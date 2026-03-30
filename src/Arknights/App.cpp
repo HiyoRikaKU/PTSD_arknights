@@ -21,7 +21,7 @@ void App::start() {
         10 // High Z-index to cover everything
     );
     // Scale login page to 1600x900
-    m_LoginPage->m_Transform.scale = glm::vec2(1600.0f, 900.0f) / m_LoginPage->GetScaledSize();
+    m_LoginPage->m_Transform.scale = glm::vec2(1000.0f, 300.0f) / m_LoginPage->GetScaledSize();
     m_Root.AddChild(m_LoginPage);
 
     // Login BGM
