@@ -29,7 +29,7 @@ Operation::Operation(const std::string& mapPath, const std::vector<glm::vec2>& w
         0
     );
     // Scale map to 1600x900 as per App.cpp requirement
-    m_Map->m_Transform.scale = glm::vec2(1600.0f, 900.0f) / m_Map->GetScaledSize();
+    m_Map->m_Transform.scale = glm::vec2(1280.0f, 720.0f) / m_Map->GetScaledSize();
     m_Map->SetVisible(false);
 
     computeHomography();
