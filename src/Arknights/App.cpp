@@ -98,11 +98,45 @@ void App::start() {
         amiyaIdlePaths.push_back(ss.str());
     }
     auto amiya = std::make_shared<Operator>(amiyaIdlePaths, 1000.0f, 100.0f);
-    amiya->setPosition({0.0f, 120.0f}); // On the path
+    amiya->setPosition({0.0f, 120.0f}); // Default position
     amiya->m_Transform.scale = glm::vec2(-0.3f, 0.3f); // Match enemy scale and face left
-    amiya->SetVisible(false);
+    amiya->SetVisible(false); // Hidden until deployed
     m_Operators.push_back(amiya);
     m_Root.AddChild(amiya);
+
+    // Amiya Icon at bottom right
+    m_AmiyaIcon = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Amiya_icon.png"),
+        5 // Above map, below login page
+    );
+    m_AmiyaIcon->m_Transform.translation = {700, -350}; // Bottom right
+    m_AmiyaIcon->m_Transform.scale = {0.7f, 0.7f};
+    m_AmiyaIcon->SetVisible(false); // Show after login
+    m_Root.AddChild(m_AmiyaIcon);
+
+    // Initialize Chen
+    std::vector<std::string> chenIdlePaths;
+    for (int i = 1; i <= 200; ++i) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/operator/char_010_chen/Idle_" << std::setfill('0') << std::setw(3) << i << ".png";
+        chenIdlePaths.push_back(ss.str());
+    }
+    auto chen = std::make_shared<Operator>(chenIdlePaths, 1200.0f, 150.0f);
+    chen->setPosition({0.0f, 0.0f});
+    chen->m_Transform.scale = glm::vec2(-0.3f, 0.3f);
+    chen->SetVisible(false);
+    m_Operators.push_back(chen);
+    m_Root.AddChild(chen);
+
+    // Chen Icon next to Amiya
+    m_ChenIcon = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Chen_icon.png"),
+        5
+    );
+    m_ChenIcon->m_Transform.translation = {580, -350}; // Next to Amiya
+    m_ChenIcon->m_Transform.scale = {0.7f, 0.7f};
+    m_ChenIcon->SetVisible(false);
+    m_Root.AddChild(m_ChenIcon);
 
     // Initialize WaveManager with timeline (Speed in grid units per ms)
     m_WaveManager = std::make_unique<WaveManager>();
@@ -156,10 +190,12 @@ void App::update() {
             // Show text after login
             m_Text->SetVisible(true);
             
-            // Show operators after login
+            // Show operators after login (only those already on map if any, but currently all are hidden)
             for (auto& op : m_Operators) {
-                op->SetVisible(true);
+                // op->SetVisible(true); // Don't show them immediately if they are not deployed
             }
+            m_AmiyaIcon->SetVisible(true);
+            m_ChenIcon->SetVisible(true);
 
             // Music transition
             m_LoginBGM->FadeOut(500);
@@ -206,13 +242,37 @@ void App::update() {
             enemy->setBlocked(false);
         }
 
-        // Update operators and check for blocking
+        // Update operators and check for dragging
         glm::vec2 mousePos = Util::Input::GetCursorPosition();
         if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
-            for (auto& op : m_Operators) {
-                if (glm::distance(mousePos, op->getPosition()) < 50.0f) {
-                    m_DraggedOperator = op;
-                    break;
+            // Check Amiya icon click
+            if (m_AmiyaIcon->GetVisible() && glm::distance(mousePos, m_AmiyaIcon->m_Transform.translation) < 60.0f) {
+                if (m_Operators.size() >= 1) {
+                    m_DraggedOperator = m_Operators[0];
+                    m_DraggedIcon = m_AmiyaIcon;
+                    m_DraggedOperator->SetVisible(true);
+                    m_DraggedIcon->SetVisible(false);
+                    LOG_DEBUG("Starting drag Amiya from icon");
+                }
+            } 
+            // Check Chen icon click
+            else if (m_ChenIcon->GetVisible() && glm::distance(mousePos, m_ChenIcon->m_Transform.translation) < 60.0f) {
+                if (m_Operators.size() >= 2) {
+                    m_DraggedOperator = m_Operators[1];
+                    m_DraggedIcon = m_ChenIcon;
+                    m_DraggedOperator->SetVisible(true);
+                    m_DraggedIcon->SetVisible(false);
+                    LOG_DEBUG("Starting drag Chen from icon");
+                }
+            }
+            else {
+                // Check existing operators on map
+                for (auto& op : m_Operators) {
+                    if (op->GetVisible() && glm::distance(mousePos, op->getPosition()) < 50.0f) {
+                        m_DraggedOperator = op;
+                        m_DraggedIcon = nullptr; // Not dragged from icon
+                        break;
+                    }
                 }
             }
         }
@@ -221,6 +281,7 @@ void App::update() {
             if (Util::Input::IsKeyUp(Util::Keycode::MOUSE_LB)) {
                 // Implement onDrop
                 int r, c;
+                bool dropped = false;
                 if (m_CurrentOperation->getTileIndices(mousePos, r, c)) {
                     Operation::TileType type = m_CurrentOperation->getTileType(r, c);
                     // Check terrain legality: ground, high ground, and spawn (for testing) are allowed
@@ -231,16 +292,25 @@ void App::update() {
                         glm::vec2 snapPos = m_CurrentOperation->getTileCenterPos(r, c);
                         m_DraggedOperator->setPosition(snapPos);
                         LOG_DEBUG("Operator dropped at tile ({}, {}) type: {}", r, c, static_cast<int>(type));
+                        dropped = true;
                     } else {
                         LOG_DEBUG("Illegal terrain at ({}, {}) type: {}", r, c, static_cast<int>(type));
                     }
                 }
+                
+                if (!dropped && m_DraggedIcon) {
+                    // Return to icon state if dropped in illegal location and was dragged from icon
+                    m_DraggedOperator->SetVisible(false);
+                    m_DraggedIcon->SetVisible(true);
+                }
                 m_DraggedOperator = nullptr;
+                m_DraggedIcon = nullptr;
             }
         }
 
         constexpr float BLOCK_DISTANCE = 50.0f;
         for (auto& op : m_Operators) {
+            if (!op->GetVisible()) continue;
             op->update(deltaTime);
             for (auto& enemy : m_ActiveEnemies) {
                 if (!enemy->isBlocked() && op->canBlockMore()) {

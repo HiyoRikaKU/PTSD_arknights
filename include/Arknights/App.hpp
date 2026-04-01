@@ -45,6 +45,8 @@ private:
     Util::Renderer m_Root;
 
     std::shared_ptr<Util::GameObject> m_LoginPage;
+    std::shared_ptr<Util::GameObject> m_AmiyaIcon;
+    std::shared_ptr<Util::GameObject> m_ChenIcon;
     std::unique_ptr<Util::BGM> m_LoginBGM;
     std::unique_ptr<Util::SFX> m_LoginSFX;
 
@@ -65,6 +67,7 @@ private:
 
     std::vector<std::shared_ptr<Operator>> m_Operators;
     std::shared_ptr<Operator> m_DraggedOperator = nullptr;
+    std::shared_ptr<Util::GameObject> m_DraggedIcon = nullptr;
 
     static constexpr std::size_t ENEMY_POOL_SIZE = 32;
     static constexpr float TILE_SIZE = 100.0F;

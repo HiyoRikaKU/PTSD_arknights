@@ -1,5 +1,18 @@
 #include "Arknights/Operator.hpp"
 
+/*
+
+Amiya's attack range: A is amiya
+
+  RRR
+A:RRRR
+  RRR
+
+this is faced right, it also goes for up down left right from amiya's position. 
+
+
+*/
+
 namespace Arknights {
 
 Operator::Operator(const std::vector<std::string>& idleAnimationPaths, float hp, float attack)
