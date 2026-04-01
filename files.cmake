@@ -4,6 +4,12 @@ set(SRC_FILES
     Arknights/EnemyPool.cpp
     Arknights/Operation.cpp
     Arknights/Operator.cpp
+    Arknights/Scenes/Scene.cpp
+    Arknights/Scenes/LoginScene.cpp
+    Arknights/Scenes/LobbyScene.cpp
+    Arknights/Scenes/GameScene.cpp
+    Arknights/Core/SceneManager.cpp
+    Arknights/UI/Button.cpp
 )
 
 set(INCLUDE_FILES
@@ -13,6 +19,12 @@ set(INCLUDE_FILES
     Arknights/Operation.hpp
     Arknights/Operator.hpp
     Arknights/WaveManager.hpp
+    Arknights/Scenes/Scene.hpp
+    Arknights/Scenes/LoginScene.hpp
+    Arknights/Scenes/LobbyScene.hpp
+    Arknights/Scenes/GameScene.hpp
+    Arknights/Core/SceneManager.hpp
+    Arknights/UI/Button.hpp
 )
 
 set(TEST_FILES
