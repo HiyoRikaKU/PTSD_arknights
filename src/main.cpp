@@ -1,5 +1,4 @@
 #include "Arknights/App.hpp"
-
 #include "Core/Context.hpp"
 
 int main(int, char**) {

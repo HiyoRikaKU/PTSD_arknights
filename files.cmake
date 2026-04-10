@@ -10,6 +10,7 @@ set(INCLUDE_FILES
     Arknights/App.hpp
     Arknights/Enemy.hpp
     Arknights/EnemyPool.hpp
+    Arknights/HealthBar.hpp
     Arknights/Operation.hpp
     Arknights/Operator.hpp
     Arknights/WaveManager.hpp

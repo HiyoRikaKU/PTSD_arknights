@@ -68,22 +68,36 @@ void App::start() {
     m_Text->SetVisible(false);
     m_Root.AddChild(m_Text);
 
-    // Preload enemy animations
     m_EnemyAnimationPathsGopro.clear();
+    m_EnemyDiePathsGopro.clear();
     for (int i = 1; i <= 25; ++i) {
         std::stringstream ss;
         ss << RESOURCE_DIR << "/charactor/enemy/enemy_1000_gopro/Move_Loop_" << std::setfill('0') << std::setw(2) << i << ".png";
         m_EnemyAnimationPathsGopro.push_back(ss.str());
     }
+    for (int i = 1; i <= 21; ++i) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/enemy/enemy_1000_gopro/Die_" << std::setfill('0') << std::setw(2) << i << ".png";
+        m_EnemyDiePathsGopro.push_back(ss.str());
+    }
 
     m_EnemyAnimationPathsBigbo.clear();
+    m_EnemyDiePathsBigbo.clear();
     for (int i = 1; i <= 31; ++i) {
         std::stringstream ss;
         ss << RESOURCE_DIR << "/charactor/enemy/enemy_1001_bigbo/Move_Loop_" << std::setfill('0') << std::setw(2) << i << ".png";
         m_EnemyAnimationPathsBigbo.push_back(ss.str());
     }
+    for (int i = 1; i <= 31; ++i) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/enemy/enemy_1001_bigbo/Die_" << std::setfill('0') << std::setw(2) << i << ".png";
+        m_EnemyDiePathsBigbo.push_back(ss.str());
+    }
 
     m_EnemyPool = std::make_unique<EnemyPool>(ENEMY_POOL_SIZE, m_EnemyAnimationPathsGopro, waypoints);
+    // We need to set die animations for pooled enemies, but EnemyPool doesn't know about them yet.
+    // Let's just set them during spawn for now or update EnemyPool.
+    // Actually, App::spawnEnemy is a good place.
 
     // Register all pooled enemies to the renderer once; visibility toggles on spawn/despawn.
     for (const auto &handle : m_EnemyPool->getRenderHandles()) {
@@ -91,15 +105,8 @@ void App::start() {
     }
 
     // Initialize operators (Amiya)
-    std::vector<std::string> amiyaIdlePaths;
-    for (int i = 1; i <= 31; ++i) {
-        std::stringstream ss;
-        ss << RESOURCE_DIR << "/charactor/operator/char_002_amiya/Idle_" << std::setfill('0') << std::setw(2) << i << ".png";
-        amiyaIdlePaths.push_back(ss.str());
-    }
-    auto amiya = std::make_shared<Operator>(amiyaIdlePaths, 1000.0f, 100.0f);
+    auto amiya = std::make_shared<Amiya>();
     amiya->setPosition({0.0f, 120.0f}); // Default position
-    amiya->m_Transform.scale = glm::vec2(-0.3f, 0.3f); // Match enemy scale and face left
     amiya->SetVisible(false); // Hidden until deployed
     m_Operators.push_back(amiya);
     m_Root.AddChild(amiya);
@@ -115,15 +122,8 @@ void App::start() {
     m_Root.AddChild(m_AmiyaIcon);
 
     // Initialize Chen
-    std::vector<std::string> chenIdlePaths;
-    for (int i = 1; i <= 200; ++i) {
-        std::stringstream ss;
-        ss << RESOURCE_DIR << "/charactor/operator/char_010_chen/Idle_" << std::setfill('0') << std::setw(3) << i << ".png";
-        chenIdlePaths.push_back(ss.str());
-    }
-    auto chen = std::make_shared<Operator>(chenIdlePaths, 1200.0f, 150.0f);
+    auto chen = std::make_shared<Chen>();
     chen->setPosition({0.0f, 0.0f});
-    chen->m_Transform.scale = glm::vec2(-0.3f, 0.3f);
     chen->SetVisible(false);
     m_Operators.push_back(chen);
     m_Root.AddChild(chen);
@@ -141,10 +141,12 @@ void App::start() {
     // Initialize WaveManager with timeline (Speed in grid units per ms)
     m_WaveManager = std::make_unique<WaveManager>();
     m_WaveManager->addSpawnEvent(2000.0f, "gopro", 100.0f, 0.001f);
-    m_WaveManager->addSpawnEvent(4000.0f, "gopro", 100.0f, 0.001f);
-    m_WaveManager->addSpawnEvent(6000.0f, "bigbo", 300.0f, 0.0005f);
+    m_WaveManager->addSpawnEvent(5000.0f, "gopro", 100.0f, 0.001f);
     m_WaveManager->addSpawnEvent(8000.0f, "bigbo", 300.0f, 0.0005f);
-    m_WaveManager->addSpawnEvent(10000.0f, "gopro", 150.0f, 0.001f);
+    m_WaveManager->addSpawnEvent(11000.0f, "gopro", 150.0f, 0.001f);
+    m_WaveManager->addSpawnEvent(14000.0f, "bigbo", 500.0f, 0.0004f);
+    m_WaveManager->addSpawnEvent(17000.0f, "gopro", 200.0f, 0.0012f);
+    m_WaveManager->addSpawnEvent(20000.0f, "bigbo", 1000.0f, 0.0003f); // Boss-like
 
     m_CurrentState = State::UPDATE;
 }
@@ -163,8 +165,14 @@ void App::spawnEnemy(const SpawnEvent& event) {
     // Set animation based on type
     if (event.enemyType == "gopro") {
         enemy->setAnimation(m_EnemyAnimationPathsGopro);
+        enemy->setDieAnimation(m_EnemyDiePathsGopro);
+        enemy->setAttack(10.0f);
+        enemy->setAttackInterval(1000.0f);
     } else if (event.enemyType == "bigbo") {
         enemy->setAnimation(m_EnemyAnimationPathsBigbo);
+        enemy->setDieAnimation(m_EnemyDiePathsBigbo);
+        enemy->setAttack(30.0f);
+        enemy->setAttackInterval(1500.0f);
     }
 
     const auto& waypoints = m_CurrentOperation->getWaypoints();
@@ -191,9 +199,11 @@ void App::update() {
             m_Text->SetVisible(true);
             
             // Show operators after login (only those already on map if any, but currently all are hidden)
+            /*
             for (auto& op : m_Operators) {
                 // op->SetVisible(true); // Don't show them immediately if they are not deployed
             }
+            */
             m_AmiyaIcon->SetVisible(true);
             m_ChenIcon->SetVisible(true);
 
@@ -244,7 +254,26 @@ void App::update() {
 
         // Update operators and check for dragging
         glm::vec2 mousePos = Util::Input::GetCursorPosition();
-        if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
+        if (m_ChoosingDirectionOperator) {
+            // In choosing direction mode, look at mouse position relative to operator
+            glm::vec2 opPos = m_ChoosingDirectionOperator->getPosition();
+            glm::vec2 delta = mousePos - opPos;
+            if (glm::length(delta) > 20.0f) {
+                if (std::abs(delta.x) > std::abs(delta.y)) {
+                    if (delta.x > 0) m_ChoosingDirectionOperator->setDirection(Operator::Direction::RIGHT);
+                    else m_ChoosingDirectionOperator->setDirection(Operator::Direction::LEFT);
+                } else {
+                    if (delta.y > 0) m_ChoosingDirectionOperator->setDirection(Operator::Direction::UP);
+                    else m_ChoosingDirectionOperator->setDirection(Operator::Direction::DOWN);
+                }
+            }
+
+            if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
+                m_ChoosingDirectionOperator = nullptr;
+                m_ChoosingDirectionIcon = nullptr;
+                LOG_DEBUG("Direction finalized");
+            }
+        } else if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
             // Check Amiya icon click
             if (m_AmiyaIcon->GetVisible() && glm::distance(mousePos, m_AmiyaIcon->m_Transform.translation) < 60.0f) {
                 if (m_Operators.size() >= 1) {
@@ -266,17 +295,21 @@ void App::update() {
                 }
             }
             else {
-                // Check existing operators on map
-                for (auto& op : m_Operators) {
+                // Check existing operators on map for RECALL
+                for (std::size_t i = 0; i < m_Operators.size(); ++i) {
+                    auto& op = m_Operators[i];
                     if (op->GetVisible() && glm::distance(mousePos, op->getPosition()) < 50.0f) {
-                        m_DraggedOperator = op;
-                        m_DraggedIcon = nullptr; // Not dragged from icon
+                        op->SetVisible(false);
+                        // Return to icon state
+                        if (i == 0) m_AmiyaIcon->SetVisible(true);
+                        else if (i == 1) m_ChenIcon->SetVisible(true);
+                        LOG_DEBUG("Operator recalled");
                         break;
                     }
                 }
             }
         }
-        if (m_DraggedOperator) {
+                if (m_DraggedOperator) {
             m_DraggedOperator->setPosition(mousePos);
             if (Util::Input::IsKeyUp(Util::Keycode::MOUSE_LB)) {
                 // Implement onDrop
@@ -284,17 +317,27 @@ void App::update() {
                 bool dropped = false;
                 if (m_CurrentOperation->getTileIndices(mousePos, r, c)) {
                     Operation::TileType type = m_CurrentOperation->getTileType(r, c);
-                    // Check terrain legality: ground, high ground, and spawn (for testing) are allowed
-                    if (type == Operation::TileType::GROUND || 
-                        type == Operation::TileType::HIGH_GROUND || 
-                        type == Operation::TileType::SPAWN) {
-                        
+                    
+                    bool canPlace = false;
+                    if (m_DraggedOperator->getType() == Operator::Type::AMIYA) {
+                        canPlace = (type == Operation::TileType::HIGH_GROUND);
+                    } else if (m_DraggedOperator->getType() == Operator::Type::CHEN) {
+                        canPlace = (type == Operation::TileType::GROUND || type == Operation::TileType::SPAWN);
+                    }
+
+                    if (canPlace) {
                         glm::vec2 snapPos = m_CurrentOperation->getTileCenterPos(r, c);
                         m_DraggedOperator->setPosition(snapPos);
+                        // Store the tile center in grid coordinates for distance-based logic
+                        m_DraggedOperator->setGridPosition({static_cast<float>(r) + 0.5f, static_cast<float>(c) + 0.5f});
                         LOG_DEBUG("Operator dropped at tile ({}, {}) type: {}", r, c, static_cast<int>(type));
                         dropped = true;
+
+                        // Enter choosing direction mode
+                        m_ChoosingDirectionOperator = m_DraggedOperator;
+                        m_ChoosingDirectionIcon = m_DraggedIcon;
                     } else {
-                        LOG_DEBUG("Illegal terrain at ({}, {}) type: {}", r, c, static_cast<int>(type));
+                        LOG_DEBUG("Illegal terrain for this operator at ({}, {}) type: {}", r, c, static_cast<int>(type));
                     }
                 }
                 
@@ -308,14 +351,33 @@ void App::update() {
             }
         }
 
-        constexpr float BLOCK_DISTANCE = 50.0f;
         for (auto& op : m_Operators) {
-            if (!op->GetVisible()) continue;
+            if (!op->GetVisible() || !op->isAlive()) continue;
             op->update(deltaTime);
+            bool attacked = false;
             for (auto& enemy : m_ActiveEnemies) {
+                if (!enemy->isAlive()) continue;
+                glm::vec2 enemyGridPos = enemy->getGridPosition();
+                
+                // 1. Check for attacking (discrete with CD)
+                if (!attacked && op->canAttack() && op->isInAttackRange(enemyGridPos)) {
+                    for (std::size_t k = 0; k < op->getAttackCount(); ++k) {
+                        enemy->takeDamage(op->getAttack());
+                    }
+                    op->resetAttackTimer();
+                    op->playAttackAnimation();
+                    attacked = true; // One attack per cycle
+                    LOG_DEBUG("Operator attacked enemy at {}", enemyGridPos.x);
+                }
+
+                // 2. Check for blocking (only on same tile)
+                // We use floor to check if they are in the same grid tile index
                 if (!enemy->isBlocked() && op->canBlockMore()) {
-                    if (glm::distance(op->getPosition(), enemy->getPosition()) < BLOCK_DISTANCE) {
+                    glm::vec2 opGridPos = op->getGridPosition();
+                    if (std::floor(opGridPos.x) == std::floor(enemyGridPos.x) &&
+                        std::floor(opGridPos.y) == std::floor(enemyGridPos.y)) {
                         enemy->setBlocked(true);
+                        enemy->setTargetOperator(op.get());
                         op->blockEnemy(enemy);
                     }
                 }

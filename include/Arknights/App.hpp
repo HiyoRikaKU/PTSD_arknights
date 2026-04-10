@@ -60,7 +60,9 @@ private:
     std::unique_ptr<EnemyPool> m_EnemyPool;
     std::vector<Enemy*> m_ActiveEnemies; 
     std::vector<std::string> m_EnemyAnimationPathsGopro;
+    std::vector<std::string> m_EnemyDiePathsGopro;
     std::vector<std::string> m_EnemyAnimationPathsBigbo;
+    std::vector<std::string> m_EnemyDiePathsBigbo;
     
     std::unique_ptr<WaveManager> m_WaveManager;
     float m_WaveTimer = 0.0f;
@@ -69,7 +71,10 @@ private:
     std::shared_ptr<Operator> m_DraggedOperator = nullptr;
     std::shared_ptr<Util::GameObject> m_DraggedIcon = nullptr;
 
-    static constexpr std::size_t ENEMY_POOL_SIZE = 32;
+    std::shared_ptr<Operator> m_ChoosingDirectionOperator = nullptr;
+    std::shared_ptr<Util::GameObject> m_ChoosingDirectionIcon = nullptr;
+
+    static constexpr std::size_t ENEMY_POOL_SIZE = 64;
     static constexpr float TILE_SIZE = 100.0F;
 };
 
