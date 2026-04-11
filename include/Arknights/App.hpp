@@ -16,6 +16,7 @@
 #include "Arknights/Enemy.hpp"
 #include "Arknights/EnemyPool.hpp"
 #include "Arknights/Operation.hpp"
+#include "Arknights/Operation1.hpp"
 #include "Arknights/WaveManager.hpp"
 #include "Arknights/Operator.hpp"
 
@@ -32,6 +33,7 @@ public:
     void start();
     void update();
     void end();
+    void reset();
 
     State getCurrentState() const { return m_CurrentState; }
 
@@ -53,8 +55,6 @@ private:
     std::unique_ptr<Operation> m_CurrentOperation;
     std::unique_ptr<Util::BGM> m_BattleBGM;
 
-    std::shared_ptr<Util::GameObject> m_Text;
-
     bool m_IsLoggedIn = false;
 
     std::unique_ptr<EnemyPool> m_EnemyPool;
@@ -63,9 +63,18 @@ private:
     std::vector<std::string> m_EnemyDiePathsGopro;
     std::vector<std::string> m_EnemyAnimationPathsBigbo;
     std::vector<std::string> m_EnemyDiePathsBigbo;
+    std::vector<std::string> m_EnemyAnimationPathsTrslim;
+    std::vector<std::string> m_EnemyDiePathsTrslim;
     
-    std::unique_ptr<WaveManager> m_WaveManager;
     float m_WaveTimer = 0.0f;
+    int m_EscapedEnemies = 0;
+    int m_KilledEnemies = 0;
+    int m_TotalEnemies = 0;
+    bool m_IsGameOver = false;
+
+    std::shared_ptr<Util::GameObject> m_EnemyCountText;
+    std::shared_ptr<Util::GameObject> m_GameOverText;
+    std::shared_ptr<Util::GameObject> m_RestartText;
 
     std::vector<std::shared_ptr<Operator>> m_Operators;
     std::shared_ptr<Operator> m_DraggedOperator = nullptr;
@@ -76,6 +85,7 @@ private:
 
     static constexpr std::size_t ENEMY_POOL_SIZE = 64;
     static constexpr float TILE_SIZE = 100.0F;
+    static constexpr int MAX_ESCAPED_ENEMIES = 4;
 };
 
 } // namespace Arknights

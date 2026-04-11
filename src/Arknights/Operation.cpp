@@ -15,15 +15,12 @@ namespace {
     constexpr Operation::TileType b = Operation::TileType::BASE;
 }
 
-const std::vector<std::vector<Operation::TileType>> Operation::s_MapMatrix = {
-    {x, h, h, h, h, h, h, h, b, x},
-    {x, h, f, f, f, f, h, f, f, r},
-    {b, f, f, h, f, f, f, f, f, r},
-    {x, h, h, h, h, h, h, h, x, x},
-};
-
-Operation::Operation(const std::string& mapPath, const std::vector<glm::vec2>& waypoints)
-    : m_Waypoints(waypoints) {
+Operation::Operation(const std::string& mapPath, 
+                     const std::vector<glm::vec2>& waypoints,
+                     const std::vector<std::vector<TileType>>& mapMatrix,
+                     const std::array<glm::vec2, 4>& srcPoints,
+                     const std::array<glm::vec2, 4>& dstPoints)
+    : m_Waypoints(waypoints), m_MapMatrix(mapMatrix) {
     m_Map = std::make_shared<Util::GameObject>(
         std::make_shared<Util::Image>(mapPath),
         0
@@ -32,18 +29,11 @@ Operation::Operation(const std::string& mapPath, const std::vector<glm::vec2>& w
     m_Map->m_Transform.scale = glm::vec2(1600.0f, 900.0f) / m_Map->GetScaledSize();
     m_Map->SetVisible(false);
 
-    computeHomography();
+    computeHomography(srcPoints, dstPoints);
     initTiles();
 }
 
-void Operation::computeHomography() {
-    std::array<glm::vec2, 4> src = {
-        glm::vec2{1, 0}, {7, 0}, {1, 3}, {7, 3}
-    };
-    std::array<glm::vec2, 4> dst = {
-        glm::vec2{-493, 253}, {255, 247}, {-574, -86}, {295, -87}
-    };
-
+void Operation::computeHomography(const std::array<glm::vec2, 4>& src, const std::array<glm::vec2, 4>& dst) {
     double A[8][9];
     for (int i = 0; i < 4; ++i) {
         float x_src = src[i].x;
@@ -92,9 +82,9 @@ void Operation::computeHomography() {
 }
 
 void Operation::initTiles() {
-    for (int r_idx = 0; r_idx < 4; ++r_idx) {
-        for (int c_idx = 0; c_idx < 10; ++c_idx) {
-            placeTile(s_MapMatrix[r_idx][c_idx], getTileCenterPos(r_idx, c_idx));
+    for (int r_idx = 0; r_idx < static_cast<int>(m_MapMatrix.size()); ++r_idx) {
+        for (int c_idx = 0; c_idx < static_cast<int>(m_MapMatrix[r_idx].size()); ++c_idx) {
+            placeTile(m_MapMatrix[r_idx][c_idx], getTileCenterPos(r_idx, c_idx));
         }
     }
 }
@@ -105,8 +95,9 @@ void Operation::placeTile(TileType type, const glm::vec2& pos) {
 }
 
 Operation::TileType Operation::getTileType(int r_idx, int c_idx) const {
-    if (r_idx < 0 || r_idx >= 4 || c_idx < 0 || c_idx >= 10) return TileType::OBSTACLE;
-    return s_MapMatrix[r_idx][c_idx];
+    if (r_idx < 0 || r_idx >= static_cast<int>(m_MapMatrix.size()) || 
+        c_idx < 0 || c_idx >= static_cast<int>(m_MapMatrix[r_idx].size())) return TileType::OBSTACLE;
+    return m_MapMatrix[r_idx][c_idx];
 }
 
 glm::vec2 Operation::getTileCenterPos(int r_idx, int c_idx) const {
@@ -127,7 +118,8 @@ bool Operation::getTileIndices(const glm::vec2& pos, int& r_idx, int& c_idx) con
     c_idx = static_cast<int>(std::floor(fc));
     r_idx = static_cast<int>(std::floor(fr));
 
-    return (r_idx >= 0 && r_idx < 4 && c_idx >= 0 && c_idx < 10);
+    return (r_idx >= 0 && r_idx < static_cast<int>(m_MapMatrix.size()) && 
+            c_idx >= 0 && c_idx < static_cast<int>(m_MapMatrix[r_idx].size()));
 }
 
 } // namespace Arknights

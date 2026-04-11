@@ -34,39 +34,8 @@ void App::start() {
     // Battle BGM
     m_BattleBGM = std::make_unique<Util::BGM>(std::string(RESOURCE_DIR) + "/SFX/battle/battle.mp3");
 
-    // Enemy Trace: left left, down, left, up-left, left left, down, left left
-    // Relative format: {x, y} where +x is right, +y is up
-    glm::vec2 spawnPos = {1.5f, 9.5f}; // {row, col}
-    std::vector<glm::vec2> steps = {
-        {-1,  0}, {-1,  0}, // left left
-        { 0, -1},           // down
-        {-1,  0}, {-1,  0}, // left left
-        {-1,  1},           // up-left
-        {-1,  0}, {-1,  0}, // left left
-        { 0, -1},           // down
-        {-1,  0}, {-1,  0}  // left left (disappear)
-    };
-
-    std::vector<glm::vec2> waypoints;
-    waypoints.push_back(spawnPos);
-    glm::vec2 currentPos = spawnPos;
-    for (const auto& s : steps) {
-        currentPos.x -= s.y; // +y is Up -> Row decreases
-        currentPos.y += s.x; // +x is Right -> Col increases
-        waypoints.push_back(currentPos);
-    }
-    
-    m_CurrentOperation = std::make_unique<Operation>(std::string(RESOURCE_DIR) + "/map/operation1.jpg", waypoints);
+    m_CurrentOperation = std::make_unique<Operation1>();
     m_Root.AddChild(m_CurrentOperation->getMap());
-
-    // Text demonstration
-    m_Text = std::make_shared<Util::GameObject>(
-        std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 48, "Operation Level: 0-2", Util::Color(255, 255, 255)),
-        2 // Higher than map and enemies
-    );
-    m_Text->m_Transform.translation = {0, 400}; // Top center
-    m_Text->SetVisible(false);
-    m_Root.AddChild(m_Text);
 
     m_EnemyAnimationPathsGopro.clear();
     m_EnemyDiePathsGopro.clear();
@@ -94,7 +63,20 @@ void App::start() {
         m_EnemyDiePathsBigbo.push_back(ss.str());
     }
 
-    m_EnemyPool = std::make_unique<EnemyPool>(ENEMY_POOL_SIZE, m_EnemyAnimationPathsGopro, waypoints);
+    m_EnemyAnimationPathsTrslim.clear();
+    m_EnemyDiePathsTrslim.clear();
+    for (int i = 1; i <= 31; ++i) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/enemy/enemy_10001_trslim/Move_A_" << std::setfill('0') << std::setw(2) << i << ".png";
+        m_EnemyAnimationPathsTrslim.push_back(ss.str());
+    }
+    for (int i = 1; i <= 31; ++i) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/enemy/enemy_10001_trslim/Die_A_" << std::setfill('0') << std::setw(2) << i << ".png";
+        m_EnemyDiePathsTrslim.push_back(ss.str());
+    }
+
+    m_EnemyPool = std::make_unique<EnemyPool>(ENEMY_POOL_SIZE, m_EnemyAnimationPathsGopro, m_CurrentOperation->getWaypoints());
     // We need to set die animations for pooled enemies, but EnemyPool doesn't know about them yet.
     // Let's just set them during spawn for now or update EnemyPool.
     // Actually, App::spawnEnemy is a good place.
@@ -138,15 +120,40 @@ void App::start() {
     m_ChenIcon->SetVisible(false);
     m_Root.AddChild(m_ChenIcon);
 
-    // Initialize WaveManager with timeline (Speed in grid units per ms)
-    m_WaveManager = std::make_unique<WaveManager>();
-    m_WaveManager->addSpawnEvent(2000.0f, "gopro", 100.0f, 0.001f);
-    m_WaveManager->addSpawnEvent(5000.0f, "gopro", 100.0f, 0.001f);
-    m_WaveManager->addSpawnEvent(8000.0f, "bigbo", 300.0f, 0.0005f);
-    m_WaveManager->addSpawnEvent(11000.0f, "gopro", 150.0f, 0.001f);
-    m_WaveManager->addSpawnEvent(14000.0f, "bigbo", 500.0f, 0.0004f);
-    m_WaveManager->addSpawnEvent(17000.0f, "gopro", 200.0f, 0.0012f);
-    m_WaveManager->addSpawnEvent(20000.0f, "bigbo", 1000.0f, 0.0003f); // Boss-like
+    // Initialize enemy counters
+    m_EscapedEnemies = 0;
+    m_KilledEnemies = 0;
+    m_IsGameOver = false;
+    if (m_CurrentOperation) {
+        m_TotalEnemies = static_cast<int>(m_CurrentOperation->getWaveManager().getTotalSpawnCount());
+    }
+
+    // Enemy count text
+    m_EnemyCountText = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 36, std::to_string(m_EscapedEnemies) + " / " + std::to_string(MAX_ESCAPED_ENEMIES), Util::Color(255, 255, 255)),
+        2
+    );
+    m_EnemyCountText->m_Transform.translation = {0, 400}; // Top center
+    m_EnemyCountText->SetVisible(false);
+    m_Root.AddChild(m_EnemyCountText);
+
+    // Game Over text
+    m_GameOverText = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 100, "", Util::Color(255, 0, 0)),
+        10 // Above everything
+    );
+    m_GameOverText->m_Transform.translation = {0, 0}; // Center
+    m_GameOverText->SetVisible(false);
+    m_Root.AddChild(m_GameOverText);
+
+    // Restart instructions
+    m_RestartText = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "Press R to Restart, M for Main Menu, ESC to Exit", Util::Color(200, 200, 200)),
+        10
+    );
+    m_RestartText->m_Transform.translation = {0, -100};
+    m_RestartText->SetVisible(false);
+    m_Root.AddChild(m_RestartText);
 
     m_CurrentState = State::UPDATE;
 }
@@ -173,6 +180,11 @@ void App::spawnEnemy(const SpawnEvent& event) {
         enemy->setDieAnimation(m_EnemyDiePathsBigbo);
         enemy->setAttack(30.0f);
         enemy->setAttackInterval(1500.0f);
+    } else if (event.enemyType == "trslim") {
+        enemy->setAnimation(m_EnemyAnimationPathsTrslim);
+        enemy->setDieAnimation(m_EnemyDiePathsTrslim);
+        enemy->setAttack(15.0f);
+        enemy->setAttackInterval(800.0f);
     }
 
     const auto& waypoints = m_CurrentOperation->getWaypoints();
@@ -195,9 +207,6 @@ void App::update() {
                 m_CurrentOperation->getMap()->SetVisible(true);
             }
             
-            // Show text after login
-            m_Text->SetVisible(true);
-            
             // Show operators after login (only those already on map if any, but currently all are hidden)
             /*
             for (auto& op : m_Operators) {
@@ -206,6 +215,7 @@ void App::update() {
             */
             m_AmiyaIcon->SetVisible(true);
             m_ChenIcon->SetVisible(true);
+            m_EnemyCountText->SetVisible(true);
 
             // Music transition
             m_LoginBGM->FadeOut(500);
@@ -221,12 +231,35 @@ void App::update() {
             LOG_DEBUG("Login successful!");
         }
     } else {
+        if (m_IsGameOver) {
+            m_GameOverText->SetVisible(true);
+            m_RestartText->SetVisible(true);
+
+            if (Util::Input::IsKeyDown(Util::Keycode::R)) {
+                reset();
+            } else if (Util::Input::IsKeyDown(Util::Keycode::M)) {
+                reset();
+                m_IsLoggedIn = false;
+                m_LoginPage->SetVisible(true);
+                m_CurrentOperation->getMap()->SetVisible(false);
+                m_AmiyaIcon->SetVisible(false);
+                m_ChenIcon->SetVisible(false);
+                m_EnemyCountText->SetVisible(false);
+                m_BattleBGM->FadeOut(500);
+                m_LoginBGM->Play();
+            } else if (Util::Input::IsKeyDown(Util::Keycode::ESCAPE) || Util::Input::IfExit()) {
+                m_CurrentState = State::END;
+            }
+            m_Root.Update();
+            return;
+        }
+
         // Timeline-based enemy logic after login
         float deltaTime = Util::Time::GetDeltaTimeMs();
         m_WaveTimer += deltaTime;
 
         SpawnEvent event;
-        while (m_WaveManager->shouldSpawn(m_WaveTimer, event)) {
+        while (m_CurrentOperation->getWaveManager().shouldSpawn(m_WaveTimer, event)) {
             spawnEnemy(event);
         }
 
@@ -235,13 +268,43 @@ void App::update() {
             Enemy *enemy = m_ActiveEnemies[i];
             enemy->update(deltaTime);
 
-            if (!enemy->isActive() || enemy->reachedEnd()) {
+            if (!enemy->isActive()) {
+                if (enemy->reachedEnd()) {
+                    m_EscapedEnemies++;
+                    LOG_INFO("Enemy escaped! Escaped: {}", m_EscapedEnemies);
+                } else {
+                    m_KilledEnemies++;
+                    LOG_INFO("Enemy killed! Killed: {}", m_KilledEnemies);
+                }
+                
                 m_EnemyPool->returnEnemy(enemy);
                 m_ActiveEnemies[i] = m_ActiveEnemies.back();
                 m_ActiveEnemies.pop_back();
+
+                // Update text
+                auto enemyCountDrawable = std::dynamic_pointer_cast<Util::Text>(m_EnemyCountText->GetDrawable());
+                enemyCountDrawable->SetText(std::to_string(m_EscapedEnemies) + " / " + std::to_string(MAX_ESCAPED_ENEMIES));
+                
                 continue;
             }
             ++i;
+        }
+
+        // Check for Win/Loss
+        if (m_EscapedEnemies >= MAX_ESCAPED_ENEMIES) {
+            m_IsGameOver = true;
+            m_GameOverText->SetVisible(true);
+            auto gameOverDrawable = std::dynamic_pointer_cast<Util::Text>(m_GameOverText->GetDrawable());
+            gameOverDrawable->SetText("MISSION FAILED");
+            gameOverDrawable->SetColor(Util::Color(255, 0, 0));
+            LOG_INFO("Mission Failed! Too many escaped enemies.");
+        } else if (m_CurrentOperation->getWaveManager().isAllSpawned() && m_ActiveEnemies.empty()) {
+            m_IsGameOver = true;
+            m_GameOverText->SetVisible(true);
+            auto gameOverDrawable = std::dynamic_pointer_cast<Util::Text>(m_GameOverText->GetDrawable());
+            gameOverDrawable->SetText("MISSION ACCOMPLISHED");
+            gameOverDrawable->SetColor(Util::Color(0, 255, 0));
+            LOG_INFO("Mission Accomplished! All enemies processed.");
         }
 
         // Reset blocking states and re-evaluate
@@ -354,26 +417,65 @@ void App::update() {
         for (auto& op : m_Operators) {
             if (!op->GetVisible() || !op->isAlive()) continue;
             op->update(deltaTime);
-            bool attacked = false;
-            for (auto& enemy : m_ActiveEnemies) {
-                if (!enemy->isAlive()) continue;
-                glm::vec2 enemyGridPos = enemy->getGridPosition();
-                
-                // 1. Check for attacking (discrete with CD)
-                if (!attacked && op->canAttack() && op->isInAttackRange(enemyGridPos)) {
-                    for (std::size_t k = 0; k < op->getAttackCount(); ++k) {
-                        enemy->takeDamage(op->getAttack());
+
+            // 1. Check for starting a new attack
+            if (op->canAttack()) {
+                // Find if there's any enemy in range to start animation
+                bool enemyInRange = false;
+                for (auto& enemy : m_ActiveEnemies) {
+                    if (enemy->isAlive() && op->isInAttackRange(enemy->getGridPosition())) {
+                        enemyInRange = true;
+                        break;
                     }
+                }
+                if (enemyInRange) {
                     op->resetAttackTimer();
                     op->playAttackAnimation();
-                    attacked = true; // One attack per cycle
-                    LOG_DEBUG("Operator attacked enemy at {}", enemyGridPos.x);
+                    LOG_DEBUG("Operator started attack animation");
+                }
+            }
+
+            // 2. Check for applying damage (triggered by timer matching animation)
+            if (op->consumeDamageTrigger()) {
+                // Apply damage to enemies in range
+                // For simplicity, we apply to the first N enemies found in range (where N is attack count)
+                // or just follow the previous logic: one attack cycle damages one or more enemies based on attackCount
+                
+                // Arknights style: usually single target unless specified. 
+                // Previous logic was: damage ONE enemy with 'attackCount' hits.
+                
+                Enemy* target = nullptr;
+                // Prioritize blocked enemies
+                for (auto& enemy : m_ActiveEnemies) {
+                    if (enemy->isAlive() && enemy->getTargetOperator() == op.get() && op->isInAttackRange(enemy->getGridPosition())) {
+                        target = enemy;
+                        break;
+                    }
+                }
+                // If no blocked enemy, find any in range
+                if (!target) {
+                    for (auto& enemy : m_ActiveEnemies) {
+                        if (enemy->isAlive() && op->isInAttackRange(enemy->getGridPosition())) {
+                            target = enemy;
+                            break;
+                        }
+                    }
                 }
 
-                // 2. Check for blocking (only on same tile)
-                // We use floor to check if they are in the same grid tile index
+                if (target) {
+                    for (std::size_t k = 0; k < op->getAttackCount(); ++k) {
+                        target->takeDamage(op->getAttack());
+                    }
+                    LOG_DEBUG("Operator damage applied to enemy");
+                }
+            }
+
+            // 3. Check for blocking (only on same tile)
+            for (auto& enemy : m_ActiveEnemies) {
+                if (!enemy->isAlive()) continue;
                 if (!enemy->isBlocked() && op->canBlockMore()) {
                     glm::vec2 opGridPos = op->getGridPosition();
+                    glm::vec2 enemyGridPos = enemy->getGridPosition();
                     if (std::floor(opGridPos.x) == std::floor(enemyGridPos.x) &&
                         std::floor(opGridPos.y) == std::floor(enemyGridPos.y)) {
                         enemy->setBlocked(true);
@@ -399,6 +501,42 @@ void App::update() {
 
 void App::end() { 
     LOG_TRACE("End");
+}
+
+void App::reset() {
+    m_IsGameOver = false;
+    m_WaveTimer = 0.0f;
+    m_CurrentWave = 1;
+    m_EscapedEnemies = 0;
+    m_KilledEnemies = 0;
+    
+    m_GameOverText->SetVisible(false);
+    m_RestartText->SetVisible(false);
+    
+    // Clear active enemies
+    for (auto* enemy : m_ActiveEnemies) {
+        m_EnemyPool->returnEnemy(enemy);
+    }
+    m_ActiveEnemies.clear();
+
+    // Reset operators
+    for (auto& op : m_Operators) {
+        op->SetVisible(false);
+        op->reset();
+    }
+    m_AmiyaIcon->SetVisible(true);
+    m_ChenIcon->SetVisible(true);
+    
+    // Reset text
+    auto enemyCountDrawable = std::dynamic_pointer_cast<Util::Text>(m_EnemyCountText->GetDrawable());
+    enemyCountDrawable->SetText(std::to_string(m_EscapedEnemies) + " / " + std::to_string(MAX_ESCAPED_ENEMIES));
+
+    // Reset wave manager
+    m_CurrentOperation->getWaveManager().reset();
+
+    m_BattleBGM->Play();
+
+    LOG_DEBUG("Game reset");
 }
 
 } // namespace Arknights

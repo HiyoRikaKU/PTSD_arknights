@@ -64,6 +64,16 @@ public:
 
     void playAttackAnimation();
 
+    bool hasDamagePending() const { return m_DamageTimer > 0.0f || m_CurrentDamageIndex < m_DamageDelays.size(); }
+    
+    bool consumeDamageTrigger() {
+        if (m_DamageReady) {
+            m_DamageReady = false;
+            return true;
+        }
+        return false;
+    }
+
     std::size_t getAttackCount() const { return m_AttackCount; }
 
     // Position on the map (world coordinates)
@@ -79,6 +89,12 @@ public:
     bool canBlockMore() const { return m_BlockedEnemies.size() < m_BlockCount; }
     void blockEnemy(class Enemy* enemy) { m_BlockedEnemies.push_back(enemy); }
     void clearBlockedEnemies() { m_BlockedEnemies.clear(); }
+    void reset();
+
+    void SetVisible(bool visible) {
+        Util::GameObject::SetVisible(visible);
+        updateHealthBar();
+    }
 
 protected:
     void init(const std::vector<std::string>& idleAnimationPaths, const std::vector<std::string>& attackAnimationPaths);
@@ -92,6 +108,11 @@ protected:
 
     float m_AttackInterval = 1.0f; // Seconds
     float m_AttackTimer = 0.0f;
+
+    std::vector<float> m_DamageDelays = {0.5f}; // Seconds after animation starts to apply damage
+    std::size_t m_CurrentDamageIndex = 0;
+    float m_DamageTimer = 0.0f;
+    bool m_DamageReady = false;
 
     std::size_t m_BlockCount = 1;
     std::vector<class Enemy*> m_BlockedEnemies;

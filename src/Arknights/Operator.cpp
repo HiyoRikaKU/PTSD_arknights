@@ -13,6 +13,18 @@ Operator::Operator(Type type, float hp, float attack)
     : m_Hp(hp), m_MaxHp(hp), m_Attack(attack), m_Type(type) {
 }
 
+void Operator::reset() {
+    m_Hp = m_MaxHp;
+    m_State = State::IDLE;
+    m_AttackTimer = 0.0f;
+    m_CurrentDamageIndex = 0;
+    m_DamageReady = false;
+    m_BlockedEnemies.clear();
+    SetDrawable(m_IdleAnimation);
+    m_IdleAnimation->Play();
+    updateHealthBar();
+}
+
 void Operator::init(const std::vector<std::string>& idleAnimationPaths, const std::vector<std::string>& attackAnimationPaths) {
     m_IdleAnimation = std::make_shared<Util::Animation>(idleAnimationPaths, true, m_AnimationInterval, true, 100);
     m_AttackAnimation = std::make_shared<Util::Animation>(attackAnimationPaths, false, m_AnimationInterval, false, 0);
@@ -39,6 +51,16 @@ void Operator::update(float deltaTime) {
     }
 
     if (m_State == State::ATTACK) {
+        // Calculate time elapsed in animation based on current frame
+        float animationTime = static_cast<float>(m_AttackAnimation->GetCurrentFrameIndex()) * m_AnimationInterval / 1000.0f;
+        
+        if (m_CurrentDamageIndex < m_DamageDelays.size()) {
+            if (animationTime >= m_DamageDelays[m_CurrentDamageIndex]) {
+                m_DamageReady = true;
+                m_CurrentDamageIndex++;
+            }
+        }
+
         if (m_AttackAnimation->GetState() == Util::Animation::State::ENDED) {
             m_State = State::IDLE;
             SetDrawable(m_IdleAnimation);
@@ -53,12 +75,15 @@ void Operator::playAttackAnimation() {
     SetDrawable(m_AttackAnimation);
     m_AttackAnimation->SetCurrentFrame(0);
     m_AttackAnimation->Play();
+    m_CurrentDamageIndex = 0;
+    m_DamageReady = false;
+    m_DamageTimer = 0.0f; // Not used anymore but kept for safety if needed by other logic
 }
 
 void Operator::updateHealthBar() {
     if (!m_HealthBar) return;
 
-    bool visible = GetVisible();
+    bool visible = m_Visible;
     m_HealthBar->SetVisible(visible);
 
     if (visible) {
@@ -134,6 +159,7 @@ bool Operator::isInAttackRange(const glm::vec2& enemyGridPos) const {
 // Amiya Implementation
 Amiya::Amiya() : Operator(Type::AMIYA, 1000.0f, 120.0f) {
     m_AttackInterval = 1.6f;
+    m_DamageDelays = {0.6f};
     m_BaseScale = 0.3f;
 
     std::vector<std::string> idlePaths;
@@ -154,7 +180,8 @@ Amiya::Amiya() : Operator(Type::AMIYA, 1000.0f, 120.0f) {
 // Chen Implementation
 Chen::Chen() : Operator(Type::CHEN, 1200.0f, 80.0f) {
     m_AttackInterval = 1.3f;
-    m_AttackCount = 2;
+    m_DamageDelays = {0.4f, 0.6f}; // Chen hits twice
+    m_AttackCount = 1; // Each delay trigger represents one hit
     m_BlockCount = 2;
     m_BaseScale = 0.3f;
 

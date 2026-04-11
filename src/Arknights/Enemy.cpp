@@ -1,4 +1,5 @@
 #include "Arknights/Enemy.hpp"
+#include "Arknights/Operator.hpp"
 
 #include <sstream>
 #include <iomanip>
@@ -64,7 +65,6 @@ void Enemy::spawn(const std::vector<glm::vec2>& gridPath, float hp, float speed,
 
 void Enemy::despawn() {
     m_IsActive = false;
-    m_ReachedEnd = true;
     m_IsBlocked = false;
     m_TargetOperator = nullptr;
     m_Hp = 0.0F;
@@ -82,6 +82,8 @@ void Enemy::setAnimation(const std::vector<std::string>& animationPaths) {
     if (m_State == State::ALIVE) {
         SetDrawable(m_MoveAnimation);
     }
+    // Update pivot based on new animation size
+    SetPivot({0, -m_MoveAnimation->GetSize().y / 2.0f});
 }
 
 void Enemy::setDieAnimation(const std::vector<std::string>& dieAnimationPaths) {
@@ -158,7 +160,7 @@ void Enemy::update(float deltaTime) {
 void Enemy::updateHealthBar() {
     if (!m_IsActive || !m_HealthBar) return;
 
-    bool visible = GetVisible();
+    bool visible = m_Visible;
     m_HealthBar->SetVisible(visible);
 
     if (visible) {

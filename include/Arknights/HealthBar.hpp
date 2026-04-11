@@ -20,8 +20,11 @@ public:
     static inline float s_DefaultOffset = 50.0f; 
 
     HealthBar(float zIndex) {
+        m_FillImage = std::make_shared<Util::Image>(  // ← 先建 Image
+        std::string(RESOURCE_DIR) + "/red.png"
+        );
         m_Fill = std::make_shared<Util::GameObject>(
-            std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/red.png"),
+            m_FillImage,
             zIndex
         );
 
@@ -50,7 +53,7 @@ public:
         float percent = (m_MaxHp > 0) ? std::max(0.0f, std::min(1.0f, m_CurrentHp / m_MaxHp)) : 0.0f;
         
         // Scale fill to match current health percentage
-        glm::vec2 fillImgSize = m_Fill->GetDrawable()->GetSize();
+        glm::vec2 fillImgSize = m_FillImage->GetSize();
         glm::vec2 currentFillSize = { s_DefaultSize.x * percent, s_DefaultSize.y };
         m_Fill->m_Transform.scale = currentFillSize / fillImgSize;
         
@@ -61,6 +64,7 @@ public:
     }
 
 private:
+    std::shared_ptr<Util::Image> m_FillImage;
     std::shared_ptr<Util::GameObject> m_Fill;
     float m_CurrentHp = 100.0f;
     float m_MaxHp = 100.0f;

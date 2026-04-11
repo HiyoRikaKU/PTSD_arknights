@@ -41,6 +41,7 @@ public:
     bool isBlocked() const { return m_IsBlocked; }
     void setBlocked(bool blocked) { m_IsBlocked = blocked; }
     void setTargetOperator(class Operator* op) { m_TargetOperator = op; }
+    class Operator* getTargetOperator() const { return m_TargetOperator; }
 
     glm::vec2 getPosition() const { return m_Transform.translation; }
     glm::vec2 getGridPosition() const { return m_CurrentGridPos; }

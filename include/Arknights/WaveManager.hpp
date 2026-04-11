@@ -28,6 +28,14 @@ public:
         return false;
     }
 
+    std::size_t getTotalSpawnCount() const { return m_Timeline.size(); }
+    std::size_t getSpawnedCount() const { return m_CurrentEventIndex; }
+    bool isAllSpawned() const { return m_CurrentEventIndex >= m_Timeline.size(); }
+
+    void reset() {
+        m_CurrentEventIndex = 0;
+    }
+
 private:
     std::vector<SpawnEvent> m_Timeline;
     std::size_t m_CurrentEventIndex = 0;
