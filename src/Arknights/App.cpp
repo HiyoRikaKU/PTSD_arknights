@@ -39,12 +39,12 @@ void App::start() {
 
     m_EnemyAnimationPathsGopro.clear();
     m_EnemyDiePathsGopro.clear();
-    for (int i = 1; i <= 25; ++i) {
+    for (int i = 1; i <= 25; i += 2) {
         std::stringstream ss;
         ss << RESOURCE_DIR << "/charactor/enemy/enemy_1000_gopro/Move_Loop_" << std::setfill('0') << std::setw(2) << i << ".png";
         m_EnemyAnimationPathsGopro.push_back(ss.str());
     }
-    for (int i = 1; i <= 21; ++i) {
+    for (int i = 1; i <= 21; i += 2) {
         std::stringstream ss;
         ss << RESOURCE_DIR << "/charactor/enemy/enemy_1000_gopro/Die_" << std::setfill('0') << std::setw(2) << i << ".png";
         m_EnemyDiePathsGopro.push_back(ss.str());
@@ -52,12 +52,12 @@ void App::start() {
 
     m_EnemyAnimationPathsBigbo.clear();
     m_EnemyDiePathsBigbo.clear();
-    for (int i = 1; i <= 31; ++i) {
+    for (int i = 1; i <= 31; i += 2) {
         std::stringstream ss;
         ss << RESOURCE_DIR << "/charactor/enemy/enemy_1001_bigbo/Move_Loop_" << std::setfill('0') << std::setw(2) << i << ".png";
         m_EnemyAnimationPathsBigbo.push_back(ss.str());
     }
-    for (int i = 1; i <= 31; ++i) {
+    for (int i = 1; i <= 31; i += 2) {
         std::stringstream ss;
         ss << RESOURCE_DIR << "/charactor/enemy/enemy_1001_bigbo/Die_" << std::setfill('0') << std::setw(2) << i << ".png";
         m_EnemyDiePathsBigbo.push_back(ss.str());
@@ -65,12 +65,12 @@ void App::start() {
 
     m_EnemyAnimationPathsTrslim.clear();
     m_EnemyDiePathsTrslim.clear();
-    for (int i = 1; i <= 31; ++i) {
+    for (int i = 1; i <= 31; i += 2) {
         std::stringstream ss;
         ss << RESOURCE_DIR << "/charactor/enemy/enemy_10001_trslim/Move_A_" << std::setfill('0') << std::setw(2) << i << ".png";
         m_EnemyAnimationPathsTrslim.push_back(ss.str());
     }
-    for (int i = 1; i <= 31; ++i) {
+    for (int i = 1; i <= 31; i += 2) {
         std::stringstream ss;
         ss << RESOURCE_DIR << "/charactor/enemy/enemy_10001_trslim/Die_A_" << std::setfill('0') << std::setw(2) << i << ".png";
         m_EnemyDiePathsTrslim.push_back(ss.str());
@@ -506,7 +506,6 @@ void App::end() {
 void App::reset() {
     m_IsGameOver = false;
     m_WaveTimer = 0.0f;
-    m_CurrentWave = 1;
     m_EscapedEnemies = 0;
     m_KilledEnemies = 0;
     

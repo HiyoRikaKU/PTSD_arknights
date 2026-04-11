@@ -20,7 +20,7 @@ Enemy::Enemy(const std::vector<std::string>& animationPaths, const std::string& 
 }
 
 void Enemy::init(const std::vector<std::string>& animationPaths) {
-    m_MoveAnimation = std::make_shared<Util::Animation>(animationPaths, true, 50, true, 100);
+    m_MoveAnimation = std::make_shared<Util::Animation>(animationPaths, true, 100, true, 100);
     SetDrawable(m_MoveAnimation);
     SetZIndex(1.5f);
     SetVisible(false);
@@ -78,7 +78,7 @@ void Enemy::despawn() {
 }
 
 void Enemy::setAnimation(const std::vector<std::string>& animationPaths) {
-    m_MoveAnimation = std::make_shared<Util::Animation>(animationPaths, true, 50, true, 100);
+    m_MoveAnimation = std::make_shared<Util::Animation>(animationPaths, true, 100, true, 100);
     if (m_State == State::ALIVE) {
         SetDrawable(m_MoveAnimation);
     }
@@ -87,7 +87,7 @@ void Enemy::setAnimation(const std::vector<std::string>& animationPaths) {
 }
 
 void Enemy::setDieAnimation(const std::vector<std::string>& dieAnimationPaths) {
-    m_DieAnimation = std::make_shared<Util::Animation>(dieAnimationPaths, false, 50, false, 0);
+    m_DieAnimation = std::make_shared<Util::Animation>(dieAnimationPaths, false, 100, false, 0);
 }
 
 void Enemy::startDeath() {

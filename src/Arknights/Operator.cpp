@@ -34,7 +34,7 @@ void Operator::init(const std::vector<std::string>& idleAnimationPaths, const st
 
     // Set pivot to bottom center (0, -height/2)
     // We use the first frame of idle animation to determine the pivot
-    SetPivot({0, -m_IdleAnimation->GetSize().y / 2.0f});
+    SetPivot({0, -m_IdleAnimation->GetSize().y / 2.0f - m_VisualOffset / m_BaseScale});
 
     // Initialize Health Bar
     m_HealthBar = std::make_shared<HealthBar>(2.1f);
@@ -89,7 +89,7 @@ void Operator::updateHealthBar() {
     if (visible) {
         m_HealthBar->SetValue(m_Hp, m_MaxHp);
         // Position UNDER operator (offset -10.0f)
-        m_HealthBar->Update(m_Transform.translation, -10.0f);
+        m_HealthBar->Update(m_Transform.translation + glm::vec2(0, m_VisualOffset), -10.0f);
     }
 }
 
@@ -158,18 +158,20 @@ bool Operator::isInAttackRange(const glm::vec2& enemyGridPos) const {
 
 // Amiya Implementation
 Amiya::Amiya() : Operator(Type::AMIYA, 1000.0f, 120.0f) {
+    m_VisualOffset = 20.0f; // Stand higher on highground
     m_AttackInterval = 1.6f;
     m_DamageDelays = {0.6f};
     m_BaseScale = 0.3f;
+    m_AnimationInterval = 60; // Doubled to account for half the frames
 
     std::vector<std::string> idlePaths;
-    for (int i = 1; i <= 31; ++i) {
+    for (int i = 1; i <= 31; i += 2) {
         std::stringstream ss;
         ss << RESOURCE_DIR << "/charactor/operator/char_002_amiya/Idle_" << std::setfill('0') << std::setw(2) << i << ".png";
         idlePaths.push_back(ss.str());
     }
     std::vector<std::string> attackPaths;
-    for (int i = 1; i <= 53; ++i) {
+    for (int i = 1; i <= 53; i += 2) {
         std::stringstream ss;
         ss << RESOURCE_DIR << "/charactor/operator/char_002_amiya/Attack_" << std::setfill('0') << std::setw(2) << i << ".png";
         attackPaths.push_back(ss.str());
@@ -184,15 +186,16 @@ Chen::Chen() : Operator(Type::CHEN, 1200.0f, 80.0f) {
     m_AttackCount = 1; // Each delay trigger represents one hit
     m_BlockCount = 2;
     m_BaseScale = 0.3f;
+    m_AnimationInterval = 60; // Doubled
 
     std::vector<std::string> idlePaths;
-    for (int i = 1; i <= 200; ++i) {
+    for (int i = 1; i <= 200; i += 2) {
         std::stringstream ss;
         ss << RESOURCE_DIR << "/charactor/operator/char_010_chen/Idle_" << std::setfill('0') << std::setw(3) << i << ".png";
         idlePaths.push_back(ss.str());
     }
     std::vector<std::string> attackPaths;
-    for (int i = 1; i <= 45; ++i) {
+    for (int i = 1; i <= 45; i += 2) {
         std::stringstream ss;
         ss << RESOURCE_DIR << "/charactor/operator/char_010_chen/Attack_" << std::setfill('0') << std::setw(2) << i << ".png";
         attackPaths.push_back(ss.str());

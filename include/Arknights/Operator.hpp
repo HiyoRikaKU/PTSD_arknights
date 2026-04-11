@@ -130,6 +130,7 @@ protected:
     std::shared_ptr<HealthBar> m_HealthBar;
     
     float m_BaseScale = 0.3f;
+    float m_VisualOffset = 0.0f;
 };
 
 class Amiya : public Operator {
