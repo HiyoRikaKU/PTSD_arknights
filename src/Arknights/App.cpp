@@ -120,6 +120,81 @@ void App::start() {
     m_ChenIcon->SetVisible(false);
     m_Root.AddChild(m_ChenIcon);
 
+    // Angelina
+    auto angelina = std::make_shared<Angelina>();
+    angelina->SetVisible(false);
+    m_Operators.push_back(angelina);
+    m_Root.AddChild(angelina);
+
+    m_AngelinaIcon = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Angelina_icon.png"),
+        5
+    );
+    m_AngelinaIcon->m_Transform.translation = {460, -350};
+    m_AngelinaIcon->m_Transform.scale = {0.7f, 0.7f};
+    m_AngelinaIcon->SetVisible(false);
+    m_Root.AddChild(m_AngelinaIcon);
+
+    // Red
+    auto red = std::make_shared<Red>();
+    red->SetVisible(false);
+    m_Operators.push_back(red);
+    m_Root.AddChild(red);
+
+    m_RedIcon = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Projekt_Red_icon.png"),
+        5
+    );
+    m_RedIcon->m_Transform.translation = {340, -350};
+    m_RedIcon->m_Transform.scale = {0.7f, 0.7f};
+    m_RedIcon->SetVisible(false);
+    m_Root.AddChild(m_RedIcon);
+
+    // Eyjafjalla
+    auto eyja = std::make_shared<Eyjafjalla>();
+    eyja->SetVisible(false);
+    m_Operators.push_back(eyja);
+    m_Root.AddChild(eyja);
+
+    m_EyjafjallaIcon = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Eyjafjalla_icon.png"),
+        5
+    );
+    m_EyjafjallaIcon->m_Transform.translation = {220, -350};
+    m_EyjafjallaIcon->m_Transform.scale = {0.7f, 0.7f};
+    m_EyjafjallaIcon->SetVisible(false);
+    m_Root.AddChild(m_EyjafjallaIcon);
+
+    // Texas
+    auto texas = std::make_shared<Texas>();
+    texas->SetVisible(false);
+    m_Operators.push_back(texas);
+    m_Root.AddChild(texas);
+
+    m_TexasIcon = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/texas.png"),
+        5
+    );
+    m_TexasIcon->m_Transform.translation = {100, -350};
+    m_TexasIcon->m_Transform.scale = {0.7f, 0.7f};
+    m_TexasIcon->SetVisible(false);
+    m_Root.AddChild(m_TexasIcon);
+
+    // Umirin
+    auto umirin = std::make_shared<Umirin>();
+    umirin->SetVisible(false);
+    m_Operators.push_back(umirin);
+    m_Root.AddChild(umirin);
+
+    m_UmirinIcon = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Yahata_Umiri_icon.png"),
+        5
+    );
+    m_UmirinIcon->m_Transform.translation = {-20, -350};
+    m_UmirinIcon->m_Transform.scale = {0.7f, 0.7f};
+    m_UmirinIcon->SetVisible(false);
+    m_Root.AddChild(m_UmirinIcon);
+
     // Initialize enemy counters
     m_EscapedEnemies = 0;
     m_KilledEnemies = 0;
@@ -154,6 +229,73 @@ void App::start() {
     m_RestartText->m_Transform.translation = {0, -100};
     m_RestartText->SetVisible(false);
     m_Root.AddChild(m_RestartText);
+
+    // DP UI
+    m_CurrentDP = 10.0f;
+    m_DPText = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 40, "COST: 10", Util::Color(255, 255, 0)),
+        2
+    );
+    m_DPText->m_Transform.translation = {700, -450};
+    m_DPText->SetVisible(false);
+    m_Root.AddChild(m_DPText);
+
+    // Operator Cost Labels
+    m_AmiyaCostText = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "10", Util::Color(255, 255, 255)),
+        6 // Above icon
+    );
+    m_AmiyaCostText->m_Transform.translation = {700, -350}; // Center-bottom of icon
+    m_AmiyaCostText->SetVisible(false);
+    m_Root.AddChild(m_AmiyaCostText);
+
+    m_ChenCostText = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "18", Util::Color(255, 255, 255)),
+        6
+    );
+    m_ChenCostText->m_Transform.translation = {580, -350}; // Center-bottom of icon
+    m_ChenCostText->SetVisible(false);
+    m_Root.AddChild(m_ChenCostText);
+
+    m_AngelinaCostText = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "14", Util::Color(255, 255, 255)),
+        6
+    );
+    m_AngelinaCostText->m_Transform.translation = {460, -350};
+    m_AngelinaCostText->SetVisible(false);
+    m_Root.AddChild(m_AngelinaCostText);
+
+    m_RedCostText = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "6", Util::Color(255, 255, 255)),
+        6
+    );
+    m_RedCostText->m_Transform.translation = {340, -350};
+    m_RedCostText->SetVisible(false);
+    m_Root.AddChild(m_RedCostText);
+
+    m_EyjafjallaCostText = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "20", Util::Color(255, 255, 255)),
+        6
+    );
+    m_EyjafjallaCostText->m_Transform.translation = {220, -350};
+    m_EyjafjallaCostText->SetVisible(false);
+    m_Root.AddChild(m_EyjafjallaCostText);
+
+    m_TexasCostText = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "12", Util::Color(255, 255, 255)),
+        6
+    );
+    m_TexasCostText->m_Transform.translation = {100, -350};
+    m_TexasCostText->SetVisible(false);
+    m_Root.AddChild(m_TexasCostText);
+
+    m_UmirinCostText = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "10", Util::Color(255, 255, 255)),
+        6
+    );
+    m_UmirinCostText->m_Transform.translation = {-20, -350};
+    m_UmirinCostText->SetVisible(false);
+    m_Root.AddChild(m_UmirinCostText);
 
     m_CurrentState = State::UPDATE;
 }
@@ -215,7 +357,20 @@ void App::update() {
             */
             m_AmiyaIcon->SetVisible(true);
             m_ChenIcon->SetVisible(true);
+            m_AngelinaIcon->SetVisible(true);
+            m_RedIcon->SetVisible(true);
+            m_EyjafjallaIcon->SetVisible(true);
+            m_TexasIcon->SetVisible(true);
+            m_UmirinIcon->SetVisible(true);
             m_EnemyCountText->SetVisible(true);
+            m_DPText->SetVisible(true);
+            m_AmiyaCostText->SetVisible(true);
+            m_ChenCostText->SetVisible(true);
+            m_AngelinaCostText->SetVisible(true);
+            m_RedCostText->SetVisible(true);
+            m_EyjafjallaCostText->SetVisible(true);
+            m_TexasCostText->SetVisible(true);
+            m_UmirinCostText->SetVisible(true);
 
             // Music transition
             m_LoginBGM->FadeOut(500);
@@ -245,6 +400,9 @@ void App::update() {
                 m_AmiyaIcon->SetVisible(false);
                 m_ChenIcon->SetVisible(false);
                 m_EnemyCountText->SetVisible(false);
+                m_DPText->SetVisible(false);
+                m_AmiyaCostText->SetVisible(false);
+                m_ChenCostText->SetVisible(false);
                 m_BattleBGM->FadeOut(500);
                 m_LoginBGM->Play();
             } else if (Util::Input::IsKeyDown(Util::Keycode::ESCAPE) || Util::Input::IfExit()) {
@@ -257,6 +415,15 @@ void App::update() {
         // Timeline-based enemy logic after login
         float deltaTime = Util::Time::GetDeltaTimeMs();
         m_WaveTimer += deltaTime;
+
+        // DP Generation (1 point per second)
+        m_DPAccumulator += deltaTime;
+        if (m_DPAccumulator >= 1000.0f) {
+            m_CurrentDP += 1.0f;
+            m_DPAccumulator -= 1000.0f;
+            auto dpTextDrawable = std::dynamic_pointer_cast<Util::Text>(m_DPText->GetDrawable());
+            dpTextDrawable->SetText("COST: " + std::to_string(static_cast<int>(m_CurrentDP)));
+        }
 
         SpawnEvent event;
         while (m_CurrentOperation->getWaveManager().shouldSpawn(m_WaveTimer, event)) {
@@ -339,7 +506,7 @@ void App::update() {
         } else if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
             // Check Amiya icon click
             if (m_AmiyaIcon->GetVisible() && glm::distance(mousePos, m_AmiyaIcon->m_Transform.translation) < 60.0f) {
-                if (m_Operators.size() >= 1) {
+                if (m_Operators.size() >= 1 && m_CurrentDP >= m_Operators[0]->getDeploymentCost()) {
                     m_DraggedOperator = m_Operators[0];
                     m_DraggedIcon = m_AmiyaIcon;
                     m_DraggedOperator->SetVisible(true);
@@ -349,12 +516,57 @@ void App::update() {
             } 
             // Check Chen icon click
             else if (m_ChenIcon->GetVisible() && glm::distance(mousePos, m_ChenIcon->m_Transform.translation) < 60.0f) {
-                if (m_Operators.size() >= 2) {
+                if (m_Operators.size() >= 2 && m_CurrentDP >= m_Operators[1]->getDeploymentCost()) {
                     m_DraggedOperator = m_Operators[1];
                     m_DraggedIcon = m_ChenIcon;
                     m_DraggedOperator->SetVisible(true);
                     m_DraggedIcon->SetVisible(false);
                     LOG_DEBUG("Starting drag Chen from icon");
+                }
+            }
+            // Angelina
+            else if (m_AngelinaIcon->GetVisible() && glm::distance(mousePos, m_AngelinaIcon->m_Transform.translation) < 60.0f) {
+                if (m_Operators.size() >= 3 && m_CurrentDP >= m_Operators[2]->getDeploymentCost()) {
+                    m_DraggedOperator = m_Operators[2];
+                    m_DraggedIcon = m_AngelinaIcon;
+                    m_DraggedOperator->SetVisible(true);
+                    m_DraggedIcon->SetVisible(false);
+                }
+            }
+            // Red
+            else if (m_RedIcon->GetVisible() && glm::distance(mousePos, m_RedIcon->m_Transform.translation) < 60.0f) {
+                if (m_Operators.size() >= 4 && m_CurrentDP >= m_Operators[3]->getDeploymentCost()) {
+                    m_DraggedOperator = m_Operators[3];
+                    m_DraggedIcon = m_RedIcon;
+                    m_DraggedOperator->SetVisible(true);
+                    m_DraggedIcon->SetVisible(false);
+                }
+            }
+            // Eyja
+            else if (m_EyjafjallaIcon->GetVisible() && glm::distance(mousePos, m_EyjafjallaIcon->m_Transform.translation) < 60.0f) {
+                if (m_Operators.size() >= 5 && m_CurrentDP >= m_Operators[4]->getDeploymentCost()) {
+                    m_DraggedOperator = m_Operators[4];
+                    m_DraggedIcon = m_EyjafjallaIcon;
+                    m_DraggedOperator->SetVisible(true);
+                    m_DraggedIcon->SetVisible(false);
+                }
+            }
+            // Texas
+            else if (m_TexasIcon->GetVisible() && glm::distance(mousePos, m_TexasIcon->m_Transform.translation) < 60.0f) {
+                if (m_Operators.size() >= 6 && m_CurrentDP >= m_Operators[5]->getDeploymentCost()) {
+                    m_DraggedOperator = m_Operators[5];
+                    m_DraggedIcon = m_TexasIcon;
+                    m_DraggedOperator->SetVisible(true);
+                    m_DraggedIcon->SetVisible(false);
+                }
+            }
+            // Umirin
+            else if (m_UmirinIcon->GetVisible() && glm::distance(mousePos, m_UmirinIcon->m_Transform.translation) < 60.0f) {
+                if (m_Operators.size() >= 7 && m_CurrentDP >= m_Operators[6]->getDeploymentCost()) {
+                    m_DraggedOperator = m_Operators[6];
+                    m_DraggedIcon = m_UmirinIcon;
+                    m_DraggedOperator->SetVisible(true);
+                    m_DraggedIcon->SetVisible(false);
                 }
             }
             else {
@@ -366,6 +578,11 @@ void App::update() {
                         // Return to icon state
                         if (i == 0) m_AmiyaIcon->SetVisible(true);
                         else if (i == 1) m_ChenIcon->SetVisible(true);
+                        else if (i == 2) m_AngelinaIcon->SetVisible(true);
+                        else if (i == 3) m_RedIcon->SetVisible(true);
+                        else if (i == 4) m_EyjafjallaIcon->SetVisible(true);
+                        else if (i == 5) m_TexasIcon->SetVisible(true);
+                        else if (i == 6) m_UmirinIcon->SetVisible(true);
                         LOG_DEBUG("Operator recalled");
                         break;
                     }
@@ -382,9 +599,14 @@ void App::update() {
                     Operation::TileType type = m_CurrentOperation->getTileType(r, c);
                     
                     bool canPlace = false;
-                    if (m_DraggedOperator->getType() == Operator::Type::AMIYA) {
+                    if (m_DraggedOperator->getType() == Operator::Type::AMIYA ||
+                        m_DraggedOperator->getType() == Operator::Type::ANGELINA ||
+                        m_DraggedOperator->getType() == Operator::Type::EYJAFJALLA ||
+                        m_DraggedOperator->getType() == Operator::Type::UMIRIN) {
                         canPlace = (type == Operation::TileType::HIGH_GROUND);
-                    } else if (m_DraggedOperator->getType() == Operator::Type::CHEN) {
+                    } else if (m_DraggedOperator->getType() == Operator::Type::CHEN ||
+                               m_DraggedOperator->getType() == Operator::Type::RED ||
+                               m_DraggedOperator->getType() == Operator::Type::TEXAS) {
                         canPlace = (type == Operation::TileType::GROUND || type == Operation::TileType::SPAWN);
                     }
 
@@ -395,6 +617,11 @@ void App::update() {
                         m_DraggedOperator->setGridPosition({static_cast<float>(r) + 0.5f, static_cast<float>(c) + 0.5f});
                         LOG_DEBUG("Operator dropped at tile ({}, {}) type: {}", r, c, static_cast<int>(type));
                         dropped = true;
+
+                        // Deduct DP
+                        m_CurrentDP -= m_DraggedOperator->getDeploymentCost();
+                        auto dpTextDrawable = std::dynamic_pointer_cast<Util::Text>(m_DPText->GetDrawable());
+                        dpTextDrawable->SetText("COST: " + std::to_string(static_cast<int>(m_CurrentDP)));
 
                         // Enter choosing direction mode
                         m_ChoosingDirectionOperator = m_DraggedOperator;
@@ -421,14 +648,14 @@ void App::update() {
             // 1. Check for starting a new attack
             if (op->canAttack()) {
                 // Find if there's any enemy in range to start animation
-                bool enemyInRange = false;
+                Enemy* target = nullptr;
                 for (auto& enemy : m_ActiveEnemies) {
                     if (enemy->isAlive() && op->isInAttackRange(enemy->getGridPosition())) {
-                        enemyInRange = true;
+                        target = enemy;
                         break;
                     }
                 }
-                if (enemyInRange) {
+                if (target) {
                     op->resetAttackTimer();
                     op->playAttackAnimation();
                     LOG_DEBUG("Operator started attack animation");
@@ -491,6 +718,15 @@ void App::update() {
         LOG_DEBUG("Mouse Position: {}, {}", Util::Input::GetCursorPosition().x, Util::Input::GetCursorPosition().y);
     }
 
+    // Sync cost label visibility with icons
+    m_AmiyaCostText->SetVisible(m_AmiyaIcon->GetVisible());
+    m_ChenCostText->SetVisible(m_ChenIcon->GetVisible());
+    m_AngelinaCostText->SetVisible(m_AngelinaIcon->GetVisible());
+    m_RedCostText->SetVisible(m_RedIcon->GetVisible());
+    m_EyjafjallaCostText->SetVisible(m_EyjafjallaIcon->GetVisible());
+    m_TexasCostText->SetVisible(m_TexasIcon->GetVisible());
+    m_UmirinCostText->SetVisible(m_UmirinIcon->GetVisible());
+
     m_Root.Update();
     
     if (Util::Input::IsKeyUp(Util::Keycode::ESCAPE) ||
@@ -508,6 +744,11 @@ void App::reset() {
     m_WaveTimer = 0.0f;
     m_EscapedEnemies = 0;
     m_KilledEnemies = 0;
+
+    m_CurrentDP = 10.0f;
+    m_DPAccumulator = 0.0f;
+    auto dpTextDrawable = std::dynamic_pointer_cast<Util::Text>(m_DPText->GetDrawable());
+    dpTextDrawable->SetText("COST: " + std::to_string(static_cast<int>(m_CurrentDP)));
     
     m_GameOverText->SetVisible(false);
     m_RestartText->SetVisible(false);
@@ -525,6 +766,11 @@ void App::reset() {
     }
     m_AmiyaIcon->SetVisible(true);
     m_ChenIcon->SetVisible(true);
+    m_AngelinaIcon->SetVisible(true);
+    m_RedIcon->SetVisible(true);
+    m_EyjafjallaIcon->SetVisible(true);
+    m_TexasIcon->SetVisible(true);
+    m_UmirinIcon->SetVisible(true);
     
     // Reset text
     auto enemyCountDrawable = std::dynamic_pointer_cast<Util::Text>(m_EnemyCountText->GetDrawable());

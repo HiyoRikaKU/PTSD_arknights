@@ -49,6 +49,11 @@ private:
     std::shared_ptr<Util::GameObject> m_LoginPage;
     std::shared_ptr<Util::GameObject> m_AmiyaIcon;
     std::shared_ptr<Util::GameObject> m_ChenIcon;
+    std::shared_ptr<Util::GameObject> m_AngelinaIcon;
+    std::shared_ptr<Util::GameObject> m_RedIcon;
+    std::shared_ptr<Util::GameObject> m_EyjafjallaIcon;
+    std::shared_ptr<Util::GameObject> m_TexasIcon;
+    std::shared_ptr<Util::GameObject> m_UmirinIcon;
     std::unique_ptr<Util::BGM> m_LoginBGM;
     std::unique_ptr<Util::SFX> m_LoginSFX;
 
@@ -72,9 +77,21 @@ private:
     int m_TotalEnemies = 0;
     bool m_IsGameOver = false;
 
+    float m_CurrentDP = 10.0f;
+    float m_DPAccumulator = 0.0f;
+
     std::shared_ptr<Util::GameObject> m_EnemyCountText;
     std::shared_ptr<Util::GameObject> m_GameOverText;
     std::shared_ptr<Util::GameObject> m_RestartText;
+
+    std::shared_ptr<Util::GameObject> m_DPText;
+    std::shared_ptr<Util::GameObject> m_AmiyaCostText;
+    std::shared_ptr<Util::GameObject> m_ChenCostText;
+    std::shared_ptr<Util::GameObject> m_AngelinaCostText;
+    std::shared_ptr<Util::GameObject> m_RedCostText;
+    std::shared_ptr<Util::GameObject> m_EyjafjallaCostText;
+    std::shared_ptr<Util::GameObject> m_TexasCostText;
+    std::shared_ptr<Util::GameObject> m_UmirinCostText;
 
     std::vector<std::shared_ptr<Operator>> m_Operators;
     std::shared_ptr<Operator> m_DraggedOperator = nullptr;

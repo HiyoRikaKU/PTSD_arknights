@@ -77,7 +77,7 @@ void Operator::playAttackAnimation() {
     m_AttackAnimation->Play();
     m_CurrentDamageIndex = 0;
     m_DamageReady = false;
-    m_DamageTimer = 0.0f; // Not used anymore but kept for safety if needed by other logic
+    m_DamageTimer = 0.0f; 
 }
 
 void Operator::updateHealthBar() {
@@ -151,6 +151,15 @@ bool Operator::isInAttackRange(const glm::vec2& enemyGridPos) const {
         }
     } else if (m_Type == Type::CHEN) {
         return itr == 0 && (itc == 0 || itc == 1);
+    } else if (m_Type == Type::ANGELINA) {
+        return itr >= -1 && itr <= 1 && itc >= -1 && itc <= 2;
+    } else if (m_Type == Type::RED || m_Type == Type::TEXAS) {
+        return itr == 0 && (itc == 0 || itc == 1);
+    } else if (m_Type == Type::EYJAFJALLA) {
+        return itr >= -1 && itr <= 1 && itc >= 0 && itc <= 2;
+    } else if (m_Type == Type::UMIRIN) {
+        if (itr == 0) return itc >= -1 && itc <= 3;
+        return itr >= -1 && itr <= 1 && itc >= -1 && itc <= 2;
     }
 
     return false;
@@ -158,6 +167,7 @@ bool Operator::isInAttackRange(const glm::vec2& enemyGridPos) const {
 
 // Amiya Implementation
 Amiya::Amiya() : Operator(Type::AMIYA, 1000.0f, 120.0f) {
+    m_DeploymentCost = 10;
     m_VisualOffset = 20.0f; // Stand higher on highground
     m_AttackInterval = 1.6f;
     m_DamageDelays = {0.6f};
@@ -167,13 +177,13 @@ Amiya::Amiya() : Operator(Type::AMIYA, 1000.0f, 120.0f) {
     std::vector<std::string> idlePaths;
     for (int i = 1; i <= 31; i += 2) {
         std::stringstream ss;
-        ss << RESOURCE_DIR << "/charactor/operator/char_002_amiya/Idle_" << std::setfill('0') << std::setw(2) << i << ".png";
+        ss << RESOURCE_DIR << "/charactor/operator/amiya/Idle_" << std::setfill('0') << std::setw(2) << i << ".png";
         idlePaths.push_back(ss.str());
     }
     std::vector<std::string> attackPaths;
     for (int i = 1; i <= 53; i += 2) {
         std::stringstream ss;
-        ss << RESOURCE_DIR << "/charactor/operator/char_002_amiya/Attack_" << std::setfill('0') << std::setw(2) << i << ".png";
+        ss << RESOURCE_DIR << "/charactor/operator/amiya/Attack_" << std::setfill('0') << std::setw(2) << i << ".png";
         attackPaths.push_back(ss.str());
     }
     init(idlePaths, attackPaths);
@@ -181,6 +191,7 @@ Amiya::Amiya() : Operator(Type::AMIYA, 1000.0f, 120.0f) {
 
 // Chen Implementation
 Chen::Chen() : Operator(Type::CHEN, 1200.0f, 80.0f) {
+    m_DeploymentCost = 18;
     m_AttackInterval = 1.3f;
     m_DamageDelays = {0.4f, 0.6f}; // Chen hits twice
     m_AttackCount = 1; // Each delay trigger represents one hit
@@ -189,15 +200,134 @@ Chen::Chen() : Operator(Type::CHEN, 1200.0f, 80.0f) {
     m_AnimationInterval = 60; // Doubled
 
     std::vector<std::string> idlePaths;
-    for (int i = 1; i <= 200; i += 2) {
+    for (int i = 1; i <= 199; i += 2) {
         std::stringstream ss;
-        ss << RESOURCE_DIR << "/charactor/operator/char_010_chen/Idle_" << std::setfill('0') << std::setw(3) << i << ".png";
+        ss << RESOURCE_DIR << "/charactor/operator/chen/Idle_" << std::setfill('0') << std::setw(3) << i << ".png";
         idlePaths.push_back(ss.str());
     }
     std::vector<std::string> attackPaths;
     for (int i = 1; i <= 45; i += 2) {
         std::stringstream ss;
-        ss << RESOURCE_DIR << "/charactor/operator/char_010_chen/Attack_" << std::setfill('0') << std::setw(2) << i << ".png";
+        ss << RESOURCE_DIR << "/charactor/operator/chen/Attack_" << std::setfill('0') << std::setw(2) << i << ".png";
+        attackPaths.push_back(ss.str());
+    }
+    init(idlePaths, attackPaths);
+}
+
+// Angelina Implementation
+Angelina::Angelina() : Operator(Type::ANGELINA, 1100.0f, 100.0f) {
+    m_DeploymentCost = 14;
+    m_VisualOffset = 20.0f;
+    m_AttackInterval = 1.9f;
+    m_DamageDelays = {0.7f};
+    m_BaseScale = 0.3f;
+    m_AnimationInterval = 60;
+
+    std::vector<std::string> idlePaths;
+    for (int i = 1; i <= 59; i += 2) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/operator/agelina/Idle_" << std::setfill('0') << std::setw(2) << i << ".png";
+        idlePaths.push_back(ss.str());
+    }
+    std::vector<std::string> attackPaths;
+    for (int i = 1; i <= 41; i += 2) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/operator/agelina/Attack_" << std::setfill('0') << std::setw(2) << i << ".png";
+        attackPaths.push_back(ss.str());
+    }
+    init(idlePaths, attackPaths);
+}
+
+// Red Implementation
+Red::Red() : Operator(Type::RED, 900.0f, 150.0f) {
+    m_DeploymentCost = 6;
+    m_AttackInterval = 0.93f;
+    m_DamageDelays = {0.3f};
+    m_BaseScale = 0.3f;
+    m_AnimationInterval = 60;
+
+    std::vector<std::string> idlePaths;
+    for (int i = 1; i <= 59; i += 2) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/operator/red/Idle_" << std::setfill('0') << std::setw(2) << i << ".png";
+        idlePaths.push_back(ss.str());
+    }
+    std::vector<std::string> attackPaths;
+    for (int i = 1; i <= 35; i += 2) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/operator/red/Attack_" << std::setfill('0') << std::setw(2) << i << ".png";
+        attackPaths.push_back(ss.str());
+    }
+    init(idlePaths, attackPaths);
+}
+
+// Eyjafjalla Implementation
+Eyjafjalla::Eyjafjalla() : Operator(Type::EYJAFJALLA, 1200.0f, 200.0f) {
+    m_DeploymentCost = 20;
+    m_VisualOffset = 20.0f;
+    m_AttackInterval = 1.6f;
+    m_DamageDelays = {0.6f};
+    m_BaseScale = 0.3f;
+    m_AnimationInterval = 60;
+
+    std::vector<std::string> idlePaths;
+    for (int i = 1; i <= 81; i += 2) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/operator/eyjafjalla/Idle_" << std::setfill('0') << std::setw(2) << i << ".png";
+        idlePaths.push_back(ss.str());
+    }
+    std::vector<std::string> attackPaths;
+    for (int i = 1; i <= 41; i += 2) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/operator/eyjafjalla/Attack_" << std::setfill('0') << std::setw(2) << i << ".png";
+        attackPaths.push_back(ss.str());
+    }
+    init(idlePaths, attackPaths);
+}
+
+// Texas Implementation
+Texas::Texas() : Operator(Type::TEXAS, 1100.0f, 100.0f) {
+    m_DeploymentCost = 12;
+    m_AttackInterval = 1.05f;
+    m_DamageDelays = {0.4f};
+    m_BlockCount = 2;
+    m_BaseScale = 0.3f;
+    m_AnimationInterval = 60;
+
+    std::vector<std::string> idlePaths;
+    for (int i = 1; i <= 59; i += 2) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/operator/texas/Idle_" << std::setfill('0') << std::setw(2) << i << ".png";
+        idlePaths.push_back(ss.str());
+    }
+    std::vector<std::string> attackPaths;
+    for (int i = 1; i <= 31; i += 2) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/operator/texas/Attack_Loop_" << std::setfill('0') << std::setw(2) << i << ".png";
+        attackPaths.push_back(ss.str());
+    }
+    init(idlePaths, attackPaths);
+}
+
+// Umirin Implementation
+Umirin::Umirin() : Operator(Type::UMIRIN, 1000.0f, 120.0f) {
+    m_DeploymentCost = 10;
+    m_VisualOffset = 20.0f;
+    m_AttackInterval = 1.6f;
+    m_DamageDelays = {0.6f};
+    m_BaseScale = 0.3f;
+    m_AnimationInterval = 60;
+
+    std::vector<std::string> idlePaths;
+    for (int i = 1; i <= 121; i += 2) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/operator/timoris/Idle_" << std::setfill('0') << std::setw(3) << i << ".png";
+        idlePaths.push_back(ss.str());
+    }
+    std::vector<std::string> attackPaths;
+    for (int i = 1; i <= 31; i += 2) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/operator/timoris/Attack_" << std::setfill('0') << std::setw(2) << i << ".png";
         attackPaths.push_back(ss.str());
     }
     init(idlePaths, attackPaths);

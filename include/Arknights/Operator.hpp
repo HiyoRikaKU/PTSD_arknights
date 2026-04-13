@@ -29,7 +29,12 @@ public:
 
     enum class Type {
         AMIYA,
-        CHEN
+        CHEN,
+        ANGELINA,
+        RED,
+        EYJAFJALLA,
+        TEXAS,
+        UMIRIN
     };
 
     Operator(Type type, float hp, float attack);
@@ -45,6 +50,7 @@ public:
 
     float getHp() const { return m_Hp; }
     float getAttack() const { return m_Attack; }
+    int getDeploymentCost() const { return m_DeploymentCost; }
 
     bool isAlive() const { return m_State != State::DEAD; }
 
@@ -104,6 +110,7 @@ protected:
     float m_Hp;
     float m_MaxHp;
     float m_Attack;
+    int m_DeploymentCost = 10;
     State m_State = State::IDLE;
 
     float m_AttackInterval = 1.0f; // Seconds
@@ -141,6 +148,31 @@ public:
 class Chen : public Operator {
 public:
     Chen();
+};
+
+class Angelina : public Operator {
+public:
+    Angelina();
+};
+
+class Red : public Operator {
+public:
+    Red();
+};
+
+class Eyjafjalla : public Operator {
+public:
+    Eyjafjalla();
+};
+
+class Texas : public Operator {
+public:
+    Texas();
+};
+
+class Umirin : public Operator {
+public:
+    Umirin();
 };
 
 } // namespace Arknights
