@@ -1,0 +1,1597 @@
+-- The C compiler identification is AppleClang 14.0.3.14030022
+-- The CXX compiler identification is AppleClang 14.0.3.14030022
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Populating ptsd
+-- Configuring done (0.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/ptsd-subbuild
+[ 11%] Creating directories for 'ptsd-populate'
+[ 22%] Performing download step (download, verify and extract) for 'ptsd-populate'
+-- Downloading...
+   dst='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/ptsd-subbuild/ptsd-populate-prefix/src/v0.2.zip'
+   timeout='none'
+   inactivity timeout='none'
+-- Using src='https://github.com/ntut-open-source-club/practical-tools-for-simple-design/archive/refs/tags/v0.2.zip'
+-- Downloading... done
+-- extracting...
+     src='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/ptsd-subbuild/ptsd-populate-prefix/src/v0.2.zip'
+     dst='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/PTSD'
+-- extracting... [tar xf]
+-- extracting... [analysis]
+-- extracting... [rename]
+-- extracting... [clean up]
+-- extracting... done
+[ 33%] No update step for 'ptsd-populate'
+[ 44%] No patch step for 'ptsd-populate'
+[ 55%] No configure step for 'ptsd-populate'
+[ 66%] No build step for 'ptsd-populate'
+[ 77%] No install step for 'ptsd-populate'
+[ 88%] No test step for 'ptsd-populate'
+[100%] Completed 'ptsd-populate'
+[100%] Built target ptsd-populate
+-- Found OpenGL: /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenGL.framework
+-- Populating sdl2
+-- Configuring done (0.1s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/sdl2-subbuild
+[ 11%] Creating directories for 'sdl2-populate'
+[ 22%] Performing download step (download, verify and extract) for 'sdl2-populate'
+-- Downloading...
+   dst='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/sdl2-subbuild/sdl2-populate-prefix/src/SDL2-2.26.5.zip'
+   timeout='none'
+   inactivity timeout='none'
+-- Using src='https://github.com/libsdl-org/SDL/releases/download/release-2.26.5/SDL2-2.26.5.zip'
+-- [download 0% complete]
+-- [download 1% complete]
+-- [download 2% complete]
+-- [download 3% complete]
+-- [download 4% complete]
+-- [download 5% complete]
+-- [download 6% complete]
+-- [download 7% complete]
+-- [download 8% complete]
+-- [download 9% complete]
+-- [download 10% complete]
+-- [download 11% complete]
+-- [download 12% complete]
+-- [download 13% complete]
+-- [download 14% complete]
+-- [download 15% complete]
+-- [download 16% complete]
+-- [download 17% complete]
+-- [download 18% complete]
+-- [download 19% complete]
+-- [download 20% complete]
+-- [download 21% complete]
+-- [download 22% complete]
+-- [download 23% complete]
+-- [download 24% complete]
+-- [download 25% complete]
+-- [download 26% complete]
+-- [download 27% complete]
+-- [download 28% complete]
+-- [download 29% complete]
+-- [download 30% complete]
+-- [download 31% complete]
+-- [download 32% complete]
+-- [download 33% complete]
+-- [download 34% complete]
+-- [download 35% complete]
+-- [download 36% complete]
+-- [download 37% complete]
+-- [download 38% complete]
+-- [download 39% complete]
+-- [download 40% complete]
+-- [download 41% complete]
+-- [download 42% complete]
+-- [download 43% complete]
+-- [download 44% complete]
+-- [download 45% complete]
+-- [download 46% complete]
+-- [download 47% complete]
+-- [download 48% complete]
+-- [download 49% complete]
+-- [download 50% complete]
+-- [download 51% complete]
+-- [download 52% complete]
+-- [download 53% complete]
+-- [download 54% complete]
+-- [download 55% complete]
+-- [download 56% complete]
+-- [download 58% complete]
+-- [download 59% complete]
+-- [download 60% complete]
+-- [download 61% complete]
+-- [download 62% complete]
+-- [download 63% complete]
+-- [download 64% complete]
+-- [download 65% complete]
+-- [download 66% complete]
+-- [download 67% complete]
+-- [download 68% complete]
+-- [download 69% complete]
+-- [download 70% complete]
+-- [download 71% complete]
+-- [download 72% complete]
+-- [download 73% complete]
+-- [download 74% complete]
+-- [download 75% complete]
+-- [download 76% complete]
+-- [download 77% complete]
+-- [download 78% complete]
+-- [download 79% complete]
+-- [download 81% complete]
+-- [download 82% complete]
+-- [download 83% complete]
+-- [download 84% complete]
+-- [download 85% complete]
+-- [download 86% complete]
+-- [download 87% complete]
+-- [download 89% complete]
+-- [download 90% complete]
+-- [download 91% complete]
+-- [download 92% complete]
+-- [download 93% complete]
+-- [download 94% complete]
+-- [download 95% complete]
+-- [download 96% complete]
+-- [download 97% complete]
+-- [download 98% complete]
+-- [download 99% complete]
+-- [download 100% complete]
+-- verifying file...
+       file='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/sdl2-subbuild/sdl2-populate-prefix/src/SDL2-2.26.5.zip'
+-- Downloading... done
+-- extracting...
+     src='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/sdl2-subbuild/sdl2-populate-prefix/src/SDL2-2.26.5.zip'
+     dst='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/PTSD/lib/sdl2'
+-- extracting... [tar xf]
+-- extracting... [analysis]
+-- extracting... [rename]
+-- extracting... [clean up]
+-- extracting... done
+[ 33%] No update step for 'sdl2-populate'
+[ 44%] No patch step for 'sdl2-populate'
+[ 55%] No configure step for 'sdl2-populate'
+[ 66%] No build step for 'sdl2-populate'
+[ 77%] No install step for 'sdl2-populate'
+[ 88%] No test step for 'sdl2-populate'
+[100%] Completed 'sdl2-populate'
+[100%] Built target sdl2-populate
+CMake Deprecation Warning at PTSD/lib/sdl2/CMakeLists.txt:5 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+
+
+-- Could NOT find PkgConfig (missing: PKG_CONFIG_EXECUTABLE) 
+-- Looking for a OBJC compiler
+-- Looking for a OBJC compiler - /usr/bin/cc
+-- Looking for __GLIBC__
+-- Looking for __GLIBC__ - not found
+-- Performing Test HAVE_GCC_WALL
+-- Performing Test HAVE_GCC_WALL - Success
+-- Performing Test HAVE_GCC_NO_STRICT_ALIASING
+-- Performing Test HAVE_GCC_NO_STRICT_ALIASING - Success
+-- Performing Test HAVE_GCC_WDECLARATION_AFTER_STATEMENT
+-- Performing Test HAVE_GCC_WDECLARATION_AFTER_STATEMENT - Success
+-- Performing Test HAVE_GCC_ATOMICS
+-- Performing Test HAVE_GCC_ATOMICS - Success
+-- Performing Test HAVE_GCC_PREFERRED_STACK_BOUNDARY
+-- Performing Test HAVE_GCC_PREFERRED_STACK_BOUNDARY - Failed
+-- Performing Test HAVE_GCC_FVISIBILITY
+-- Performing Test HAVE_GCC_FVISIBILITY - Success
+-- Performing Test HAVE_GCC_WSHADOW
+-- Performing Test HAVE_GCC_WSHADOW - Success
+-- Performing Test HAVE_WNO_ERROR_DEPRECATED_DECLARATIONS
+-- Performing Test HAVE_WNO_ERROR_DEPRECATED_DECLARATIONS - Success
+-- Performing Test HAVE_MMX
+-- Performing Test HAVE_MMX - Success
+-- Performing Test HAVE_3DNOW
+-- Performing Test HAVE_3DNOW - Success
+-- Performing Test HAVE_SSE
+-- Performing Test HAVE_SSE - Success
+-- Performing Test HAVE_SSE2
+-- Performing Test HAVE_SSE2 - Success
+-- Performing Test HAVE_SSE3
+-- Performing Test HAVE_SSE3 - Success
+-- Looking for immintrin.h
+-- Looking for immintrin.h - found
+-- Performing Test HAVE_ALTIVEC_H_HDR
+-- Performing Test HAVE_ALTIVEC_H_HDR - Failed
+-- Performing Test HAVE_ALTIVEC
+-- Performing Test HAVE_ALTIVEC - Failed
+-- Looking for ctype.h
+-- Looking for ctype.h - found
+-- Looking for float.h
+-- Looking for float.h - found
+-- Looking for iconv.h
+-- Looking for iconv.h - found
+-- Looking for inttypes.h
+-- Looking for inttypes.h - found
+-- Looking for limits.h
+-- Looking for limits.h - found
+-- Looking for malloc.h
+-- Looking for malloc.h - not found
+-- Looking for math.h
+-- Looking for math.h - found
+-- Looking for memory.h
+-- Looking for memory.h - found
+-- Looking for signal.h
+-- Looking for signal.h - found
+-- Looking for stdarg.h
+-- Looking for stdarg.h - found
+-- Looking for stddef.h
+-- Looking for stddef.h - found
+-- Looking for stdint.h
+-- Looking for stdint.h - found
+-- Looking for stdio.h
+-- Looking for stdio.h - found
+-- Looking for stdlib.h
+-- Looking for stdlib.h - found
+-- Looking for string.h
+-- Looking for string.h - found
+-- Looking for strings.h
+-- Looking for strings.h - found
+-- Looking for sys/types.h
+-- Looking for sys/types.h - found
+-- Looking for wchar.h
+-- Looking for wchar.h - found
+-- Looking for libunwind.h
+-- Looking for libunwind.h - found
+-- Looking for linux/input.h
+-- Looking for linux/input.h - not found
+-- Looking for 7 include files stddef.h, ..., float.h
+-- Looking for 7 include files stddef.h, ..., float.h - found
+-- Looking for M_PI
+-- Looking for M_PI - found
+-- Performing Test HAVE_MPROTECT
+-- Performing Test HAVE_MPROTECT - Success
+-- Looking for strtod
+-- Looking for strtod - found
+-- Looking for malloc
+-- Looking for malloc - found
+-- Looking for calloc
+-- Looking for calloc - found
+-- Looking for realloc
+-- Looking for realloc - found
+-- Looking for free
+-- Looking for free - found
+-- Looking for getenv
+-- Looking for getenv - found
+-- Looking for setenv
+-- Looking for setenv - found
+-- Looking for putenv
+-- Looking for putenv - found
+-- Looking for unsetenv
+-- Looking for unsetenv - found
+-- Looking for bsearch
+-- Looking for bsearch - found
+-- Looking for qsort
+-- Looking for qsort - found
+-- Looking for abs
+-- Looking for abs - found
+-- Looking for bcopy
+-- Looking for bcopy - found
+-- Looking for memset
+-- Looking for memset - found
+-- Looking for memcpy
+-- Looking for memcpy - found
+-- Looking for memmove
+-- Looking for memmove - found
+-- Looking for memcmp
+-- Looking for memcmp - found
+-- Looking for strlen
+-- Looking for strlen - found
+-- Looking for strlcpy
+-- Looking for strlcpy - found
+-- Looking for strlcat
+-- Looking for strlcat - found
+-- Looking for _strrev
+-- Looking for _strrev - not found
+-- Looking for _strupr
+-- Looking for _strupr - not found
+-- Looking for _strlwr
+-- Looking for _strlwr - not found
+-- Looking for index
+-- Looking for index - found
+-- Looking for rindex
+-- Looking for rindex - found
+-- Looking for strchr
+-- Looking for strchr - found
+-- Looking for strrchr
+-- Looking for strrchr - found
+-- Looking for strstr
+-- Looking for strstr - found
+-- Looking for strtok_r
+-- Looking for strtok_r - found
+-- Looking for itoa
+-- Looking for itoa - not found
+-- Looking for _ltoa
+-- Looking for _ltoa - not found
+-- Looking for _uitoa
+-- Looking for _uitoa - not found
+-- Looking for _ultoa
+-- Looking for _ultoa - not found
+-- Looking for strtol
+-- Looking for strtol - found
+-- Looking for strtoul
+-- Looking for strtoul - found
+-- Looking for _i64toa
+-- Looking for _i64toa - not found
+-- Looking for _ui64toa
+-- Looking for _ui64toa - not found
+-- Looking for strtoll
+-- Looking for strtoll - found
+-- Looking for strtoull
+-- Looking for strtoull - found
+-- Looking for atoi
+-- Looking for atoi - found
+-- Looking for atof
+-- Looking for atof - found
+-- Looking for strcmp
+-- Looking for strcmp - found
+-- Looking for strncmp
+-- Looking for strncmp - found
+-- Looking for _stricmp
+-- Looking for _stricmp - not found
+-- Looking for strcasecmp
+-- Looking for strcasecmp - found
+-- Looking for _strnicmp
+-- Looking for _strnicmp - not found
+-- Looking for strncasecmp
+-- Looking for strncasecmp - found
+-- Looking for strcasestr
+-- Looking for strcasestr - found
+-- Looking for wcscmp
+-- Looking for wcscmp - found
+-- Looking for _wcsdup
+-- Looking for _wcsdup - not found
+-- Looking for wcsdup
+-- Looking for wcsdup - found
+-- Looking for wcslcat
+-- Looking for wcslcat - found
+-- Looking for wcslcpy
+-- Looking for wcslcpy - found
+-- Looking for wcslen
+-- Looking for wcslen - found
+-- Looking for wcsncmp
+-- Looking for wcsncmp - found
+-- Looking for wcsstr
+-- Looking for wcsstr - found
+-- Looking for wcscasecmp
+-- Looking for wcscasecmp - found
+-- Looking for _wcsicmp
+-- Looking for _wcsicmp - not found
+-- Looking for wcsncasecmp
+-- Looking for wcsncasecmp - found
+-- Looking for _wcsnicmp
+-- Looking for _wcsnicmp - not found
+-- Looking for sscanf
+-- Looking for sscanf - found
+-- Looking for vsscanf
+-- Looking for vsscanf - found
+-- Looking for vsnprintf
+-- Looking for vsnprintf - found
+-- Looking for fopen64
+-- Looking for fopen64 - not found
+-- Looking for fseeko
+-- Looking for fseeko - found
+-- Looking for fseeko64
+-- Looking for fseeko64 - not found
+-- Looking for _Exit
+-- Looking for _Exit - found
+-- Looking for sigaction
+-- Looking for sigaction - found
+-- Looking for setjmp
+-- Looking for setjmp - found
+-- Looking for nanosleep
+-- Looking for nanosleep - found
+-- Looking for sysconf
+-- Looking for sysconf - found
+-- Looking for sysctlbyname
+-- Looking for sysctlbyname - found
+-- Looking for getauxval
+-- Looking for getauxval - not found
+-- Looking for elf_aux_info
+-- Looking for elf_aux_info - not found
+-- Looking for poll
+-- Looking for poll - found
+-- Looking for pow in m
+-- Looking for pow in m - found
+-- Looking for atan
+-- Looking for atan - found
+-- Looking for atan2
+-- Looking for atan2 - found
+-- Looking for atanf
+-- Looking for atanf - found
+-- Looking for atan2f
+-- Looking for atan2f - found
+-- Looking for ceil
+-- Looking for ceil - found
+-- Looking for ceilf
+-- Looking for ceilf - found
+-- Looking for copysign
+-- Looking for copysign - found
+-- Looking for copysignf
+-- Looking for copysignf - found
+-- Looking for cos
+-- Looking for cos - found
+-- Looking for cosf
+-- Looking for cosf - found
+-- Looking for exp
+-- Looking for exp - found
+-- Looking for expf
+-- Looking for expf - found
+-- Looking for fabs
+-- Looking for fabs - found
+-- Looking for fabsf
+-- Looking for fabsf - found
+-- Looking for floor
+-- Looking for floor - found
+-- Looking for floorf
+-- Looking for floorf - found
+-- Looking for fmod
+-- Looking for fmod - found
+-- Looking for fmodf
+-- Looking for fmodf - found
+-- Looking for log
+-- Looking for log - found
+-- Looking for logf
+-- Looking for logf - found
+-- Looking for log10
+-- Looking for log10 - found
+-- Looking for log10f
+-- Looking for log10f - found
+-- Looking for lround
+-- Looking for lround - found
+-- Looking for lroundf
+-- Looking for lroundf - found
+-- Looking for pow
+-- Looking for pow - found
+-- Looking for powf
+-- Looking for powf - found
+-- Looking for round
+-- Looking for round - found
+-- Looking for roundf
+-- Looking for roundf - found
+-- Looking for scalbn
+-- Looking for scalbn - found
+-- Looking for scalbnf
+-- Looking for scalbnf - found
+-- Looking for sin
+-- Looking for sin - found
+-- Looking for sinf
+-- Looking for sinf - found
+-- Looking for sqrt
+-- Looking for sqrt - found
+-- Looking for sqrtf
+-- Looking for sqrtf - found
+-- Looking for tan
+-- Looking for tan - found
+-- Looking for tanf
+-- Looking for tanf - found
+-- Looking for acos
+-- Looking for acos - found
+-- Looking for acosf
+-- Looking for acosf - found
+-- Looking for asin
+-- Looking for asin - found
+-- Looking for asinf
+-- Looking for asinf - found
+-- Looking for trunc
+-- Looking for trunc - found
+-- Looking for truncf
+-- Looking for truncf - found
+-- Looking for iconv_open in iconv
+-- Looking for iconv_open in iconv - found
+-- Performing Test HAVE_SA_SIGACTION
+-- Performing Test HAVE_SA_SIGACTION - Success
+-- Looking for dlopen
+-- Looking for dlopen - found
+-- Performing Test HAVE_O_CLOEXEC
+-- Performing Test HAVE_O_CLOEXEC - Success
+-- Performing Test HAVE_FRAMEWORK_GAMECONTROLLER
+-- Performing Test HAVE_FRAMEWORK_GAMECONTROLLER - Success
+-- Performing Test HAVE_FRAMEWORK_COREHAPTICS
+-- Performing Test HAVE_FRAMEWORK_COREHAPTICS - Success
+-- Performing Test HAVE_FRAMEWORK_METAL
+-- Performing Test HAVE_FRAMEWORK_METAL - Success
+-- Performing Test HAVE_PTHREADS
+-- Performing Test HAVE_PTHREADS - Success
+-- Performing Test HAVE_RECURSIVE_MUTEXES
+-- Performing Test HAVE_RECURSIVE_MUTEXES - Success
+-- Performing Test HAVE_PTHREADS_SEM
+-- Performing Test HAVE_PTHREADS_SEM - Success
+-- Performing Test HAVE_SEM_TIMEDWAIT
+-- Performing Test HAVE_SEM_TIMEDWAIT - Failed
+-- Looking for include file pthread.h
+-- Looking for include file pthread.h - found
+-- Looking for include file pthread_np.h
+-- Looking for include file pthread_np.h - not found
+-- Performing Test HAVE_PTHREAD_SETNAME_NP
+-- Performing Test HAVE_PTHREAD_SETNAME_NP - Success
+-- Found Git: /usr/local/bin/git (found version "2.51.0")
+CMake Deprecation Warning at PTSD/lib/sdl2/CMakeLists.txt:3147 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+
+
+-- 
+-- SDL2 was configured with the following options:
+-- 
+-- Platform: Darwin-22.6.0
+-- 64-bit:   TRUE
+-- Compiler: /usr/bin/cc
+-- Revision: SDL-release-2.26.5-0-gac13ca9ab
+-- 
+-- Subsystems:
+--   Atomic:	ON
+--   Audio:	ON
+--   Video:	ON
+--   Render:	ON
+--   Events:	ON
+--   Joystick:	ON
+--   Haptic:	ON
+--   Hidapi:	ON
+--   Power:	ON
+--   Threads:	ON
+--   Timers:	ON
+--   File:	ON
+--   Loadso:	ON
+--   CPUinfo:	ON
+--   Filesystem:	ON
+--   Sensor:	ON
+--   Locale:	ON
+--   Misc:	ON
+-- 
+-- Options:
+--   SDL2_DISABLE_INSTALL        (Wanted: ON): OFF
+--   SDL2_DISABLE_SDL2MAIN       (Wanted: OFF): OFF
+--   SDL2_DISABLE_UNINSTALL      (Wanted: OFF): OFF
+--   SDL_3DNOW                   (Wanted: ON): ON
+--   SDL_ALSA                    (Wanted: OFF): OFF
+--   SDL_ALSA_SHARED             (Wanted: OFF): OFF
+--   SDL_ALTIVEC                 (Wanted: ON): OFF
+--   SDL_ARMNEON                 (Wanted: OFF): OFF
+--   SDL_ARMSIMD                 (Wanted: OFF): OFF
+--   SDL_ARTS                    (Wanted: OFF): OFF
+--   SDL_ARTS_SHARED             (Wanted: OFF): OFF
+--   SDL_ASAN                    (Wanted: OFF): OFF
+--   SDL_ASSEMBLY                (Wanted: ON): ON
+--   SDL_ASSERTIONS              (Wanted: auto): auto
+--   SDL_BACKGROUNDING_SIGNAL    (Wanted: OFF): OFF
+--   SDL_CCACHE                  (Wanted: ON): OFF
+--   SDL_CLOCK_GETTIME           (Wanted: OFF): OFF
+--   SDL_COCOA                   (Wanted: ON): ON
+--   SDL_DBUS                    (Wanted: OFF): OFF
+--   SDL_DIRECTFB                (Wanted: OFF): OFF
+--   SDL_DIRECTFB_SHARED         (Wanted: OFF): OFF
+--   SDL_DIRECTX                 (Wanted: OFF): OFF
+--   SDL_DISKAUDIO               (Wanted: ON): ON
+--   SDL_DUMMYAUDIO              (Wanted: ON): ON
+--   SDL_DUMMYVIDEO              (Wanted: ON): ON
+--   SDL_ESD                     (Wanted: OFF): OFF
+--   SDL_ESD_SHARED              (Wanted: OFF): OFF
+--   SDL_FOREGROUNDING_SIGNAL    (Wanted: OFF): OFF
+--   SDL_FUSIONSOUND             (Wanted: OFF): OFF
+--   SDL_FUSIONSOUND_SHARED      (Wanted: OFF): OFF
+--   SDL_GCC_ATOMICS             (Wanted: ON): ON
+--   SDL_HIDAPI                  (Wanted: ON): ON
+--   SDL_HIDAPI_JOYSTICK         (Wanted: ON): ON
+--   SDL_HIDAPI_LIBUSB           (Wanted: OFF): OFF
+--   SDL_IBUS                    (Wanted: OFF): OFF
+--   SDL_INSTALL_TESTS           (Wanted: OFF): OFF
+--   SDL_JACK                    (Wanted: OFF): OFF
+--   SDL_JACK_SHARED             (Wanted: OFF): OFF
+--   SDL_KMSDRM                  (Wanted: OFF): OFF
+--   SDL_KMSDRM_SHARED           (Wanted: OFF): OFF
+--   SDL_LIBC                    (Wanted: ON): ON
+--   SDL_LIBSAMPLERATE           (Wanted: OFF): OFF
+--   SDL_LIBSAMPLERATE_SHARED    (Wanted: OFF): OFF
+--   SDL_METAL                   (Wanted: ON): ON
+--   SDL_MMX                     (Wanted: ON): ON
+--   SDL_NAS                     (Wanted: OFF): OFF
+--   SDL_NAS_SHARED              (Wanted: OFF): OFF
+--   SDL_OFFSCREEN               (Wanted: ON): ON
+--   SDL_OPENGL                  (Wanted: ON): ON
+--   SDL_OPENGLES                (Wanted: ON): ON
+--   SDL_OSS                     (Wanted: OFF): OFF
+--   SDL_PIPEWIRE                (Wanted: OFF): OFF
+--   SDL_PIPEWIRE_SHARED         (Wanted: OFF): OFF
+--   SDL_PTHREADS                (Wanted: ON): ON
+--   SDL_PTHREADS_SEM            (Wanted: ON): ON
+--   SDL_PULSEAUDIO              (Wanted: OFF): OFF
+--   SDL_PULSEAUDIO_SHARED       (Wanted: OFF): OFF
+--   SDL_RENDER_D3D              (Wanted: OFF): OFF
+--   SDL_RENDER_METAL            (Wanted: ON): ON
+--   SDL_RPATH                   (Wanted: OFF): OFF
+--   SDL_RPI                     (Wanted: OFF): OFF
+--   SDL_SNDIO                   (Wanted: OFF): OFF
+--   SDL_SNDIO_SHARED            (Wanted: OFF): OFF
+--   SDL_SSE                     (Wanted: ON): ON
+--   SDL_SSE2                    (Wanted: ON): ON
+--   SDL_SSE3                    (Wanted: ON): ON
+--   SDL_SSEMATH                 (Wanted: ON): ON
+--   SDL_STATIC_PIC              (Wanted: OFF): OFF
+--   SDL_SYSTEM_ICONV            (Wanted: ON): ON
+--   SDL_TESTS                   (Wanted: OFF): OFF
+--   SDL_VENDOR_INFO             (Wanted: ): OFF
+--   SDL_VIRTUAL_JOYSTICK        (Wanted: ON): ON
+--   SDL_VIVANTE                 (Wanted: OFF): OFF
+--   SDL_VULKAN                  (Wanted: ON): ON
+--   SDL_WASAPI                  (Wanted: OFF): OFF
+--   SDL_WAYLAND                 (Wanted: OFF): OFF
+--   SDL_WAYLAND_LIBDECOR        (Wanted: OFF): OFF
+--   SDL_WAYLAND_LIBDECOR_SHARED (Wanted: OFF): OFF
+--   SDL_WAYLAND_QT_TOUCH        (Wanted: OFF): OFF
+--   SDL_WAYLAND_SHARED          (Wanted: OFF): OFF
+--   SDL_X11                     (Wanted: OFF): OFF
+--   SDL_X11_SHARED              (Wanted: OFF): OFF
+--   SDL_X11_XCURSOR             (Wanted: OFF): OFF
+--   SDL_X11_XDBE                (Wanted: OFF): OFF
+--   SDL_X11_XFIXES              (Wanted: OFF): OFF
+--   SDL_X11_XINPUT              (Wanted: OFF): OFF
+--   SDL_X11_XRANDR              (Wanted: OFF): OFF
+--   SDL_X11_XSCRNSAVER          (Wanted: OFF): OFF
+--   SDL_X11_XSHAPE              (Wanted: OFF): OFF
+--   SDL_XINPUT                  (Wanted: OFF): OFF
+-- 
+--  CFLAGS:         -idirafter "/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/PTSD/lib/sdl2/src/video/khronos"
+--  EXTRA_CFLAGS:   -Wall -fno-strict-aliasing -Wdeclaration-after-statement -fvisibility=hidden -Wshadow -mmmx -m3dnow -msse -msse2 -msse3 -D_THREAD_SAFE
+--  EXTRA_LDFLAGS: -Wl,-framework,CoreVideo;-Wl,-framework,Cocoa;-Wl,-framework,IOKit;-Wl,-framework,ForceFeedback;-Wl,-framework,Carbon;-Wl,-framework,CoreAudio;-Wl,-framework,AudioToolbox;-Wl,-framework,AVFoundation;-Wl,-framework,Foundation;-Wl,-weak_framework,GameController;-Wl,-weak_framework,Metal;-Wl,-weak_framework,QuartzCore;-Wl,-weak_framework,CoreHaptics -Wl,-compatibility_version,2601.0.0;-Wl,-current_version,2601.5.0
+--  EXTRA_LIBS:    m;iconv
+-- 
+--  Build Shared Library: OFF
+--  Build Static Library: ON
+--  Build Static Library with Position Independent Code: OFF
+-- 
+-- If something was not detected, although the libraries
+-- were installed, then make sure you have set the
+-- CFLAGS and LDFLAGS environment variables correctly.
+-- 
+-- Populating sdl2_image
+-- Configuring done (0.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/sdl2_image-subbuild
+[ 11%] Creating directories for 'sdl2_image-populate'
+[ 22%] Performing download step (download, verify and extract) for 'sdl2_image-populate'
+-- Downloading...
+   dst='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/sdl2_image-subbuild/sdl2_image-populate-prefix/src/SDL2_image-2.6.3.zip'
+   timeout='none'
+   inactivity timeout='none'
+-- Using src='https://github.com/libsdl-org/SDL_image/releases/download/release-2.6.3/SDL2_image-2.6.3.zip'
+-- [download 0% complete]
+-- [download 1% complete]
+-- [download 2% complete]
+-- [download 3% complete]
+-- [download 4% complete]
+-- [download 5% complete]
+-- [download 6% complete]
+-- [download 7% complete]
+-- [download 8% complete]
+-- [download 9% complete]
+-- [download 10% complete]
+-- [download 11% complete]
+-- [download 12% complete]
+-- [download 13% complete]
+-- [download 14% complete]
+-- [download 15% complete]
+-- [download 16% complete]
+-- [download 17% complete]
+-- [download 18% complete]
+-- [download 19% complete]
+-- [download 20% complete]
+-- [download 21% complete]
+-- [download 22% complete]
+-- [download 23% complete]
+-- [download 24% complete]
+-- [download 25% complete]
+-- [download 26% complete]
+-- [download 27% complete]
+-- [download 28% complete]
+-- [download 29% complete]
+-- [download 30% complete]
+-- [download 31% complete]
+-- [download 32% complete]
+-- [download 33% complete]
+-- [download 34% complete]
+-- [download 35% complete]
+-- [download 36% complete]
+-- [download 37% complete]
+-- [download 38% complete]
+-- [download 39% complete]
+-- [download 40% complete]
+-- [download 41% complete]
+-- [download 42% complete]
+-- [download 43% complete]
+-- [download 44% complete]
+-- [download 45% complete]
+-- [download 46% complete]
+-- [download 47% complete]
+-- [download 48% complete]
+-- [download 49% complete]
+-- [download 50% complete]
+-- [download 51% complete]
+-- [download 52% complete]
+-- [download 53% complete]
+-- [download 54% complete]
+-- [download 55% complete]
+-- [download 56% complete]
+-- [download 57% complete]
+-- [download 58% complete]
+-- [download 59% complete]
+-- [download 60% complete]
+-- [download 61% complete]
+-- [download 62% complete]
+-- [download 63% complete]
+-- [download 64% complete]
+-- [download 65% complete]
+-- [download 66% complete]
+-- [download 67% complete]
+-- [download 68% complete]
+-- [download 69% complete]
+-- [download 70% complete]
+-- [download 71% complete]
+-- [download 72% complete]
+-- [download 73% complete]
+-- [download 74% complete]
+-- [download 75% complete]
+-- [download 76% complete]
+-- [download 77% complete]
+-- [download 78% complete]
+-- [download 79% complete]
+-- [download 80% complete]
+-- [download 81% complete]
+-- [download 82% complete]
+-- [download 83% complete]
+-- [download 84% complete]
+-- [download 85% complete]
+-- [download 86% complete]
+-- [download 87% complete]
+-- [download 88% complete]
+-- [download 89% complete]
+-- [download 90% complete]
+-- [download 91% complete]
+-- [download 92% complete]
+-- [download 93% complete]
+-- [download 94% complete]
+-- [download 95% complete]
+-- [download 96% complete]
+-- [download 97% complete]
+-- [download 98% complete]
+-- [download 99% complete]
+-- [download 100% complete]
+-- verifying file...
+       file='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/sdl2_image-subbuild/sdl2_image-populate-prefix/src/SDL2_image-2.6.3.zip'
+-- Downloading... done
+-- extracting...
+     src='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/sdl2_image-subbuild/sdl2_image-populate-prefix/src/SDL2_image-2.6.3.zip'
+     dst='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/PTSD/lib/sdl2_image'
+-- extracting... [tar xf]
+-- extracting... [analysis]
+-- extracting... [rename]
+-- extracting... [clean up]
+-- extracting... done
+[ 33%] No update step for 'sdl2_image-populate'
+[ 44%] No patch step for 'sdl2_image-populate'
+[ 55%] No configure step for 'sdl2_image-populate'
+[ 66%] No build step for 'sdl2_image-populate'
+[ 77%] No install step for 'sdl2_image-populate'
+[ 88%] No test step for 'sdl2_image-populate'
+[100%] Completed 'sdl2_image-populate'
+[100%] Built target sdl2_image-populate
+-- Configuring SDL2_image 2.6.3
+-- Found SDL2main: /usr/local/lib/libSDL2main.a
+-- Populating sdl2_ttf
+-- Configuring done (0.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/sdl2_ttf-subbuild
+[ 11%] Creating directories for 'sdl2_ttf-populate'
+[ 22%] Performing download step (download, verify and extract) for 'sdl2_ttf-populate'
+-- Downloading...
+   dst='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/sdl2_ttf-subbuild/sdl2_ttf-populate-prefix/src/SDL2_ttf-2.20.2.zip'
+   timeout='none'
+   inactivity timeout='none'
+-- Using src='https://github.com/libsdl-org/SDL_ttf/releases/download/release-2.20.2/SDL2_ttf-2.20.2.zip'
+-- [download 0% complete]
+-- [download 1% complete]
+-- [download 2% complete]
+-- [download 3% complete]
+-- [download 4% complete]
+-- [download 5% complete]
+-- [download 6% complete]
+-- [download 7% complete]
+-- [download 8% complete]
+-- [download 9% complete]
+-- [download 10% complete]
+-- [download 11% complete]
+-- [download 12% complete]
+-- [download 13% complete]
+-- [download 14% complete]
+-- [download 15% complete]
+-- [download 16% complete]
+-- [download 17% complete]
+-- [download 18% complete]
+-- [download 19% complete]
+-- [download 20% complete]
+-- [download 21% complete]
+-- [download 22% complete]
+-- [download 23% complete]
+-- [download 24% complete]
+-- [download 25% complete]
+-- [download 26% complete]
+-- [download 27% complete]
+-- [download 28% complete]
+-- [download 29% complete]
+-- [download 30% complete]
+-- [download 31% complete]
+-- [download 32% complete]
+-- [download 33% complete]
+-- [download 34% complete]
+-- [download 35% complete]
+-- [download 36% complete]
+-- [download 37% complete]
+-- [download 38% complete]
+-- [download 39% complete]
+-- [download 40% complete]
+-- [download 41% complete]
+-- [download 42% complete]
+-- [download 43% complete]
+-- [download 44% complete]
+-- [download 45% complete]
+-- [download 46% complete]
+-- [download 47% complete]
+-- [download 48% complete]
+-- [download 49% complete]
+-- [download 50% complete]
+-- [download 51% complete]
+-- [download 52% complete]
+-- [download 53% complete]
+-- [download 54% complete]
+-- [download 55% complete]
+-- [download 56% complete]
+-- [download 57% complete]
+-- [download 58% complete]
+-- [download 59% complete]
+-- [download 60% complete]
+-- [download 61% complete]
+-- [download 62% complete]
+-- [download 63% complete]
+-- [download 64% complete]
+-- [download 65% complete]
+-- [download 66% complete]
+-- [download 67% complete]
+-- [download 68% complete]
+-- [download 69% complete]
+-- [download 70% complete]
+-- [download 71% complete]
+-- [download 72% complete]
+-- [download 73% complete]
+-- [download 74% complete]
+-- [download 75% complete]
+-- [download 76% complete]
+-- [download 77% complete]
+-- [download 78% complete]
+-- [download 79% complete]
+-- [download 80% complete]
+-- [download 81% complete]
+-- [download 82% complete]
+-- [download 83% complete]
+-- [download 84% complete]
+-- [download 85% complete]
+-- [download 86% complete]
+-- [download 87% complete]
+-- [download 88% complete]
+-- [download 89% complete]
+-- [download 90% complete]
+-- [download 91% complete]
+-- [download 92% complete]
+-- [download 93% complete]
+-- [download 94% complete]
+-- [download 95% complete]
+-- [download 96% complete]
+-- [download 97% complete]
+-- [download 98% complete]
+-- [download 99% complete]
+-- [download 100% complete]
+-- verifying file...
+       file='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/sdl2_ttf-subbuild/sdl2_ttf-populate-prefix/src/SDL2_ttf-2.20.2.zip'
+-- Downloading... done
+-- extracting...
+     src='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/sdl2_ttf-subbuild/sdl2_ttf-populate-prefix/src/SDL2_ttf-2.20.2.zip'
+     dst='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/PTSD/lib/sdl2_ttf'
+-- extracting... [tar xf]
+-- extracting... [analysis]
+-- extracting... [rename]
+-- extracting... [clean up]
+-- extracting... done
+[ 33%] No update step for 'sdl2_ttf-populate'
+[ 44%] No patch step for 'sdl2_ttf-populate'
+[ 55%] No configure step for 'sdl2_ttf-populate'
+[ 66%] No build step for 'sdl2_ttf-populate'
+[ 77%] No install step for 'sdl2_ttf-populate'
+[ 88%] No test step for 'sdl2_ttf-populate'
+[100%] Completed 'sdl2_ttf-populate'
+[100%] Built target sdl2_ttf-populate
+-- Configuring SDL2_ttf 2.20.2
+-- SDL2_ttf: Using vendored freetype library
+CMake Deprecation Warning at PTSD/lib/sdl2_ttf/external/freetype/CMakeLists.txt:111 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+
+
+-- Could NOT find PkgConfig (missing: PKG_CONFIG_EXECUTABLE) 
+-- Looking for unistd.h
+-- Looking for unistd.h - found
+-- Looking for fcntl.h
+-- Looking for fcntl.h - found
+-- Populating sdl2_mixer
+-- Configuring done (0.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/sdl2_mixer-subbuild
+[ 11%] Creating directories for 'sdl2_mixer-populate'
+[ 22%] Performing download step (download, verify and extract) for 'sdl2_mixer-populate'
+-- Downloading...
+   dst='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/sdl2_mixer-subbuild/sdl2_mixer-populate-prefix/src/SDL2_mixer-2.6.3.zip'
+   timeout='none'
+   inactivity timeout='none'
+-- Using src='https://github.com/libsdl-org/SDL_mixer/releases/download/release-2.6.3/SDL2_mixer-2.6.3.zip'
+-- [download 0% complete]
+-- [download 1% complete]
+-- [download 2% complete]
+-- [download 3% complete]
+-- [download 4% complete]
+-- [download 5% complete]
+-- [download 6% complete]
+-- [download 7% complete]
+-- [download 8% complete]
+-- [download 9% complete]
+-- [download 10% complete]
+-- [download 11% complete]
+-- [download 12% complete]
+-- [download 13% complete]
+-- [download 14% complete]
+-- [download 15% complete]
+-- [download 16% complete]
+-- [download 17% complete]
+-- [download 18% complete]
+-- [download 19% complete]
+-- [download 20% complete]
+-- [download 21% complete]
+-- [download 22% complete]
+-- [download 23% complete]
+-- [download 24% complete]
+-- [download 25% complete]
+-- [download 26% complete]
+-- [download 27% complete]
+-- [download 28% complete]
+-- [download 29% complete]
+-- [download 30% complete]
+-- [download 31% complete]
+-- [download 32% complete]
+-- [download 33% complete]
+-- [download 34% complete]
+-- [download 35% complete]
+-- [download 36% complete]
+-- [download 37% complete]
+-- [download 38% complete]
+-- [download 39% complete]
+-- [download 40% complete]
+-- [download 41% complete]
+-- [download 42% complete]
+-- [download 43% complete]
+-- [download 44% complete]
+-- [download 45% complete]
+-- [download 46% complete]
+-- [download 47% complete]
+-- [download 48% complete]
+-- [download 49% complete]
+-- [download 50% complete]
+-- [download 51% complete]
+-- [download 52% complete]
+-- [download 53% complete]
+-- [download 54% complete]
+-- [download 55% complete]
+-- [download 56% complete]
+-- [download 57% complete]
+-- [download 58% complete]
+-- [download 59% complete]
+-- [download 60% complete]
+-- [download 61% complete]
+-- [download 62% complete]
+-- [download 63% complete]
+-- [download 64% complete]
+-- [download 65% complete]
+-- [download 66% complete]
+-- [download 67% complete]
+-- [download 68% complete]
+-- [download 69% complete]
+-- [download 70% complete]
+-- [download 71% complete]
+-- [download 72% complete]
+-- [download 73% complete]
+-- [download 74% complete]
+-- [download 75% complete]
+-- [download 76% complete]
+-- [download 77% complete]
+-- [download 78% complete]
+-- [download 79% complete]
+-- [download 80% complete]
+-- [download 81% complete]
+-- [download 82% complete]
+-- [download 83% complete]
+-- [download 84% complete]
+-- [download 85% complete]
+-- [download 86% complete]
+-- [download 87% complete]
+-- [download 88% complete]
+-- [download 89% complete]
+-- [download 90% complete]
+-- [download 91% complete]
+-- [download 92% complete]
+-- [download 93% complete]
+-- [download 94% complete]
+-- [download 95% complete]
+-- [download 96% complete]
+-- [download 97% complete]
+-- [download 98% complete]
+-- [download 99% complete]
+-- [download 100% complete]
+-- verifying file...
+       file='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/sdl2_mixer-subbuild/sdl2_mixer-populate-prefix/src/SDL2_mixer-2.6.3.zip'
+-- Downloading... done
+-- extracting...
+     src='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/sdl2_mixer-subbuild/sdl2_mixer-populate-prefix/src/SDL2_mixer-2.6.3.zip'
+     dst='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/PTSD/lib/sdl2_mixer'
+-- extracting... [tar xf]
+-- extracting... [analysis]
+-- extracting... [rename]
+-- extracting... [clean up]
+-- extracting... done
+[ 33%] No update step for 'sdl2_mixer-populate'
+[ 44%] No patch step for 'sdl2_mixer-populate'
+[ 55%] No configure step for 'sdl2_mixer-populate'
+[ 66%] No build step for 'sdl2_mixer-populate'
+[ 77%] No install step for 'sdl2_mixer-populate'
+[ 88%] No test step for 'sdl2_mixer-populate'
+[100%] Completed 'sdl2_mixer-populate'
+[100%] Built target sdl2_mixer-populate
+-- Configuring SDL2_mixer 2.6.3
+-- Enabled ogg music: using stb_vorbis
+-- Populating spdlog
+-- Configuring done (0.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/spdlog-subbuild
+[ 11%] Creating directories for 'spdlog-populate'
+[ 22%] Performing download step (download, verify and extract) for 'spdlog-populate'
+-- Downloading...
+   dst='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/spdlog-subbuild/spdlog-populate-prefix/src/v1.10.0.zip'
+   timeout='none'
+   inactivity timeout='none'
+-- Using src='https://github.com/gabime/spdlog/archive/refs/tags/v1.10.0.zip'
+-- verifying file...
+       file='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/spdlog-subbuild/spdlog-populate-prefix/src/v1.10.0.zip'
+-- Downloading... done
+-- extracting...
+     src='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/spdlog-subbuild/spdlog-populate-prefix/src/v1.10.0.zip'
+     dst='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/PTSD/lib/spdlog'
+-- extracting... [tar xf]
+-- extracting... [analysis]
+-- extracting... [rename]
+-- extracting... [clean up]
+-- extracting... done
+[ 33%] No update step for 'spdlog-populate'
+[ 44%] No patch step for 'spdlog-populate'
+[ 55%] No configure step for 'spdlog-populate'
+[ 66%] No build step for 'spdlog-populate'
+[ 77%] No install step for 'spdlog-populate'
+[ 88%] No test step for 'spdlog-populate'
+[100%] Completed 'spdlog-populate'
+[100%] Built target spdlog-populate
+-- Build spdlog: 1.10.0
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- Build type: Release
+-- Populating glm
+-- Configuring done (0.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/glm-subbuild
+[ 11%] Creating directories for 'glm-populate'
+[ 22%] Performing download step (download, verify and extract) for 'glm-populate'
+-- Downloading...
+   dst='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/glm-subbuild/glm-populate-prefix/src/glm-0.9.9.8.zip'
+   timeout='none'
+   inactivity timeout='none'
+-- Using src='https://github.com/g-truc/glm/releases/download/0.9.9.8/glm-0.9.9.8.zip'
+-- [download 0% complete]
+-- [download 1% complete]
+-- [download 2% complete]
+-- [download 3% complete]
+-- [download 4% complete]
+-- [download 5% complete]
+-- [download 6% complete]
+-- [download 7% complete]
+-- [download 8% complete]
+-- [download 9% complete]
+-- [download 10% complete]
+-- [download 11% complete]
+-- [download 12% complete]
+-- [download 13% complete]
+-- [download 14% complete]
+-- [download 15% complete]
+-- [download 16% complete]
+-- [download 17% complete]
+-- [download 18% complete]
+-- [download 19% complete]
+-- [download 20% complete]
+-- [download 21% complete]
+-- [download 22% complete]
+-- [download 23% complete]
+-- [download 24% complete]
+-- [download 25% complete]
+-- [download 26% complete]
+-- [download 27% complete]
+-- [download 28% complete]
+-- [download 29% complete]
+-- [download 30% complete]
+-- [download 31% complete]
+-- [download 32% complete]
+-- [download 33% complete]
+-- [download 34% complete]
+-- [download 35% complete]
+-- [download 36% complete]
+-- [download 37% complete]
+-- [download 38% complete]
+-- [download 39% complete]
+-- [download 40% complete]
+-- [download 41% complete]
+-- [download 42% complete]
+-- [download 43% complete]
+-- [download 44% complete]
+-- [download 45% complete]
+-- [download 46% complete]
+-- [download 47% complete]
+-- [download 48% complete]
+-- [download 49% complete]
+-- [download 50% complete]
+-- [download 51% complete]
+-- [download 52% complete]
+-- [download 53% complete]
+-- [download 54% complete]
+-- [download 55% complete]
+-- [download 56% complete]
+-- [download 57% complete]
+-- [download 58% complete]
+-- [download 59% complete]
+-- [download 60% complete]
+-- [download 61% complete]
+-- [download 62% complete]
+-- [download 63% complete]
+-- [download 64% complete]
+-- [download 65% complete]
+-- [download 66% complete]
+-- [download 67% complete]
+-- [download 68% complete]
+-- [download 69% complete]
+-- [download 70% complete]
+-- [download 71% complete]
+-- [download 72% complete]
+-- [download 73% complete]
+-- [download 74% complete]
+-- [download 75% complete]
+-- [download 76% complete]
+-- [download 77% complete]
+-- [download 78% complete]
+-- [download 79% complete]
+-- [download 80% complete]
+-- [download 81% complete]
+-- [download 82% complete]
+-- [download 83% complete]
+-- [download 84% complete]
+-- [download 85% complete]
+-- [download 86% complete]
+-- [download 87% complete]
+-- [download 88% complete]
+-- [download 89% complete]
+-- [download 90% complete]
+-- [download 91% complete]
+-- [download 92% complete]
+-- [download 93% complete]
+-- [download 94% complete]
+-- [download 95% complete]
+-- [download 96% complete]
+-- [download 97% complete]
+-- [download 98% complete]
+-- [download 99% complete]
+-- [download 100% complete]
+-- verifying file...
+       file='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/glm-subbuild/glm-populate-prefix/src/glm-0.9.9.8.zip'
+-- Downloading... done
+-- extracting...
+     src='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/glm-subbuild/glm-populate-prefix/src/glm-0.9.9.8.zip'
+     dst='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/PTSD/lib/glm'
+-- extracting... [tar xf]
+-- extracting... [analysis]
+-- extracting... [rename]
+-- extracting... [clean up]
+-- extracting... done
+[ 33%] No update step for 'glm-populate'
+[ 44%] No patch step for 'glm-populate'
+[ 55%] No configure step for 'glm-populate'
+[ 66%] No build step for 'glm-populate'
+[ 77%] No install step for 'glm-populate'
+[ 88%] No test step for 'glm-populate'
+[100%] Completed 'glm-populate'
+[100%] Built target glm-populate
+CMake Deprecation Warning at PTSD/lib/glm/CMakeLists.txt:1 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+
+
+CMake Deprecation Warning at PTSD/lib/glm/CMakeLists.txt:2 (cmake_policy):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+
+
+-- Populating googletest
+-- Configuring done (0.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/googletest-subbuild
+[ 11%] Creating directories for 'googletest-populate'
+[ 22%] Performing download step (download, verify and extract) for 'googletest-populate'
+-- Downloading...
+   dst='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/googletest-subbuild/googletest-populate-prefix/src/v1.13.0.zip'
+   timeout='none'
+   inactivity timeout='none'
+-- Using src='https://github.com/google/googletest/archive/refs/tags/v1.13.0.zip'
+-- [download 0% complete]
+-- [download 1% complete]
+-- [download 2% complete]
+-- [download 3% complete]
+-- [download 4% complete]
+-- [download 5% complete]
+-- [download 6% complete]
+-- [download 7% complete]
+-- [download 8% complete]
+-- [download 9% complete]
+-- [download 10% complete]
+-- [download 11% complete]
+-- [download 12% complete]
+-- [download 13% complete]
+-- [download 14% complete]
+-- [download 15% complete]
+-- [download 16% complete]
+-- [download 17% complete]
+-- [download 18% complete]
+-- [download 19% complete]
+-- [download 20% complete]
+-- [download 21% complete]
+-- [download 22% complete]
+-- [download 23% complete]
+-- [download 24% complete]
+-- [download 25% complete]
+-- [download 26% complete]
+-- [download 27% complete]
+-- [download 28% complete]
+-- [download 29% complete]
+-- [download 30% complete]
+-- [download 31% complete]
+-- [download 32% complete]
+-- [download 33% complete]
+-- [download 34% complete]
+-- [download 36% complete]
+-- [download 37% complete]
+-- [download 38% complete]
+-- [download 39% complete]
+-- [download 40% complete]
+-- [download 42% complete]
+-- [download 43% complete]
+-- [download 44% complete]
+-- [download 45% complete]
+-- [download 46% complete]
+-- [download 47% complete]
+-- [download 48% complete]
+-- [download 49% complete]
+-- [download 50% complete]
+-- [download 51% complete]
+-- [download 52% complete]
+-- [download 53% complete]
+-- [download 54% complete]
+-- [download 55% complete]
+-- [download 56% complete]
+-- [download 57% complete]
+-- [download 58% complete]
+-- [download 59% complete]
+-- [download 60% complete]
+-- [download 61% complete]
+-- [download 62% complete]
+-- [download 63% complete]
+-- [download 64% complete]
+-- [download 65% complete]
+-- [download 66% complete]
+-- [download 67% complete]
+-- [download 68% complete]
+-- [download 69% complete]
+-- [download 70% complete]
+-- [download 71% complete]
+-- [download 72% complete]
+-- [download 73% complete]
+-- [download 75% complete]
+-- [download 76% complete]
+-- [download 77% complete]
+-- [download 78% complete]
+-- [download 79% complete]
+-- [download 80% complete]
+-- [download 81% complete]
+-- [download 82% complete]
+-- [download 83% complete]
+-- [download 84% complete]
+-- [download 85% complete]
+-- [download 86% complete]
+-- [download 88% complete]
+-- [download 89% complete]
+-- [download 90% complete]
+-- [download 91% complete]
+-- [download 92% complete]
+-- [download 93% complete]
+-- [download 94% complete]
+-- [download 95% complete]
+-- [download 96% complete]
+-- [download 97% complete]
+-- [download 98% complete]
+-- [download 99% complete]
+-- [download 100% complete]
+-- verifying file...
+       file='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/googletest-subbuild/googletest-populate-prefix/src/v1.13.0.zip'
+-- Downloading... done
+-- extracting...
+     src='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/googletest-subbuild/googletest-populate-prefix/src/v1.13.0.zip'
+     dst='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/PTSD/lib/googletest'
+-- extracting... [tar xf]
+-- extracting... [analysis]
+-- extracting... [rename]
+-- extracting... [clean up]
+-- extracting... done
+[ 33%] No update step for 'googletest-populate'
+[ 44%] No patch step for 'googletest-populate'
+[ 55%] No configure step for 'googletest-populate'
+[ 66%] No build step for 'googletest-populate'
+[ 77%] No install step for 'googletest-populate'
+[ 88%] No test step for 'googletest-populate'
+[100%] Completed 'googletest-populate'
+[100%] Built target googletest-populate
+CMake Deprecation Warning at PTSD/lib/googletest/CMakeLists.txt:4 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+
+
+CMake Deprecation Warning at PTSD/lib/googletest/googlemock/CMakeLists.txt:39 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+
+
+CMake Deprecation Warning at PTSD/lib/googletest/googletest/CMakeLists.txt:49 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+
+
+-- Found Python: /usr/local/Caskroom/miniconda/base/bin/python3.13 (found version "3.13.5") found components: Interpreter
+CMake Warning (dev) at /usr/local/share/cmake/Modules/FetchContent.cmake:1953 (message):
+  Calling FetchContent_Populate(glew) is deprecated, call
+  FetchContent_MakeAvailable(glew) instead.  Policy CMP0169 can be set to OLD
+  to allow FetchContent_Populate(glew) to be called directly for now, but the
+  ability to call it with declared details will be removed completely in a
+  future version.
+Call Stack (most recent call first):
+  PTSD/cmake/Dependencies.cmake:106 (FetchContent_Populate)
+  PTSD/CMakeLists.txt:27 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Populating glew
+-- Configuring done (0.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/glew-subbuild
+[ 11%] Creating directories for 'glew-populate'
+[ 22%] Performing download step (download, verify and extract) for 'glew-populate'
+-- Downloading...
+   dst='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/glew-subbuild/glew-populate-prefix/src/glew-2.2.0.zip'
+   timeout='none'
+   inactivity timeout='none'
+-- Using src='https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.zip'
+-- [download 0% complete]
+-- [download 1% complete]
+-- [download 2% complete]
+-- [download 4% complete]
+-- [download 5% complete]
+-- [download 7% complete]
+-- [download 9% complete]
+-- [download 10% complete]
+-- [download 11% complete]
+-- [download 12% complete]
+-- [download 16% complete]
+-- [download 17% complete]
+-- [download 18% complete]
+-- [download 20% complete]
+-- [download 22% complete]
+-- [download 23% complete]
+-- [download 25% complete]
+-- [download 26% complete]
+-- [download 27% complete]
+-- [download 28% complete]
+-- [download 29% complete]
+-- [download 31% complete]
+-- [download 33% complete]
+-- [download 37% complete]
+-- [download 38% complete]
+-- [download 39% complete]
+-- [download 40% complete]
+-- [download 42% complete]
+-- [download 43% complete]
+-- [download 44% complete]
+-- [download 45% complete]
+-- [download 47% complete]
+-- [download 48% complete]
+-- [download 49% complete]
+-- [download 50% complete]
+-- [download 52% complete]
+-- [download 53% complete]
+-- [download 54% complete]
+-- [download 55% complete]
+-- [download 56% complete]
+-- [download 58% complete]
+-- [download 59% complete]
+-- [download 60% complete]
+-- [download 61% complete]
+-- [download 63% complete]
+-- [download 64% complete]
+-- [download 65% complete]
+-- [download 66% complete]
+-- [download 67% complete]
+-- [download 69% complete]
+-- [download 70% complete]
+-- [download 71% complete]
+-- [download 72% complete]
+-- [download 74% complete]
+-- [download 75% complete]
+-- [download 76% complete]
+-- [download 77% complete]
+-- [download 79% complete]
+-- [download 80% complete]
+-- [download 81% complete]
+-- [download 83% complete]
+-- [download 85% complete]
+-- [download 86% complete]
+-- [download 87% complete]
+-- [download 88% complete]
+-- [download 90% complete]
+-- [download 91% complete]
+-- [download 92% complete]
+-- [download 93% complete]
+-- [download 94% complete]
+-- [download 96% complete]
+-- [download 97% complete]
+-- [download 98% complete]
+-- [download 99% complete]
+-- [download 100% complete]
+-- verifying file...
+       file='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/glew-subbuild/glew-populate-prefix/src/glew-2.2.0.zip'
+-- Downloading... done
+-- extracting...
+     src='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/glew-subbuild/glew-populate-prefix/src/glew-2.2.0.zip'
+     dst='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/PTSD/lib/glew'
+-- extracting... [tar xf]
+-- extracting... [analysis]
+-- extracting... [rename]
+-- extracting... [clean up]
+-- extracting... done
+[ 33%] No update step for 'glew-populate'
+[ 44%] No patch step for 'glew-populate'
+[ 55%] No configure step for 'glew-populate'
+[ 66%] No build step for 'glew-populate'
+[ 77%] No install step for 'glew-populate'
+[ 88%] No test step for 'glew-populate'
+[100%] Completed 'glew-populate'
+[100%] Built target glew-populate
+CMake Deprecation Warning at PTSD/lib/glew/build/cmake/CMakeLists.txt:7 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+
+
+CMake Warning (dev) at /usr/local/share/cmake/Modules/FetchContent.cmake:1953 (message):
+  Calling FetchContent_Populate(imgui) is deprecated, call
+  FetchContent_MakeAvailable(imgui) instead.  Policy CMP0169 can be set to
+  OLD to allow FetchContent_Populate(imgui) to be called directly for now,
+  but the ability to call it with declared details will be removed completely
+  in a future version.
+Call Stack (most recent call first):
+  PTSD/cmake/Dependencies.cmake:112 (FetchContent_Populate)
+  PTSD/CMakeLists.txt:27 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Populating imgui
+-- Configuring done (0.4s)
+-- Generating done (0.1s)
+-- Build files have been written to: /Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/imgui-subbuild
+[ 11%] Creating directories for 'imgui-populate'
+[ 22%] Performing download step (download, verify and extract) for 'imgui-populate'
+-- Downloading...
+   dst='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/imgui-subbuild/imgui-populate-prefix/src/v1.90.4-docking.zip'
+   timeout='none'
+   inactivity timeout='none'
+-- Using src='https://github.com/ocornut/imgui/archive/refs/tags/v1.90.4-docking.zip'
+-- verifying file...
+       file='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/imgui-subbuild/imgui-populate-prefix/src/v1.90.4-docking.zip'
+-- Downloading... done
+-- extracting...
+     src='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/cmake-build-debug/_deps/imgui-subbuild/imgui-populate-prefix/src/v1.90.4-docking.zip'
+     dst='/Users/hiyori/Documents/OOPL_PTSD/PTSD_arknights/PTSD/lib/imgui'
+-- extracting... [tar xf]
+-- extracting... [analysis]
+-- extracting... [rename]
+-- extracting... [clean up]
+-- extracting... done
+[ 33%] No update step for 'imgui-populate'
+[ 44%] No patch step for 'imgui-populate'
+[ 55%] No configure step for 'imgui-populate'
+[ 66%] No build step for 'imgui-populate'
+[ 77%] No install step for 'imgui-populate'
+[ 88%] No test step for 'imgui-populate'
+[100%] Completed 'imgui-populate'
+[100%] Built target imgui-populate
+CMake Warning (dev) at PTSD/CMakeLists.txt:129 (message):
+  relative PTSD_ASSETS_DIR is WIP, Please use `-DCMAKE_BUILD_TYPE=Debug`
+  build for now.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Error at CMakeLists.txt:49 (message):
+  relative RESOURCE_DIR is WIP, Please use `-DCMAKE_BUILD_TYPE=Debug` build
+  for now.
+
+
+-- Configuring incomplete, errors occurred!
