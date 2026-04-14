@@ -33,6 +33,7 @@ void App::update() {
 }
 
 void App::end() { 
+    m_SceneManager.clear();
     LOG_TRACE("App End");
 }
 

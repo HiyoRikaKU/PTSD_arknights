@@ -20,6 +20,7 @@ public:
     
     void update(float deltaTime);
     void render();
+    void clear();
     
     Scene* getCurrentScene() const;
     bool hasScene() const { return !m_SceneStack.empty(); }

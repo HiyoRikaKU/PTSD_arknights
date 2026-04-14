@@ -89,6 +89,15 @@ void SceneManager::render() {
     }
 }
 
+void SceneManager::clear() {
+    while (!m_SceneStack.empty()) {
+        m_SceneStack.top()->onExit();
+        m_SceneStack.top()->cleanup();
+        m_SceneStack.pop();
+    }
+    LOG_DEBUG("SceneManager cleared");
+}
+
 Scene* SceneManager::getCurrentScene() const {
     if (m_SceneStack.empty()) {
         return nullptr;
