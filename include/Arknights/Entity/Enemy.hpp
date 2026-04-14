@@ -4,11 +4,11 @@
 #include <queue>
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "Util/GameObject.hpp"
 #include "Util/Animation.hpp"
-
-#include "Arknights/HealthBar.hpp"
+#include "Arknights/UI/HealthBar.hpp"
 
 namespace Arknights {
 
@@ -82,10 +82,27 @@ private:
 
     State m_State = State::DEAD;
 
+    float m_BaseScale = 0.3f;
+    float m_HealthBarOffset = 50.0f;
+
     std::shared_ptr<Util::Animation> m_MoveAnimation;
     std::shared_ptr<Util::Animation> m_DieAnimation;
 
     std::shared_ptr<HealthBar> m_HealthBar;
+};
+
+class EnemyPool {
+public:
+    EnemyPool(std::size_t size, const std::vector<std::string>& animationPaths, const std::vector<glm::vec2>& waypoints);
+
+    Enemy* getEnemy();
+    void returnEnemy(Enemy* enemy);
+
+    const std::vector<std::shared_ptr<Enemy>>& getRenderHandles() const { return m_Pool; }
+
+private:
+    std::vector<std::shared_ptr<Enemy>> m_Pool;
+    std::vector<Enemy*> m_Available;
 };
 
 } // namespace Arknights

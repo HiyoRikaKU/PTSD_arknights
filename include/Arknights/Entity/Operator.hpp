@@ -7,7 +7,7 @@
 
 #include "Util/GameObject.hpp"
 #include "Util/Animation.hpp"
-#include "Arknights/HealthBar.hpp"
+#include "Arknights/UI/HealthBar.hpp"
 
 namespace Arknights {
 

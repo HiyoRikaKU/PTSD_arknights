@@ -1,4 +1,5 @@
-#include "Arknights/Operator.hpp"
+#include "Arknights/Entity/Operator.hpp"
+#include "Arknights/Entity/Enemy.hpp"
 
 #include <cmath>
 #include <algorithm>
@@ -88,7 +89,7 @@ void Operator::updateHealthBar() {
 
     if (visible) {
         m_HealthBar->SetValue(m_Hp, m_MaxHp);
-        // Position UNDER operator (offset -10.0f)
+        // Position at the bottom of operator
         m_HealthBar->Update(GetTransform().translation + glm::vec2(0, m_VisualOffset), -10.0f);
     }
 }

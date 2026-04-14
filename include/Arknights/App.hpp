@@ -13,12 +13,10 @@
 #include "Util/Image.hpp"
 #include "Util/Text.hpp"
 
-#include "Arknights/Enemy.hpp"
-#include "Arknights/EnemyPool.hpp"
-#include "Arknights/Operation.hpp"
-#include "Arknights/Operation1.hpp"
-#include "Arknights/WaveManager.hpp"
-#include "Arknights/Operator.hpp"
+#include "Arknights/Entity/Enemy.hpp"
+#include "Arknights/Map/Operation.hpp"
+#include "Arknights/Map/Operation1.hpp"
+#include "Arknights/Entity/Operator.hpp"
 
 namespace Arknights {
 

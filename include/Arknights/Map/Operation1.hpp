@@ -1,7 +1,7 @@
 #ifndef ARKNIGHTS_OPERATION1_HPP
 #define ARKNIGHTS_OPERATION1_HPP
 
-#include "Arknights/Operation.hpp"
+#include "Arknights/Map/Operation.hpp"
 
 namespace Arknights {
 
