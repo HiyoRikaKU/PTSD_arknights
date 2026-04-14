@@ -21,7 +21,7 @@ void App::start() {
         10 // High Z-index to cover everything
     );
     // Scale login page to 1600x900
-    m_LoginPage->m_Transform.scale = glm::vec2(1600.0f, 900.0f) / m_LoginPage->GetScaledSize();
+    m_LoginPage->GetTransform().scale = glm::vec2(1600.0f, 900.0f) / m_LoginPage->GetScaledSize();
     m_Root.AddChild(m_LoginPage);
 
     // Login BGM
@@ -98,8 +98,8 @@ void App::start() {
         std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Amiya_icon.png"),
         5 // Above map, below login page
     );
-    m_AmiyaIcon->m_Transform.translation = {700, -350}; // Bottom right
-    m_AmiyaIcon->m_Transform.scale = {0.7f, 0.7f};
+    m_AmiyaIcon->GetTransform().translation = {700, -350}; // Bottom right
+    m_AmiyaIcon->GetTransform().scale = {0.7f, 0.7f};
     m_AmiyaIcon->SetVisible(false); // Show after login
     m_Root.AddChild(m_AmiyaIcon);
 
@@ -115,8 +115,8 @@ void App::start() {
         std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Chen_icon.png"),
         5
     );
-    m_ChenIcon->m_Transform.translation = {580, -350}; // Next to Amiya
-    m_ChenIcon->m_Transform.scale = {0.7f, 0.7f};
+    m_ChenIcon->GetTransform().translation = {580, -350}; // Next to Amiya
+    m_ChenIcon->GetTransform().scale = {0.7f, 0.7f};
     m_ChenIcon->SetVisible(false);
     m_Root.AddChild(m_ChenIcon);
 
@@ -130,8 +130,8 @@ void App::start() {
         std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Angelina_icon.png"),
         5
     );
-    m_AngelinaIcon->m_Transform.translation = {460, -350};
-    m_AngelinaIcon->m_Transform.scale = {0.7f, 0.7f};
+    m_AngelinaIcon->GetTransform().translation = {460, -350};
+    m_AngelinaIcon->GetTransform().scale = {0.7f, 0.7f};
     m_AngelinaIcon->SetVisible(false);
     m_Root.AddChild(m_AngelinaIcon);
 
@@ -145,8 +145,8 @@ void App::start() {
         std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Projekt_Red_icon.png"),
         5
     );
-    m_RedIcon->m_Transform.translation = {340, -350};
-    m_RedIcon->m_Transform.scale = {0.7f, 0.7f};
+    m_RedIcon->GetTransform().translation = {340, -350};
+    m_RedIcon->GetTransform().scale = {0.7f, 0.7f};
     m_RedIcon->SetVisible(false);
     m_Root.AddChild(m_RedIcon);
 
@@ -160,8 +160,8 @@ void App::start() {
         std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Eyjafjalla_icon.png"),
         5
     );
-    m_EyjafjallaIcon->m_Transform.translation = {220, -350};
-    m_EyjafjallaIcon->m_Transform.scale = {0.7f, 0.7f};
+    m_EyjafjallaIcon->GetTransform().translation = {220, -350};
+    m_EyjafjallaIcon->GetTransform().scale = {0.7f, 0.7f};
     m_EyjafjallaIcon->SetVisible(false);
     m_Root.AddChild(m_EyjafjallaIcon);
 
@@ -175,8 +175,8 @@ void App::start() {
         std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/texas.png"),
         5
     );
-    m_TexasIcon->m_Transform.translation = {100, -350};
-    m_TexasIcon->m_Transform.scale = {0.7f, 0.7f};
+    m_TexasIcon->GetTransform().translation = {100, -350};
+    m_TexasIcon->GetTransform().scale = {0.7f, 0.7f};
     m_TexasIcon->SetVisible(false);
     m_Root.AddChild(m_TexasIcon);
 
@@ -190,8 +190,8 @@ void App::start() {
         std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Yahata_Umiri_icon.png"),
         5
     );
-    m_UmirinIcon->m_Transform.translation = {-20, -350};
-    m_UmirinIcon->m_Transform.scale = {0.7f, 0.7f};
+    m_UmirinIcon->GetTransform().translation = {-20, -350};
+    m_UmirinIcon->GetTransform().scale = {0.7f, 0.7f};
     m_UmirinIcon->SetVisible(false);
     m_Root.AddChild(m_UmirinIcon);
 
@@ -208,7 +208,7 @@ void App::start() {
         std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 36, std::to_string(m_EscapedEnemies) + " / " + std::to_string(MAX_ESCAPED_ENEMIES), Util::Color(255, 255, 255)),
         2
     );
-    m_EnemyCountText->m_Transform.translation = {0, 400}; // Top center
+    m_EnemyCountText->GetTransform().translation = {0, 400}; // Top center
     m_EnemyCountText->SetVisible(false);
     m_Root.AddChild(m_EnemyCountText);
 
@@ -217,7 +217,7 @@ void App::start() {
         std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 100, "", Util::Color(255, 0, 0)),
         10 // Above everything
     );
-    m_GameOverText->m_Transform.translation = {0, 0}; // Center
+    m_GameOverText->GetTransform().translation = {0, 0}; // Center
     m_GameOverText->SetVisible(false);
     m_Root.AddChild(m_GameOverText);
 
@@ -226,7 +226,7 @@ void App::start() {
         std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "Press R to Restart, M for Main Menu, ESC to Exit", Util::Color(200, 200, 200)),
         10
     );
-    m_RestartText->m_Transform.translation = {0, -100};
+    m_RestartText->GetTransform().translation = {0, -100};
     m_RestartText->SetVisible(false);
     m_Root.AddChild(m_RestartText);
 
@@ -236,7 +236,7 @@ void App::start() {
         std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 40, "COST: 10", Util::Color(255, 255, 0)),
         2
     );
-    m_DPText->m_Transform.translation = {700, -450};
+    m_DPText->GetTransform().translation = {700, -450};
     m_DPText->SetVisible(false);
     m_Root.AddChild(m_DPText);
 
@@ -245,7 +245,7 @@ void App::start() {
         std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "10", Util::Color(255, 255, 255)),
         6 // Above icon
     );
-    m_AmiyaCostText->m_Transform.translation = {700, -350}; // Center-bottom of icon
+    m_AmiyaCostText->GetTransform().translation = {700, -350}; // Center-bottom of icon
     m_AmiyaCostText->SetVisible(false);
     m_Root.AddChild(m_AmiyaCostText);
 
@@ -253,7 +253,7 @@ void App::start() {
         std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "18", Util::Color(255, 255, 255)),
         6
     );
-    m_ChenCostText->m_Transform.translation = {580, -350}; // Center-bottom of icon
+    m_ChenCostText->GetTransform().translation = {580, -350}; // Center-bottom of icon
     m_ChenCostText->SetVisible(false);
     m_Root.AddChild(m_ChenCostText);
 
@@ -261,7 +261,7 @@ void App::start() {
         std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "14", Util::Color(255, 255, 255)),
         6
     );
-    m_AngelinaCostText->m_Transform.translation = {460, -350};
+    m_AngelinaCostText->GetTransform().translation = {460, -350};
     m_AngelinaCostText->SetVisible(false);
     m_Root.AddChild(m_AngelinaCostText);
 
@@ -269,7 +269,7 @@ void App::start() {
         std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "6", Util::Color(255, 255, 255)),
         6
     );
-    m_RedCostText->m_Transform.translation = {340, -350};
+    m_RedCostText->GetTransform().translation = {340, -350};
     m_RedCostText->SetVisible(false);
     m_Root.AddChild(m_RedCostText);
 
@@ -277,7 +277,7 @@ void App::start() {
         std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "20", Util::Color(255, 255, 255)),
         6
     );
-    m_EyjafjallaCostText->m_Transform.translation = {220, -350};
+    m_EyjafjallaCostText->GetTransform().translation = {220, -350};
     m_EyjafjallaCostText->SetVisible(false);
     m_Root.AddChild(m_EyjafjallaCostText);
 
@@ -285,7 +285,7 @@ void App::start() {
         std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "12", Util::Color(255, 255, 255)),
         6
     );
-    m_TexasCostText->m_Transform.translation = {100, -350};
+    m_TexasCostText->GetTransform().translation = {100, -350};
     m_TexasCostText->SetVisible(false);
     m_Root.AddChild(m_TexasCostText);
 
@@ -293,7 +293,7 @@ void App::start() {
         std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "10", Util::Color(255, 255, 255)),
         6
     );
-    m_UmirinCostText->m_Transform.translation = {-20, -350};
+    m_UmirinCostText->GetTransform().translation = {-20, -350};
     m_UmirinCostText->SetVisible(false);
     m_Root.AddChild(m_UmirinCostText);
 
@@ -505,7 +505,7 @@ void App::update() {
             }
         } else if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
             // Check Amiya icon click
-            if (m_AmiyaIcon->GetVisible() && glm::distance(mousePos, m_AmiyaIcon->m_Transform.translation) < 60.0f) {
+            if (m_AmiyaIcon->GetVisible() && glm::distance(mousePos, m_AmiyaIcon->GetTransform().translation) < 60.0f) {
                 if (m_Operators.size() >= 1 && m_CurrentDP >= m_Operators[0]->getDeploymentCost()) {
                     m_DraggedOperator = m_Operators[0];
                     m_DraggedIcon = m_AmiyaIcon;
@@ -515,7 +515,7 @@ void App::update() {
                 }
             } 
             // Check Chen icon click
-            else if (m_ChenIcon->GetVisible() && glm::distance(mousePos, m_ChenIcon->m_Transform.translation) < 60.0f) {
+            else if (m_ChenIcon->GetVisible() && glm::distance(mousePos, m_ChenIcon->GetTransform().translation) < 60.0f) {
                 if (m_Operators.size() >= 2 && m_CurrentDP >= m_Operators[1]->getDeploymentCost()) {
                     m_DraggedOperator = m_Operators[1];
                     m_DraggedIcon = m_ChenIcon;
@@ -525,7 +525,7 @@ void App::update() {
                 }
             }
             // Angelina
-            else if (m_AngelinaIcon->GetVisible() && glm::distance(mousePos, m_AngelinaIcon->m_Transform.translation) < 60.0f) {
+            else if (m_AngelinaIcon->GetVisible() && glm::distance(mousePos, m_AngelinaIcon->GetTransform().translation) < 60.0f) {
                 if (m_Operators.size() >= 3 && m_CurrentDP >= m_Operators[2]->getDeploymentCost()) {
                     m_DraggedOperator = m_Operators[2];
                     m_DraggedIcon = m_AngelinaIcon;
@@ -534,7 +534,7 @@ void App::update() {
                 }
             }
             // Red
-            else if (m_RedIcon->GetVisible() && glm::distance(mousePos, m_RedIcon->m_Transform.translation) < 60.0f) {
+            else if (m_RedIcon->GetVisible() && glm::distance(mousePos, m_RedIcon->GetTransform().translation) < 60.0f) {
                 if (m_Operators.size() >= 4 && m_CurrentDP >= m_Operators[3]->getDeploymentCost()) {
                     m_DraggedOperator = m_Operators[3];
                     m_DraggedIcon = m_RedIcon;
@@ -543,7 +543,7 @@ void App::update() {
                 }
             }
             // Eyja
-            else if (m_EyjafjallaIcon->GetVisible() && glm::distance(mousePos, m_EyjafjallaIcon->m_Transform.translation) < 60.0f) {
+            else if (m_EyjafjallaIcon->GetVisible() && glm::distance(mousePos, m_EyjafjallaIcon->GetTransform().translation) < 60.0f) {
                 if (m_Operators.size() >= 5 && m_CurrentDP >= m_Operators[4]->getDeploymentCost()) {
                     m_DraggedOperator = m_Operators[4];
                     m_DraggedIcon = m_EyjafjallaIcon;
@@ -552,7 +552,7 @@ void App::update() {
                 }
             }
             // Texas
-            else if (m_TexasIcon->GetVisible() && glm::distance(mousePos, m_TexasIcon->m_Transform.translation) < 60.0f) {
+            else if (m_TexasIcon->GetVisible() && glm::distance(mousePos, m_TexasIcon->GetTransform().translation) < 60.0f) {
                 if (m_Operators.size() >= 6 && m_CurrentDP >= m_Operators[5]->getDeploymentCost()) {
                     m_DraggedOperator = m_Operators[5];
                     m_DraggedIcon = m_TexasIcon;
@@ -561,7 +561,7 @@ void App::update() {
                 }
             }
             // Umirin
-            else if (m_UmirinIcon->GetVisible() && glm::distance(mousePos, m_UmirinIcon->m_Transform.translation) < 60.0f) {
+            else if (m_UmirinIcon->GetVisible() && glm::distance(mousePos, m_UmirinIcon->GetTransform().translation) < 60.0f) {
                 if (m_Operators.size() >= 7 && m_CurrentDP >= m_Operators[6]->getDeploymentCost()) {
                     m_DraggedOperator = m_Operators[6];
                     m_DraggedIcon = m_UmirinIcon;

@@ -46,7 +46,7 @@ public:
     }
     
     void Update(const glm::vec2& characterPos, float offset = s_DefaultOffset) {
-        m_Transform.translation = characterPos + glm::vec2{0, offset};
+        GetTransform().translation = characterPos + glm::vec2{0, offset};
         
         if (!m_Visible) return;
 
@@ -55,10 +55,10 @@ public:
         // Scale fill to match current health percentage
         glm::vec2 fillImgSize = m_FillImage->GetSize();
         glm::vec2 currentFillSize = { s_DefaultSize.x * percent, s_DefaultSize.y };
-        m_Fill->m_Transform.scale = currentFillSize / fillImgSize;
+        m_Fill->GetTransform().scale = currentFillSize / fillImgSize;
         
         // Keep it centered above the character
-        m_Fill->m_Transform.translation = m_Transform.translation;
+        m_Fill->GetTransform().translation = GetTransform().translation;
         
         m_Fill->SetVisible(m_Visible && percent > 0.001f);
     }

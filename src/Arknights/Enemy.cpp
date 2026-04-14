@@ -30,7 +30,7 @@ void Enemy::init(const std::vector<std::string>& animationPaths) {
 
     // Shrink the enemy sprite so it takes less screen space and face left.
     constexpr float ENEMY_SCALE = 0.3F;
-    m_Transform.scale = glm::vec2{-ENEMY_SCALE, ENEMY_SCALE};
+    GetTransform().scale = glm::vec2{-ENEMY_SCALE, ENEMY_SCALE};
 
     // Initialize Health Bar
     m_HealthBar = std::make_shared<HealthBar>(1.6f);
@@ -55,7 +55,7 @@ void Enemy::spawn(const std::vector<glm::vec2>& gridPath, float hp, float speed,
     if (!m_GridWaypoints.empty()) {
         m_CurrentGridPos = m_GridWaypoints[0];
         glm::vec3 p = m_Homography * glm::vec3(m_CurrentGridPos.y, m_CurrentGridPos.x, 1.0f);
-        m_Transform.translation = {p.x / p.z, p.y / p.z};
+        GetTransform().translation = {p.x / p.z, p.y / p.z};
     }
 
     SetDrawable(m_MoveAnimation);
@@ -69,7 +69,7 @@ void Enemy::despawn() {
     m_TargetOperator = nullptr;
     m_Hp = 0.0F;
     m_Speed = 0.0F;
-    m_Transform.rotation = 0.0f;
+    GetTransform().rotation = 0.0f;
     m_State = State::DEAD;
     SetVisible(false);
     if (m_HealthBar) {
@@ -152,7 +152,7 @@ void Enemy::update(float deltaTime) {
 
     // Project current grid position to world coordinates
     glm::vec3 p = m_Homography * glm::vec3(m_CurrentGridPos.y, m_CurrentGridPos.x, 1.0f); // c=y, r=x
-    m_Transform.translation = {p.x / p.z, p.y / p.z};
+    GetTransform().translation = {p.x / p.z, p.y / p.z};
 
     updateHealthBar();
 }
@@ -166,7 +166,7 @@ void Enemy::updateHealthBar() {
     if (visible) {
         m_HealthBar->SetValue(m_Hp, m_MaxHp);
         // Position UNDER enemy (offset -10.0f)
-        m_HealthBar->Update(m_Transform.translation, -10.0f);
+        m_HealthBar->Update(GetTransform().translation, -10.0f);
     }
 }
 

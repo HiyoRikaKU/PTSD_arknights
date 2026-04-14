@@ -43,7 +43,7 @@ public:
     void setTargetOperator(class Operator* op) { m_TargetOperator = op; }
     class Operator* getTargetOperator() const { return m_TargetOperator; }
 
-    glm::vec2 getPosition() const { return m_Transform.translation; }
+    glm::vec2 getPosition() const { return GetTransform().translation; }
     glm::vec2 getGridPosition() const { return m_CurrentGridPos; }
 
     void takeDamage(float damage) {

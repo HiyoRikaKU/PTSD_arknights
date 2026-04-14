@@ -89,25 +89,25 @@ void Operator::updateHealthBar() {
     if (visible) {
         m_HealthBar->SetValue(m_Hp, m_MaxHp);
         // Position UNDER operator (offset -10.0f)
-        m_HealthBar->Update(m_Transform.translation + glm::vec2(0, m_VisualOffset), -10.0f);
+        m_HealthBar->Update(GetTransform().translation + glm::vec2(0, m_VisualOffset), -10.0f);
     }
 }
 
 void Operator::setDirection(Direction direction) {
     m_Direction = direction;
-    m_Transform.scale.y = m_BaseScale;
+    GetTransform().scale.y = m_BaseScale;
     switch (m_Direction) {
         case Direction::LEFT:
-            m_Transform.scale.x = -m_BaseScale;
+            GetTransform().scale.x = -m_BaseScale;
             break;
         case Direction::RIGHT:
-            m_Transform.scale.x = m_BaseScale;
+            GetTransform().scale.x = m_BaseScale;
             break;
         case Direction::UP:
-            m_Transform.scale.x = -m_BaseScale;
+            GetTransform().scale.x = -m_BaseScale;
             break;
         case Direction::DOWN:
-            m_Transform.scale.x = -m_BaseScale;
+            GetTransform().scale.x = -m_BaseScale;
             break;
     }
 }

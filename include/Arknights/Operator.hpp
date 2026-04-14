@@ -83,8 +83,8 @@ public:
     std::size_t getAttackCount() const { return m_AttackCount; }
 
     // Position on the map (world coordinates)
-    void setPosition(const glm::vec2& position) { m_Transform.translation = position; }
-    glm::vec2 getPosition() const { return m_Transform.translation; }
+    void setPosition(const glm::vec2& position) { GetTransform().translation = position; }
+    glm::vec2 getPosition() const { return GetTransform().translation; }
 
     void setGridPosition(const glm::vec2& gridPosition) { m_GridPosition = gridPosition; }
     glm::vec2 getGridPosition() const { return m_GridPosition; }
