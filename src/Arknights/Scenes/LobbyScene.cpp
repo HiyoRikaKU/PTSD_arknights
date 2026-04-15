@@ -35,7 +35,7 @@ void LobbyScene::createBackground() {
         std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/UI_HOME_FRONT_BKG.png"),
         0
     );
-    m_Background->GetTransform().scale = glm::vec2(1280.0f, 720.0f) / m_Background->GetScaledSize();
+    m_Background->m_Transform.scale = glm::vec2(1600.0f, 900.0f) / m_Background->GetScaledSize();
     m_Root.AddChild(m_Background);
     // Character art (use Chen from arknights-ui or Amiya from existing resources)
     try {
@@ -44,8 +44,8 @@ void LobbyScene::createBackground() {
             std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/Haze_Skin_1.png"),
             1
         );
-        m_CharacterArt->GetTransform().translation = {-200, -50};
-        m_CharacterArt->GetTransform().scale = glm::vec2(0.6f);
+        m_CharacterArt->m_Transform.translation = {-300, -50};
+        m_CharacterArt->m_Transform.scale = glm::vec2(0.75f); // Scale up slightly for larger resolution
         m_Root.AddChild(m_CharacterArt);
     } catch (...) {
         // Fallback to Amiya
@@ -54,8 +54,8 @@ void LobbyScene::createBackground() {
                 std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/char_002_amiya/Idle_01.png"),
                 1
             );
-            m_CharacterArt->GetTransform().translation = {-300, -100};
-            m_CharacterArt->GetTransform().scale = glm::vec2(0.8f);
+            m_CharacterArt->m_Transform.translation = {-400, -100};
+            m_CharacterArt->m_Transform.scale = glm::vec2(1.0f);
             m_Root.AddChild(m_CharacterArt);
         } catch (...) {
             LOG_WARN("Could not load character art");
@@ -72,7 +72,7 @@ void LobbyScene::createUserInfo() {
         Util::Color(255, 255, 255)
     );
     auto levelObj = std::make_shared<Util::GameObject>(m_UserLevel, 10);
-    levelObj->GetTransform().translation = {-550, 300};
+    levelObj->m_Transform.translation = {-710, 390};
     m_Root.AddChild(levelObj);
     
     // User Name
@@ -83,7 +83,7 @@ void LobbyScene::createUserInfo() {
         Util::Color(255, 255, 255)
     );
     auto nameObj = std::make_shared<Util::GameObject>(m_UserName, 10);
-    nameObj->GetTransform().translation = {-550, 250};
+    nameObj->m_Transform.translation = {-710, 340};
     m_Root.AddChild(nameObj);
     
     // User ID
@@ -94,7 +94,7 @@ void LobbyScene::createUserInfo() {
         Util::Color(200, 200, 200)
     );
     auto idObj = std::make_shared<Util::GameObject>(m_UserID, 10);
-    idObj->GetTransform().translation = {-550, 220};
+    idObj->m_Transform.translation = {-710, 310};
     m_Root.AddChild(idObj);
     
     // Dialog text (bottom-left)
@@ -105,7 +105,7 @@ void LobbyScene::createUserInfo() {
         Util::Color(255, 255, 255)
     );
     auto dialogObj = std::make_shared<Util::GameObject>(m_DialogText, 10);
-    dialogObj->GetTransform().translation = {-450, -280};
+    dialogObj->m_Transform.translation = {-610, -370};
     m_Root.AddChild(dialogObj);
 }
 
@@ -118,7 +118,7 @@ void LobbyScene::createResourceDisplay() {
         Util::Color(255, 255, 255)
     );
     auto moneyObj = std::make_shared<Util::GameObject>(m_Money, 10);
-    moneyObj->GetTransform().translation = {350, 310};
+    moneyObj->m_Transform.translation = {510, 400};
     m_Root.AddChild(moneyObj);
     
     // Jasper
@@ -129,7 +129,7 @@ void LobbyScene::createResourceDisplay() {
         Util::Color(255, 255, 255)
     );
     auto jasperObj = std::make_shared<Util::GameObject>(m_Jasper, 10);
-    jasperObj->GetTransform().translation = {470, 310};
+    jasperObj->m_Transform.translation = {630, 400};
     m_Root.AddChild(jasperObj);
     
     // Stone
@@ -140,7 +140,7 @@ void LobbyScene::createResourceDisplay() {
         Util::Color(255, 255, 255)
     );
     auto stoneObj = std::make_shared<Util::GameObject>(m_Stone, 10);
-    stoneObj->GetTransform().translation = {590, 310};
+    stoneObj->m_Transform.translation = {750, 400};
     m_Root.AddChild(stoneObj);
     
     // Sanity display
@@ -151,7 +151,7 @@ void LobbyScene::createResourceDisplay() {
         Util::Color(100, 200, 255)
     );
     auto sanityObj = std::make_shared<Util::GameObject>(m_SanityDisplay, 10);
-    sanityObj->GetTransform().translation = {450, 260};
+    sanityObj->m_Transform.translation = {610, 350};
     m_Root.AddChild(sanityObj);
     
     // Current stage info
@@ -162,7 +162,7 @@ void LobbyScene::createResourceDisplay() {
         Util::Color(255, 255, 255)
     );
     auto stageObj = std::make_shared<Util::GameObject>(m_CurrentStage, 10);
-    stageObj->GetTransform().translation = {450, 220};
+    stageObj->m_Transform.translation = {610, 310};
     m_Root.AddChild(stageObj);
 }
 
@@ -172,7 +172,7 @@ void LobbyScene::createMainButtons() {
         "作戰",
         std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf",
         28,
-        glm::vec2(450, 140),
+        glm::vec2(610, 230),
         glm::vec2(180, 60),
         15
     );
@@ -185,7 +185,7 @@ void LobbyScene::createMainButtons() {
         "編隊",
         std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf",
         24,
-        glm::vec2(350, 60),
+        glm::vec2(510, 150),
         glm::vec2(150, 50),
         15
     );
@@ -198,7 +198,7 @@ void LobbyScene::createMainButtons() {
         "幹員",
         std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf",
         24,
-        glm::vec2(550, 60),
+        glm::vec2(710, 150),
         glm::vec2(150, 50),
         15
     );
@@ -211,7 +211,7 @@ void LobbyScene::createMainButtons() {
         "任務",
         std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf",
         20,
-        glm::vec2(350, -40),
+        glm::vec2(510, 50),
         glm::vec2(130, 45),
         15
     );
@@ -222,7 +222,7 @@ void LobbyScene::createMainButtons() {
         "基建",
         std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf",
         20,
-        glm::vec2(500, -40),
+        glm::vec2(660, 50),
         glm::vec2(130, 45),
         15
     );
@@ -238,7 +238,7 @@ void LobbyScene::createTimeDisplay() {
         Util::Color(255, 255, 255)
     );
     auto timeObj = std::make_shared<Util::GameObject>(m_TimeDisplay, 10);
-    timeObj->GetTransform().translation = {500, 340};
+    timeObj->m_Transform.translation = {660, 430};
     m_Root.AddChild(timeObj);
 }
 

@@ -25,8 +25,8 @@ void LoginScene::createLoginUI() {
         std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/login_page.jpg"),
         0
     );
-    // Scale to fit screen (1280x720)
-    m_LoginBackground->GetTransform().scale = glm::vec2(1280.0f, 720.0f) / m_LoginBackground->GetScaledSize();
+    // Scale to fit screen (1600x900)
+    m_LoginBackground->m_Transform.scale = glm::vec2(1600.0f, 900.0f) / m_LoginBackground->GetScaledSize();
     m_Root.AddChild(m_LoginBackground);
     
     // Create START button in the center-bottom

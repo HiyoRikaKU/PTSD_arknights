@@ -7,13 +7,13 @@ namespace UI {
 Button::Button(const std::string& imagePath, const glm::vec2& position, float zIndex) {
     auto image = std::make_shared<Util::Image>(imagePath);
     SetDrawable(image);
-    GetTransform().translation = position;
+    m_Transform.translation = position;
     SetZIndex(zIndex);
-    
+
     m_Size = image->GetSize();
     m_OriginalScale = glm::vec2(1.0f);
-    GetTransform().scale = m_OriginalScale;
-    
+    m_Transform.scale = m_OriginalScale;
+
     init();
 }
 
@@ -21,13 +21,13 @@ Button::Button(const std::string& text, const std::string& fontPath, int fontSiz
                const glm::vec2& position, const glm::vec2& size, float zIndex) {
     m_TextDrawable = std::make_shared<Util::Text>(fontPath, fontSize, text, Util::Color(255, 255, 255));
     SetDrawable(m_TextDrawable);
-    GetTransform().translation = position;
+    m_Transform.translation = position;
     SetZIndex(zIndex);
-    
+
     m_Size = size;
     m_OriginalScale = glm::vec2(1.0f);
-    GetTransform().scale = m_OriginalScale;
-    
+    m_Transform.scale = m_OriginalScale;
+
     init();
 }
 
@@ -39,38 +39,38 @@ void Button::update(float /*deltaTime*/) {
     glm::vec2 mousePos = Util::Input::GetCursorPosition();
     bool wasHovered = m_IsHovered;
     m_IsHovered = containsPoint(mousePos);
-    
+
     bool mouseDown = Util::Input::IsKeyPressed(Util::Keycode::MOUSE_LB);
-    
+
     // Handle hover effect
     if (m_IsHovered && !wasHovered) {
-        GetTransform().scale = m_OriginalScale * m_HoverScale;
+        m_Transform.scale = m_OriginalScale * m_HoverScale;
     } else if (!m_IsHovered && wasHovered) {
-        GetTransform().scale = m_OriginalScale;
+        m_Transform.scale = m_OriginalScale;
     }
-    
+
     // Handle click
     if (m_IsHovered && mouseDown) {
         m_IsPressed = true;
-        GetTransform().scale = m_OriginalScale * m_ClickScale;
+        m_Transform.scale = m_OriginalScale * m_ClickScale;
     } else {
         if (m_IsPressed && m_WasPressed && !mouseDown) {
             // Click released
             if (m_OnClick) {
                 m_OnClick();
             }
-            GetTransform().scale = m_IsHovered ? m_OriginalScale * m_HoverScale : m_OriginalScale;
+            m_Transform.scale = m_IsHovered ? m_OriginalScale * m_HoverScale : m_OriginalScale;
         }
         m_IsPressed = false;
     }
-    
+
     m_WasPressed = mouseDown;
 }
 
 bool Button::containsPoint(const glm::vec2& point) const {
-    glm::vec2 pos = GetTransform().translation;
-    glm::vec2 halfSize = m_Size * GetTransform().scale * 0.5f;
-    
+    glm::vec2 pos = m_Transform.translation;
+    glm::vec2 halfSize = m_Size * m_Transform.scale * 0.5f;
+
     return point.x >= pos.x - halfSize.x && point.x <= pos.x + halfSize.x &&
            point.y >= pos.y - halfSize.y && point.y <= pos.y + halfSize.y;
 }

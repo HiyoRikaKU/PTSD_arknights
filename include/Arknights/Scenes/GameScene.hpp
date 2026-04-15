@@ -68,31 +68,31 @@ private:
     // Operator system
     std::vector<std::shared_ptr<Operator>> m_Operators;
     std::shared_ptr<Operator> m_DraggedOperator = nullptr;
-    std::shared_ptr<Util::GameObject> m_DraggedIcon = nullptr;
+    std::shared_ptr<ExGameObject> m_DraggedIcon = nullptr;
     std::shared_ptr<Operator> m_ChoosingDirectionOperator = nullptr;
-    std::shared_ptr<Util::GameObject> m_ChoosingDirectionIcon = nullptr;
+    std::shared_ptr<ExGameObject> m_ChoosingDirectionIcon = nullptr;
     
     // UI GameObjects
-    std::shared_ptr<Util::GameObject> m_AmiyaIcon;
-    std::shared_ptr<Util::GameObject> m_ChenIcon;
-    std::shared_ptr<Util::GameObject> m_AngelinaIcon;
-    std::shared_ptr<Util::GameObject> m_RedIcon;
-    std::shared_ptr<Util::GameObject> m_EyjafjallaIcon;
-    std::shared_ptr<Util::GameObject> m_TexasIcon;
-    std::shared_ptr<Util::GameObject> m_UmirinIcon;
+    std::shared_ptr<ExGameObject> m_AmiyaIcon;
+    std::shared_ptr<ExGameObject> m_ChenIcon;
+    std::shared_ptr<ExGameObject> m_AngelinaIcon;
+    std::shared_ptr<ExGameObject> m_RedIcon;
+    std::shared_ptr<ExGameObject> m_EyjafjallaIcon;
+    std::shared_ptr<ExGameObject> m_TexasIcon;
+    std::shared_ptr<ExGameObject> m_UmirinIcon;
 
-    std::shared_ptr<Util::GameObject> m_EnemyCountText;
-    std::shared_ptr<Util::GameObject> m_GameOverText;
-    std::shared_ptr<Util::GameObject> m_RestartText;
-    std::shared_ptr<Util::GameObject> m_DPText;
+    std::shared_ptr<ExGameObject> m_EnemyCountText;
+    std::shared_ptr<ExGameObject> m_GameOverText;
+    std::shared_ptr<ExGameObject> m_RestartText;
+    std::shared_ptr<ExGameObject> m_DPText;
 
-    std::shared_ptr<Util::GameObject> m_AmiyaCostText;
-    std::shared_ptr<Util::GameObject> m_ChenCostText;
-    std::shared_ptr<Util::GameObject> m_AngelinaCostText;
-    std::shared_ptr<Util::GameObject> m_RedCostText;
-    std::shared_ptr<Util::GameObject> m_EyjafjallaCostText;
-    std::shared_ptr<Util::GameObject> m_TexasCostText;
-    std::shared_ptr<Util::GameObject> m_UmirinCostText;
+    std::shared_ptr<ExGameObject> m_AmiyaCostText;
+    std::shared_ptr<ExGameObject> m_ChenCostText;
+    std::shared_ptr<ExGameObject> m_AngelinaCostText;
+    std::shared_ptr<ExGameObject> m_RedCostText;
+    std::shared_ptr<ExGameObject> m_EyjafjallaCostText;
+    std::shared_ptr<ExGameObject> m_TexasCostText;
+    std::shared_ptr<ExGameObject> m_UmirinCostText;
 
     // Audio
     std::unique_ptr<Util::BGM> m_BattleBGM;

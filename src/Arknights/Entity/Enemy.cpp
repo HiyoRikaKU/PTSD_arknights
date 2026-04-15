@@ -26,7 +26,7 @@ void Enemy::init(const std::vector<std::string>& animationPaths) {
     SetZIndex(1.5f);
     
     // Default scale and pivot
-    GetTransform().scale = {m_BaseScale, m_BaseScale};
+    m_Transform.scale = {m_BaseScale, m_BaseScale};
     SetPivot({0, -m_MoveAnimation->GetSize().y / 2.0f});
 }
 
@@ -47,15 +47,15 @@ void Enemy::spawn(const std::vector<glm::vec2>& gridPath, float hp, float speed,
     if (!m_GridWaypoints.empty()) {
         m_CurrentGridPos = m_GridWaypoints[0];
         glm::vec3 p = m_Homography * glm::vec3(m_CurrentGridPos.y, m_CurrentGridPos.x, 1.0f);
-        GetTransform().translation = {p.x / p.z, p.y / p.z};
+        m_Transform.translation = {p.x / p.z, p.y / p.z};
 
         // Initial flip
         if (m_GridWaypoints.size() > 1) {
             glm::vec2 dir = m_GridWaypoints[1] - m_GridWaypoints[0];
             if (dir.y > 0) {
-                GetTransform().scale.x = m_BaseScale;
+                m_Transform.scale.x = m_BaseScale;
             } else if (dir.y < 0) {
-                GetTransform().scale.x = -m_BaseScale;
+                m_Transform.scale.x = -m_BaseScale;
             }
         }
     }
@@ -96,9 +96,9 @@ void Enemy::update(float deltaTime) {
         // Flip sprite based on movement direction (y is column/horizontal)
         // Default is facing right
         if (dir.y > 0) {
-            GetTransform().scale.x = m_BaseScale; // face right
+            m_Transform.scale.x = m_BaseScale; // face right
         } else if (dir.y < 0) {
-            GetTransform().scale.x = -m_BaseScale; // Flip to face left
+            m_Transform.scale.x = -m_BaseScale; // Flip to face left
         }
     }
 
@@ -130,7 +130,7 @@ void Enemy::update(float deltaTime) {
 
         // Project to screen
         glm::vec3 p = m_Homography * glm::vec3(m_CurrentGridPos.y, m_CurrentGridPos.x, 1.0f);
-        GetTransform().translation = {p.x / p.z, p.y / p.z};
+        m_Transform.translation = {p.x / p.z, p.y / p.z};
     } else {
         m_ReachedEnd = true;
         despawn();
@@ -156,7 +156,7 @@ void Enemy::updateHealthBar() {
     if (m_HealthBar) {
         m_HealthBar->SetValue(m_Hp, m_MaxHp);
         // Position at the bottom of enemy
-        m_HealthBar->Update(GetTransform().translation, -10.0f);
+        m_HealthBar->Update(m_Transform.translation, -10.0f);
     }
 }
 

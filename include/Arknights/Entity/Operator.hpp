@@ -11,6 +11,13 @@
 
 namespace Arknights {
 
+class ExGameObject : public Util::GameObject {
+public:
+    using Util::GameObject::GameObject;
+    bool GetVisible() const { return m_Visible; }
+    std::shared_ptr<Core::Drawable> GetDrawable() const { return m_Drawable; }
+};
+
 class Operator : public Util::GameObject {
 public:
     enum class State {
@@ -83,8 +90,8 @@ public:
     std::size_t getAttackCount() const { return m_AttackCount; }
 
     // Position on the map (world coordinates)
-    void setPosition(const glm::vec2& position) { GetTransform().translation = position; }
-    glm::vec2 getPosition() const { return GetTransform().translation; }
+    void setPosition(const glm::vec2& position) { m_Transform.translation = position; }
+    glm::vec2 getPosition() const { return m_Transform.translation; }
 
     void setGridPosition(const glm::vec2& gridPosition) { m_GridPosition = gridPosition; }
     glm::vec2 getGridPosition() const { return m_GridPosition; }
@@ -101,6 +108,9 @@ public:
         Util::GameObject::SetVisible(visible);
         updateHealthBar();
     }
+
+    bool GetVisible() const { return m_Visible; }
+    std::shared_ptr<Core::Drawable> GetDrawable() const { return m_Drawable; }
 
 protected:
     void init(const std::vector<std::string>& idleAnimationPaths, const std::vector<std::string>& attackAnimationPaths);

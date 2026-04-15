@@ -106,87 +106,87 @@ void GameScene::init() {
     m_Root.AddChild(umirin);
 
     // 5. Initialize Icons
-    m_AmiyaIcon = std::make_shared<Util::GameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Amiya_icon.png"), 5);
-    m_AmiyaIcon->GetTransform().translation = {700, -350};
-    m_AmiyaIcon->GetTransform().scale = {0.7f, 0.7f};
+    m_AmiyaIcon = std::make_shared<ExGameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Amiya_icon.png"), 5);
+    m_AmiyaIcon->m_Transform.translation = {700, -350};
+    m_AmiyaIcon->m_Transform.scale = {0.7f, 0.7f};
     m_Root.AddChild(m_AmiyaIcon);
 
-    m_ChenIcon = std::make_shared<Util::GameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Chen_icon.png"), 5);
-    m_ChenIcon->GetTransform().translation = {580, -350};
-    m_ChenIcon->GetTransform().scale = {0.7f, 0.7f};
+    m_ChenIcon = std::make_shared<ExGameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Chen_icon.png"), 5);
+    m_ChenIcon->m_Transform.translation = {580, -350};
+    m_ChenIcon->m_Transform.scale = {0.7f, 0.7f};
     m_Root.AddChild(m_ChenIcon);
 
-    m_AngelinaIcon = std::make_shared<Util::GameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Angelina_icon.png"), 5);
-    m_AngelinaIcon->GetTransform().translation = {460, -350};
-    m_AngelinaIcon->GetTransform().scale = {0.7f, 0.7f};
+    m_AngelinaIcon = std::make_shared<ExGameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Angelina_icon.png"), 5);
+    m_AngelinaIcon->m_Transform.translation = {460, -350};
+    m_AngelinaIcon->m_Transform.scale = {0.7f, 0.7f};
     m_Root.AddChild(m_AngelinaIcon);
 
-    m_RedIcon = std::make_shared<Util::GameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Projekt_Red_icon.png"), 5);
-    m_RedIcon->GetTransform().translation = {340, -350};
-    m_RedIcon->GetTransform().scale = {0.7f, 0.7f};
+    m_RedIcon = std::make_shared<ExGameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Projekt_Red_icon.png"), 5);
+    m_RedIcon->m_Transform.translation = {340, -350};
+    m_RedIcon->m_Transform.scale = {0.7f, 0.7f};
     m_Root.AddChild(m_RedIcon);
 
-    m_EyjafjallaIcon = std::make_shared<Util::GameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Eyjafjalla_icon.png"), 5);
-    m_EyjafjallaIcon->GetTransform().translation = {220, -350};
-    m_EyjafjallaIcon->GetTransform().scale = {0.7f, 0.7f};
+    m_EyjafjallaIcon = std::make_shared<ExGameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Eyjafjalla_icon.png"), 5);
+    m_EyjafjallaIcon->m_Transform.translation = {220, -350};
+    m_EyjafjallaIcon->m_Transform.scale = {0.7f, 0.7f};
     m_Root.AddChild(m_EyjafjallaIcon);
 
-    m_TexasIcon = std::make_shared<Util::GameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/texas.png"), 5);
-    m_TexasIcon->GetTransform().translation = {100, -350};
-    m_TexasIcon->GetTransform().scale = {0.7f, 0.7f};
+    m_TexasIcon = std::make_shared<ExGameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/texas.png"), 5);
+    m_TexasIcon->m_Transform.translation = {100, -350};
+    m_TexasIcon->m_Transform.scale = {0.7f, 0.7f};
     m_Root.AddChild(m_TexasIcon);
 
-    m_UmirinIcon = std::make_shared<Util::GameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Yahata_Umiri_icon.png"), 5);
-    m_UmirinIcon->GetTransform().translation = {-20, -350};
-    m_UmirinIcon->GetTransform().scale = {0.7f, 0.7f};
+    m_UmirinIcon = std::make_shared<ExGameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/operator/Yahata_Umiri_icon.png"), 5);
+    m_UmirinIcon->m_Transform.translation = {-20, -350};
+    m_UmirinIcon->m_Transform.scale = {0.7f, 0.7f};
     m_Root.AddChild(m_UmirinIcon);
 
     // 6. Initialize UI Text
-    m_EnemyCountText = std::make_shared<Util::GameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 36, "0 / 4", Util::Color(255, 255, 255)), 2);
-    m_EnemyCountText->GetTransform().translation = {0, 400};
+    m_EnemyCountText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 36, "0 / 4", Util::Color(255, 255, 255)), 2);
+    m_EnemyCountText->m_Transform.translation = {0, 400};
     m_Root.AddChild(m_EnemyCountText);
 
-    m_GameOverText = std::make_shared<Util::GameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 100, "", Util::Color(255, 0, 0)), 10);
-    m_GameOverText->GetTransform().translation = {0, 0};
+    m_GameOverText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 100, " ", Util::Color(255, 0, 0)), 10);
+    m_GameOverText->m_Transform.translation = {0, 0};
     m_GameOverText->SetVisible(false);
     m_Root.AddChild(m_GameOverText);
 
-    m_RestartText = std::make_shared<Util::GameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "Press R to Restart, ESC to Exit", Util::Color(200, 200, 200)), 10);
-    m_RestartText->GetTransform().translation = {0, -100};
+    m_RestartText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "Press R to Restart, ESC to Exit", Util::Color(200, 200, 200)), 10);
+    m_RestartText->m_Transform.translation = {0, -100};
     m_RestartText->SetVisible(false);
     m_Root.AddChild(m_RestartText);
 
-    m_DPText = std::make_shared<Util::GameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 40, "COST: 10", Util::Color(255, 255, 0)), 2);
-    m_DPText->GetTransform().translation = {700, -450};
+    m_DPText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 40, "COST: 10", Util::Color(255, 255, 0)), 2);
+    m_DPText->m_Transform.translation = {700, -450};
     m_Root.AddChild(m_DPText);
 
     // Cost labels
-    m_AmiyaCostText = std::make_shared<Util::GameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "10", Util::Color(255, 255, 255)), 6);
-    m_AmiyaCostText->GetTransform().translation = {700, -350};
+    m_AmiyaCostText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "10", Util::Color(255, 255, 255)), 6);
+    m_AmiyaCostText->m_Transform.translation = {700, -350};
     m_Root.AddChild(m_AmiyaCostText);
 
-    m_ChenCostText = std::make_shared<Util::GameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "18", Util::Color(255, 255, 255)), 6);
-    m_ChenCostText->GetTransform().translation = {580, -350};
+    m_ChenCostText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "18", Util::Color(255, 255, 255)), 6);
+    m_ChenCostText->m_Transform.translation = {580, -350};
     m_Root.AddChild(m_ChenCostText);
 
-    m_AngelinaCostText = std::make_shared<Util::GameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "14", Util::Color(255, 255, 255)), 6);
-    m_AngelinaCostText->GetTransform().translation = {460, -350};
+    m_AngelinaCostText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "14", Util::Color(255, 255, 255)), 6);
+    m_AngelinaCostText->m_Transform.translation = {460, -350};
     m_Root.AddChild(m_AngelinaCostText);
 
-    m_RedCostText = std::make_shared<Util::GameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "6", Util::Color(255, 255, 255)), 6);
-    m_RedCostText->GetTransform().translation = {340, -350};
+    m_RedCostText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "6", Util::Color(255, 255, 255)), 6);
+    m_RedCostText->m_Transform.translation = {340, -350};
     m_Root.AddChild(m_RedCostText);
 
-    m_EyjafjallaCostText = std::make_shared<Util::GameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "20", Util::Color(255, 255, 255)), 6);
-    m_EyjafjallaCostText->GetTransform().translation = {220, -350};
+    m_EyjafjallaCostText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "20", Util::Color(255, 255, 255)), 6);
+    m_EyjafjallaCostText->m_Transform.translation = {220, -350};
     m_Root.AddChild(m_EyjafjallaCostText);
 
-    m_TexasCostText = std::make_shared<Util::GameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "12", Util::Color(255, 255, 255)), 6);
-    m_TexasCostText->GetTransform().translation = {100, -350};
+    m_TexasCostText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "12", Util::Color(255, 255, 255)), 6);
+    m_TexasCostText->m_Transform.translation = {100, -350};
     m_Root.AddChild(m_TexasCostText);
 
-    m_UmirinCostText = std::make_shared<Util::GameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "10", Util::Color(255, 255, 255)), 6);
-    m_UmirinCostText->GetTransform().translation = {-20, -350};
+    m_UmirinCostText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "10", Util::Color(255, 255, 255)), 6);
+    m_UmirinCostText->m_Transform.translation = {-20, -350};
     m_Root.AddChild(m_UmirinCostText);
 
     // 7. Battle BGM
@@ -375,37 +375,37 @@ void GameScene::handleOperatorDrag(float /*deltaTime*/) {
             m_ChoosingDirectionIcon = nullptr;
         }
     } else if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
-        if (m_AmiyaIcon->GetVisible() && glm::distance(mousePos, m_AmiyaIcon->GetTransform().translation) < 60.0f) {
+        if (m_AmiyaIcon->GetVisible() && glm::distance(mousePos, m_AmiyaIcon->m_Transform.translation) < 60.0f) {
             if (m_Operators.size() >= 1 && m_CurrentDP >= m_Operators[0]->getDeploymentCost()) {
                 m_DraggedOperator = m_Operators[0]; m_DraggedIcon = m_AmiyaIcon;
                 m_DraggedOperator->SetVisible(true); m_DraggedIcon->SetVisible(false);
             }
-        } else if (m_ChenIcon->GetVisible() && glm::distance(mousePos, m_ChenIcon->GetTransform().translation) < 60.0f) {
+        } else if (m_ChenIcon->GetVisible() && glm::distance(mousePos, m_ChenIcon->m_Transform.translation) < 60.0f) {
             if (m_Operators.size() >= 2 && m_CurrentDP >= m_Operators[1]->getDeploymentCost()) {
                 m_DraggedOperator = m_Operators[1]; m_DraggedIcon = m_ChenIcon;
                 m_DraggedOperator->SetVisible(true); m_DraggedIcon->SetVisible(false);
             }
-        } else if (m_AngelinaIcon->GetVisible() && glm::distance(mousePos, m_AngelinaIcon->GetTransform().translation) < 60.0f) {
+        } else if (m_AngelinaIcon->GetVisible() && glm::distance(mousePos, m_AngelinaIcon->m_Transform.translation) < 60.0f) {
             if (m_Operators.size() >= 3 && m_CurrentDP >= m_Operators[2]->getDeploymentCost()) {
                 m_DraggedOperator = m_Operators[2]; m_DraggedIcon = m_AngelinaIcon;
                 m_DraggedOperator->SetVisible(true); m_DraggedIcon->SetVisible(false);
             }
-        } else if (m_RedIcon->GetVisible() && glm::distance(mousePos, m_RedIcon->GetTransform().translation) < 60.0f) {
+        } else if (m_RedIcon->GetVisible() && glm::distance(mousePos, m_RedIcon->m_Transform.translation) < 60.0f) {
             if (m_Operators.size() >= 4 && m_CurrentDP >= m_Operators[3]->getDeploymentCost()) {
                 m_DraggedOperator = m_Operators[3]; m_DraggedIcon = m_RedIcon;
                 m_DraggedOperator->SetVisible(true); m_DraggedIcon->SetVisible(false);
             }
-        } else if (m_EyjafjallaIcon->GetVisible() && glm::distance(mousePos, m_EyjafjallaIcon->GetTransform().translation) < 60.0f) {
+        } else if (m_EyjafjallaIcon->GetVisible() && glm::distance(mousePos, m_EyjafjallaIcon->m_Transform.translation) < 60.0f) {
             if (m_Operators.size() >= 5 && m_CurrentDP >= m_Operators[4]->getDeploymentCost()) {
                 m_DraggedOperator = m_Operators[4]; m_DraggedIcon = m_EyjafjallaIcon;
                 m_DraggedOperator->SetVisible(true); m_DraggedIcon->SetVisible(false);
             }
-        } else if (m_TexasIcon->GetVisible() && glm::distance(mousePos, m_TexasIcon->GetTransform().translation) < 60.0f) {
+        } else if (m_TexasIcon->GetVisible() && glm::distance(mousePos, m_TexasIcon->m_Transform.translation) < 60.0f) {
             if (m_Operators.size() >= 6 && m_CurrentDP >= m_Operators[5]->getDeploymentCost()) {
                 m_DraggedOperator = m_Operators[5]; m_DraggedIcon = m_TexasIcon;
                 m_DraggedOperator->SetVisible(true); m_DraggedIcon->SetVisible(false);
             }
-        } else if (m_UmirinIcon->GetVisible() && glm::distance(mousePos, m_UmirinIcon->GetTransform().translation) < 60.0f) {
+        } else if (m_UmirinIcon->GetVisible() && glm::distance(mousePos, m_UmirinIcon->m_Transform.translation) < 60.0f) {
             if (m_Operators.size() >= 7 && m_CurrentDP >= m_Operators[6]->getDeploymentCost()) {
                 m_DraggedOperator = m_Operators[6]; m_DraggedIcon = m_UmirinIcon;
                 m_DraggedOperator->SetVisible(true); m_DraggedIcon->SetVisible(false);
