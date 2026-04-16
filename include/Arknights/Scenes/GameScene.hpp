@@ -35,7 +35,7 @@ private:
     void initEnemies();
     void initOperators();
     void initUI();
-    
+
     void spawnEnemy(const SpawnEvent& event);
     void handleOperatorDrag(float deltaTime);
 

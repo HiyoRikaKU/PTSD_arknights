@@ -1,5 +1,5 @@
 #include "Arknights/Scenes/LobbyScene.hpp"
-#include "Arknights/Scenes/GameScene.hpp"
+#include "Arknights/Scenes/LoadingScene.hpp"
 #include "Arknights/Core/SceneManager.hpp"
 #include "Util/Logger.hpp"
 #include "Util/Time.hpp"
@@ -287,9 +287,9 @@ void LobbyScene::onExit() {
 void LobbyScene::onStageButtonClicked() {
     LOG_INFO("Stage button clicked - Starting game...");
     
-    // Push GameScene
-    auto gameScene = std::make_shared<GameScene>();
-    Core::SceneManager::getInstance().pushScene(gameScene);
+    // Push LoadingScene
+    auto loadingScene = std::make_shared<LoadingScene>();
+    Core::SceneManager::getInstance().pushScene(loadingScene);
 }
 
 void LobbyScene::onOperatorButtonClicked() {

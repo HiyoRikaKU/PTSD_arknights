@@ -11,6 +11,7 @@
 
 namespace Arknights {
 
+
 GameScene::GameScene() {
 }
 
@@ -157,43 +158,36 @@ void GameScene::init() {
     m_Root.AddChild(m_RestartText);
 
     m_DPText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 40, "COST: 10", Util::Color(255, 255, 0)), 2);
-    m_DPText->m_Transform.translation = {700, -450};
     m_Root.AddChild(m_DPText);
 
     // Cost labels
     m_AmiyaCostText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "10", Util::Color(255, 255, 255)), 6);
-    m_AmiyaCostText->m_Transform.translation = {700, -350};
     m_Root.AddChild(m_AmiyaCostText);
 
     m_ChenCostText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "18", Util::Color(255, 255, 255)), 6);
-    m_ChenCostText->m_Transform.translation = {580, -350};
     m_Root.AddChild(m_ChenCostText);
 
     m_AngelinaCostText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "14", Util::Color(255, 255, 255)), 6);
-    m_AngelinaCostText->m_Transform.translation = {460, -350};
     m_Root.AddChild(m_AngelinaCostText);
 
     m_RedCostText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "6", Util::Color(255, 255, 255)), 6);
-    m_RedCostText->m_Transform.translation = {340, -350};
     m_Root.AddChild(m_RedCostText);
 
     m_EyjafjallaCostText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "20", Util::Color(255, 255, 255)), 6);
-    m_EyjafjallaCostText->m_Transform.translation = {220, -350};
     m_Root.AddChild(m_EyjafjallaCostText);
 
     m_TexasCostText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "12", Util::Color(255, 255, 255)), 6);
-    m_TexasCostText->m_Transform.translation = {100, -350};
     m_Root.AddChild(m_TexasCostText);
 
     m_UmirinCostText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "10", Util::Color(255, 255, 255)), 6);
-    m_UmirinCostText->m_Transform.translation = {-20, -350};
     m_Root.AddChild(m_UmirinCostText);
 
     // 7. Battle BGM
     m_BattleBGM = std::make_unique<Util::BGM>(std::string(RESOURCE_DIR) + "/SFX/battle/battle.mp3");
-    
+
     m_Initialized = true;
 }
+
 
 void GameScene::spawnEnemy(const SpawnEvent& event) {
     if (!m_EnemyPool || !m_CurrentOperation) return;
@@ -223,6 +217,11 @@ void GameScene::spawnEnemy(const SpawnEvent& event) {
 }
 
 void GameScene::update(float deltaTime) {
+    // Cap deltaTime to prevent huge jumps after loading or lag spikes
+    if (deltaTime > 100.0f) {
+        deltaTime = 16.666f;
+    }
+
     if (m_IsGameOver) {
         m_GameOverText->SetVisible(true);
         m_RestartText->SetVisible(true);
@@ -357,7 +356,7 @@ void GameScene::update(float deltaTime) {
 
 void GameScene::handleOperatorDrag(float /*deltaTime*/) {
     glm::vec2 mousePos = Util::Input::GetCursorPosition();
-    
+
     if (m_ChoosingDirectionOperator) {
         glm::vec2 opPos = m_ChoosingDirectionOperator->getPosition();
         glm::vec2 delta = mousePos - opPos;
