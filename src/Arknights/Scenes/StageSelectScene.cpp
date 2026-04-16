@@ -4,7 +4,6 @@
 #include "Arknights/Scenes/LoadingScene.hpp"
 #include "Arknights/Core/SceneManager.hpp"
 #include "Util/Image.hpp"
-#include "Util/Text.hpp"
 #include "Util/Logger.hpp"
 
 namespace Arknights {
@@ -15,36 +14,45 @@ StageSelectScene::StageSelectScene() {
 void StageSelectScene::init() {
     LOG_DEBUG("Initializing StageSelectScene");
 
-    m_Background = std::make_shared<Util::GameObject>(
-        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/zone/zone_0.png"),
+    m_SelectBackground = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/game_condition/temp_0-2_1.jpg"),
         0
     );
-    m_Background->m_Transform.scale = glm::vec2(1600.0f, 900.0f) / m_Background->GetScaledSize();
-    m_Root.AddChild(m_Background);
+    m_SelectBackground->m_Transform.scale = glm::vec2(1600.0f, 900.0f) / m_SelectBackground->GetScaledSize();
+    m_Root.AddChild(m_SelectBackground);
 
-    auto title = std::make_shared<Util::GameObject>(
-        std::make_shared<Util::Text>(
-            std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf",
-            40,
-            "關卡",
-            Util::Color(255, 255, 255)
-        ),
-        10
+    m_ConfirmBackground = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/game_condition/temp_0-2_2.jpg"),
+        1
     );
-    title->m_Transform.translation = {0, 330};
-    m_Root.AddChild(title);
+    m_ConfirmBackground->m_Transform.scale = glm::vec2(1600.0f, 900.0f) / m_ConfirmBackground->GetScaledSize();
+    m_ConfirmBackground->SetVisible(false);
+    m_Root.AddChild(m_ConfirmBackground);
 
     m_Stage02Button = std::make_shared<UI::Button>(
         "0-2",
         std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf",
         34,
-        glm::vec2(380, 80),
+        glm::vec2(60, -80),
         glm::vec2(180, 80),
         15
     );
     m_Stage02Button->setOnClick([this]() { onStage02Clicked(); });
     m_Buttons.push_back(m_Stage02Button);
     m_Root.AddChild(m_Stage02Button);
+
+    m_StartActionButton = std::make_shared<UI::Button>(
+        "開始行動",
+        std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf",
+        34,
+        glm::vec2(670, -450),
+        glm::vec2(250, 80),
+        15
+    );
+    m_StartActionButton->setOnClick([this]() { onStartActionClicked(); });
+    m_StartActionButton->SetVisible(false);
+    m_Buttons.push_back(m_StartActionButton);
+    m_Root.AddChild(m_StartActionButton);
 
     m_BackButton = std::make_shared<UI::Button>(
         "返回",
@@ -66,8 +74,8 @@ void StageSelectScene::update(float deltaTime) {
         button->update(deltaTime);
     }
 
-    if (m_RequestStage02) {
-        m_RequestStage02 = false;
+    if (m_RequestStartOperation) {
+        m_RequestStartOperation = false;
         auto loadingScene = std::make_shared<LoadingScene>("0-2");
         Core::SceneManager::getInstance().replaceScene(loadingScene);
         return;
@@ -83,8 +91,10 @@ void StageSelectScene::update(float deltaTime) {
 void StageSelectScene::cleanup() {
     LOG_DEBUG("Cleaning up StageSelectScene");
     m_Buttons.clear();
-    m_Background.reset();
+    m_SelectBackground.reset();
+    m_ConfirmBackground.reset();
     m_Stage02Button.reset();
+    m_StartActionButton.reset();
     m_BackButton.reset();
 }
 
@@ -97,7 +107,14 @@ void StageSelectScene::onExit() {
 }
 
 void StageSelectScene::onStage02Clicked() {
-    m_RequestStage02 = true;
+    if (m_SelectBackground) m_SelectBackground->SetVisible(false);
+    if (m_ConfirmBackground) m_ConfirmBackground->SetVisible(true);
+    if (m_Stage02Button) m_Stage02Button->SetVisible(false);
+    if (m_StartActionButton) m_StartActionButton->SetVisible(true);
+}
+
+void StageSelectScene::onStartActionClicked() {
+    m_RequestStartOperation = true;
 }
 
 void StageSelectScene::onBackClicked() {

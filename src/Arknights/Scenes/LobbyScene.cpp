@@ -38,11 +38,11 @@ void LobbyScene::createBackground() {
     try {
         // Try to use Chen character art first
         m_CharacterArt = std::make_shared<Util::GameObject>(
-            std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/Haze_Skin_1.png"),
+            std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/charactor/Yahata_Umiri_Elite.png"),
             1
         );
         m_CharacterArt->m_Transform.translation = {-300, -50};
-        m_CharacterArt->m_Transform.scale = glm::vec2(0.75f); // Scale up slightly for larger resolution
+        m_CharacterArt->m_Transform.scale = glm::vec2(0.4f); // Scale up slightly for larger resolution
         m_Root.AddChild(m_CharacterArt);
     } catch (...) {
         // Fallback to Amiya

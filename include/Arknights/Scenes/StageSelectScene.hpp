@@ -25,14 +25,17 @@ public:
 
 private:
     void onStage02Clicked();
+    void onStartActionClicked();
     void onBackClicked();
 
 private:
-    std::shared_ptr<Util::GameObject> m_Background;
+    std::shared_ptr<Util::GameObject> m_SelectBackground;
+    std::shared_ptr<Util::GameObject> m_ConfirmBackground;
     std::shared_ptr<UI::Button> m_Stage02Button;
+    std::shared_ptr<UI::Button> m_StartActionButton;
     std::shared_ptr<UI::Button> m_BackButton;
     std::vector<std::shared_ptr<UI::Button>> m_Buttons;
-    bool m_RequestStage02 = false;
+    bool m_RequestStartOperation = false;
     bool m_RequestBack = false;
 };
 
