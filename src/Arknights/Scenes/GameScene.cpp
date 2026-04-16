@@ -177,28 +177,36 @@ void GameScene::init() {
     m_Root.AddChild(m_RestartText);
 
     m_DPText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 40, "COST: 10", Util::Color(255, 255, 0)), 2);
+    m_DPText->m_Transform.translation = {620, -250};
     m_Root.AddChild(m_DPText);
 
     // Cost labels
     m_AmiyaCostText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "10", Util::Color(255, 255, 255)), 6);
+    m_AmiyaCostText->m_Transform.translation = {m_AmiyaIcon->m_Transform.translation.x, m_AmiyaIcon->m_Transform.translation.y + 65.0f};
     m_Root.AddChild(m_AmiyaCostText);
 
     m_ChenCostText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "18", Util::Color(255, 255, 255)), 6);
+    m_ChenCostText->m_Transform.translation = {m_ChenIcon->m_Transform.translation.x, m_ChenIcon->m_Transform.translation.y + 65.0f};
     m_Root.AddChild(m_ChenCostText);
 
     m_AngelinaCostText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "14", Util::Color(255, 255, 255)), 6);
+    m_AngelinaCostText->m_Transform.translation = {m_AngelinaIcon->m_Transform.translation.x, m_AngelinaIcon->m_Transform.translation.y + 65.0f};
     m_Root.AddChild(m_AngelinaCostText);
 
     m_RedCostText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "6", Util::Color(255, 255, 255)), 6);
+    m_RedCostText->m_Transform.translation = {m_RedIcon->m_Transform.translation.x, m_RedIcon->m_Transform.translation.y + 65.0f};
     m_Root.AddChild(m_RedCostText);
 
     m_EyjafjallaCostText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "20", Util::Color(255, 255, 255)), 6);
+    m_EyjafjallaCostText->m_Transform.translation = {m_EyjafjallaIcon->m_Transform.translation.x, m_EyjafjallaIcon->m_Transform.translation.y + 65.0f};
     m_Root.AddChild(m_EyjafjallaCostText);
 
     m_TexasCostText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "12", Util::Color(255, 255, 255)), 6);
+    m_TexasCostText->m_Transform.translation = {m_TexasIcon->m_Transform.translation.x, m_TexasIcon->m_Transform.translation.y + 65.0f};
     m_Root.AddChild(m_TexasCostText);
 
     m_UmirinCostText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "10", Util::Color(255, 255, 255)), 6);
+    m_UmirinCostText->m_Transform.translation = {m_UmirinIcon->m_Transform.translation.x, m_UmirinIcon->m_Transform.translation.y + 65.0f};
     m_Root.AddChild(m_UmirinCostText);
 
     // 7. Battle BGM
@@ -371,6 +379,14 @@ void GameScene::update(float deltaTime) {
     }
 
     // Sync visibility
+    m_AmiyaCostText->m_Transform.translation = {m_AmiyaIcon->m_Transform.translation.x, m_AmiyaIcon->m_Transform.translation.y + 67.0f};
+    m_ChenCostText->m_Transform.translation = {m_ChenIcon->m_Transform.translation.x, m_ChenIcon->m_Transform.translation.y + 67.0f};
+    m_AngelinaCostText->m_Transform.translation = {m_AngelinaIcon->m_Transform.translation.x, m_AngelinaIcon->m_Transform.translation.y + 67.0f};
+    m_RedCostText->m_Transform.translation = {m_RedIcon->m_Transform.translation.x, m_RedIcon->m_Transform.translation.y + 67.0f};
+    m_EyjafjallaCostText->m_Transform.translation = {m_EyjafjallaIcon->m_Transform.translation.x, m_EyjafjallaIcon->m_Transform.translation.y + 67.0f};
+    m_TexasCostText->m_Transform.translation = {m_TexasIcon->m_Transform.translation.x, m_TexasIcon->m_Transform.translation.y + 67.0f};
+    m_UmirinCostText->m_Transform.translation = {m_UmirinIcon->m_Transform.translation.x, m_UmirinIcon->m_Transform.translation.y + 67.0f};
+
     m_AmiyaCostText->SetVisible(m_AmiyaIcon->GetVisible());
     m_ChenCostText->SetVisible(m_ChenIcon->GetVisible());
     m_AngelinaCostText->SetVisible(m_AngelinaIcon->GetVisible());
