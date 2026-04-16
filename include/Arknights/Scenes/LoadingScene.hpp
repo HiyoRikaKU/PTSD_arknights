@@ -9,7 +9,7 @@ namespace Arknights {
 
 class LoadingScene : public Scene {
 public:
-    LoadingScene();
+    LoadingScene(); 
     ~LoadingScene() override = default;
 
     void init() override;

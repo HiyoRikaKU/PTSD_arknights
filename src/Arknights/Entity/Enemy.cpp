@@ -63,6 +63,7 @@ void Enemy::spawn(const std::vector<glm::vec2>& gridPath, float hp, float speed,
     SetVisible(true);
     SetDrawable(m_MoveAnimation);
     m_MoveAnimation->Play();
+    m_IsAttackVisualActive = false;
 
     if (!m_HealthBar) {
         m_HealthBar = std::make_shared<HealthBar>(1.6f);
@@ -74,6 +75,10 @@ void Enemy::spawn(const std::vector<glm::vec2>& gridPath, float hp, float speed,
 
 void Enemy::despawn() {
     m_IsActive = false;
+    m_IsBlocked = false;
+    m_TargetOperator = nullptr;
+    m_AttackTimer = 0.0f;
+    m_IsAttackVisualActive = false;
     SetVisible(false);
     if (m_HealthBar) m_HealthBar->SetVisible(false);
 }
@@ -103,16 +108,35 @@ void Enemy::update(float deltaTime) {
     }
 
     if (m_IsBlocked) {
-        // Attack logic
+        // Block state is rebuilt each frame by GameScene.
+        // Only attack when target is still valid.
+
+        if (!m_TargetOperator || !m_TargetOperator->isAlive() || !m_TargetOperator->GetVisible()) {
+            m_IsBlocked = false;
+            m_TargetOperator = nullptr;
+            m_AttackTimer = 0.0f;
+            return;
+        }
+
+        if (m_AttackAnimation && !m_IsAttackVisualActive) {
+            SetDrawable(m_AttackAnimation);
+            m_AttackAnimation->Play();
+            m_IsAttackVisualActive = true;
+        }
+
         if (m_AttackTimer > 0.0f) {
             m_AttackTimer -= deltaTime;
         } else {
-            if (m_TargetOperator) {
-                m_TargetOperator->takeDamage(m_Attack);
-                m_AttackTimer = m_AttackInterval;
-            }
+            m_TargetOperator->takeDamage(m_Attack);
+            m_AttackTimer = m_AttackInterval;
         }
         return;
+    }
+
+    if (m_IsAttackVisualActive && m_MoveAnimation) {
+        SetDrawable(m_MoveAnimation);
+        m_MoveAnimation->Play();
+        m_IsAttackVisualActive = false;
     }
 
     if (m_CurrentWaypointIndex + 1 < m_GridWaypoints.size()) {
@@ -143,9 +167,13 @@ void Enemy::setAnimation(const std::vector<std::string>& animationPaths) {
     m_MoveAnimation = std::make_shared<Util::Animation>(animationPaths, true, 50, true, 0);
     // Refresh pivot if size changed
     SetPivot({0, -m_MoveAnimation->GetSize().y / 2.0f});
-    if (m_State == State::ALIVE) {
+    if (m_State == State::ALIVE && !m_IsAttackVisualActive) {
         SetDrawable(m_MoveAnimation);
     }
+}
+
+void Enemy::setAttackAnimation(const std::vector<std::string>& attackAnimationPaths) {
+    m_AttackAnimation = std::make_shared<Util::Animation>(attackAnimationPaths, true, 50, true, 0);
 }
 
 void Enemy::setDieAnimation(const std::vector<std::string>& dieAnimationPaths) {
@@ -162,6 +190,7 @@ void Enemy::updateHealthBar() {
 
 void Enemy::startDeath() {
     m_State = State::DYING;
+    m_IsAttackVisualActive = false;
     if (m_DieAnimation) {
         SetDrawable(m_DieAnimation);
         m_DieAnimation->Play();

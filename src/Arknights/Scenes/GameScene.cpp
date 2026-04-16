@@ -25,11 +25,17 @@ void GameScene::init() {
 
     // 2. Initialize Enemy Animations
     m_EnemyAnimationPathsGopro.clear();
+    m_EnemyAttackPathsGopro.clear();
     m_EnemyDiePathsGopro.clear();
     for (int i = 1; i <= 25; i += 2) {
         std::stringstream ss;
         ss << RESOURCE_DIR << "/charactor/enemy/enemy_1000_gopro/Move_Loop_" << std::setfill('0') << std::setw(2) << i << ".png";
         m_EnemyAnimationPathsGopro.push_back(ss.str());
+    }
+    for (int i = 1; i <= 31; i += 2) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/enemy/enemy_1000_gopro/Attack_" << std::setfill('0') << std::setw(2) << i << ".png";
+        m_EnemyAttackPathsGopro.push_back(ss.str());
     }
     for (int i = 1; i <= 21; i += 2) {
         std::stringstream ss;
@@ -38,6 +44,7 @@ void GameScene::init() {
     }
 
     m_EnemyAnimationPathsBigbo.clear();
+    m_EnemyAttackPathsBigbo.clear();
     m_EnemyDiePathsBigbo.clear();
     for (int i = 1; i <= 31; i += 2) {
         std::stringstream ss;
@@ -46,16 +53,27 @@ void GameScene::init() {
     }
     for (int i = 1; i <= 31; i += 2) {
         std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/enemy/enemy_1001_bigbo/Attack_" << std::setfill('0') << std::setw(2) << i << ".png";
+        m_EnemyAttackPathsBigbo.push_back(ss.str());
+    }
+    for (int i = 1; i <= 31; i += 2) {
+        std::stringstream ss;
         ss << RESOURCE_DIR << "/charactor/enemy/enemy_1001_bigbo/Die_" << std::setfill('0') << std::setw(2) << i << ".png";
         m_EnemyDiePathsBigbo.push_back(ss.str());
     }
 
     m_EnemyAnimationPathsTrslim.clear();
+    m_EnemyAttackPathsTrslim.clear();
     m_EnemyDiePathsTrslim.clear();
     for (int i = 1; i <= 31; i += 2) {
         std::stringstream ss;
         ss << RESOURCE_DIR << "/charactor/enemy/enemy_10001_trslim/Move_A_" << std::setfill('0') << std::setw(2) << i << ".png";
         m_EnemyAnimationPathsTrslim.push_back(ss.str());
+    }
+    for (int i = 1; i <= 33; i += 2) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/enemy/enemy_10001_trslim/Attack_A_" << std::setfill('0') << std::setw(2) << i << ".png";
+        m_EnemyAttackPathsTrslim.push_back(ss.str());
     }
     for (int i = 1; i <= 31; i += 2) {
         std::stringstream ss;
@@ -197,18 +215,21 @@ void GameScene::spawnEnemy(const SpawnEvent& event) {
 
     if (event.enemyType == "gopro") {
         enemy->setAnimation(m_EnemyAnimationPathsGopro);
+        enemy->setAttackAnimation(m_EnemyAttackPathsGopro);
         enemy->setDieAnimation(m_EnemyDiePathsGopro);
-        enemy->setAttack(10.0f);
+        enemy->setAttack(30.0f);
         enemy->setAttackInterval(1000.0f);
     } else if (event.enemyType == "bigbo") {
         enemy->setAnimation(m_EnemyAnimationPathsBigbo);
+        enemy->setAttackAnimation(m_EnemyAttackPathsBigbo);
         enemy->setDieAnimation(m_EnemyDiePathsBigbo);
-        enemy->setAttack(30.0f);
+        enemy->setAttack(50.0f);
         enemy->setAttackInterval(1500.0f);
     } else if (event.enemyType == "trslim") {
         enemy->setAnimation(m_EnemyAnimationPathsTrslim);
+        enemy->setAttackAnimation(m_EnemyAttackPathsTrslim);
         enemy->setDieAnimation(m_EnemyDiePathsTrslim);
-        enemy->setAttack(15.0f);
+        enemy->setAttack(35.0f);
         enemy->setAttackInterval(800.0f);
     }
 
@@ -283,7 +304,10 @@ void GameScene::update(float deltaTime) {
 
     // Reset blocking
     for (auto& op : m_Operators) op->clearBlockedEnemies();
-    for (auto& enemy : m_ActiveEnemies) enemy->setBlocked(false);
+    for (auto& enemy : m_ActiveEnemies) {
+        enemy->setBlocked(false);
+        enemy->setTargetOperator(nullptr);
+    }
 
     handleOperatorDrag(deltaTime);
 

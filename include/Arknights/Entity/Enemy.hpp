@@ -36,6 +36,7 @@ public:
     void setAttackInterval(float interval) { m_AttackInterval = interval; }
 
     void setAnimation(const std::vector<std::string>& animationPaths);
+    void setAttackAnimation(const std::vector<std::string>& attackAnimationPaths);
     void setDieAnimation(const std::vector<std::string>& dieAnimationPaths);
 
     bool isBlocked() const { return m_IsBlocked; }
@@ -86,7 +87,9 @@ private:
     float m_HealthBarOffset = 50.0f;
 
     std::shared_ptr<Util::Animation> m_MoveAnimation;
+    std::shared_ptr<Util::Animation> m_AttackAnimation;
     std::shared_ptr<Util::Animation> m_DieAnimation;
+    bool m_IsAttackVisualActive = false;
 
     std::shared_ptr<HealthBar> m_HealthBar;
 };

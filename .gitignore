@@ -153,6 +153,8 @@ artifacts/
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
 
+architecture.md
+
 # StyleCop
 StyleCopReport.xml
 

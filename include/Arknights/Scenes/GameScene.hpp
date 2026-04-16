@@ -47,10 +47,13 @@ private:
     std::unique_ptr<EnemyPool> m_EnemyPool;
     std::vector<Enemy*> m_ActiveEnemies;
     std::vector<std::string> m_EnemyAnimationPathsGopro;
+    std::vector<std::string> m_EnemyAttackPathsGopro;
     std::vector<std::string> m_EnemyDiePathsGopro;
     std::vector<std::string> m_EnemyAnimationPathsBigbo;
+    std::vector<std::string> m_EnemyAttackPathsBigbo;
     std::vector<std::string> m_EnemyDiePathsBigbo;
     std::vector<std::string> m_EnemyAnimationPathsTrslim;
+    std::vector<std::string> m_EnemyAttackPathsTrslim;
     std::vector<std::string> m_EnemyDiePathsTrslim;
     
     // Stats

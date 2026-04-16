@@ -60,25 +60,26 @@ Operation1::Operation1()
     
     auto& wm = getWaveManager();
     // Wave 1: Intro
-    wm.addSpawnEvent(2000.0f, "gopro", 100.0f, 0.001f);
-    wm.addSpawnEvent(5000.0f, "gopro", 100.0f, 0.001f);
-    wm.addSpawnEvent(7000.0f, "gopro", 100.0f, 0.001f);
+    wm.addSpawnEvent(2000.0f, "gopro", 150.0f, 0.001f);
+    wm.addSpawnEvent(5000.0f, "gopro", 150.0f, 0.001f);
+    wm.addSpawnEvent(7000.0f, "gopro", 150.0f, 0.001f);
 
     // Wave 2: Bigbo arrival
     wm.addSpawnEvent(12000.0f, "bigbo", 400.0f, 0.0005f);
-    wm.addSpawnEvent(14000.0f, "gopro", 120.0f, 0.0011f);
-    wm.addSpawnEvent(16000.0f, "gopro", 120.0f, 0.0011f);
+    wm.addSpawnEvent(14000.0f, "gopro", 170.0f, 0.0011f);
+    wm.addSpawnEvent(16000.0f, "gopro", 170.0f, 0.0011f);
+    wm.addSpawnEvent(16000.0f, "gopro", 170.0f, 0.0011f);
 
     // Wave 3: Trslim (fast and weak)
-    wm.addSpawnEvent(22000.0f, "trslim", 80.0f, 0.0018f);
-    wm.addSpawnEvent(23000.0f, "trslim", 80.0f, 0.0018f);
-    wm.addSpawnEvent(24000.0f, "trslim", 80.0f, 0.0018f);
-    wm.addSpawnEvent(25000.0f, "trslim", 80.0f, 0.0018f);
+    wm.addSpawnEvent(22000.0f, "trslim", 100.0f, 0.0018f);
+    wm.addSpawnEvent(23000.0f, "trslim", 100.0f, 0.0018f);
+    wm.addSpawnEvent(24000.0f, "trslim", 100.0f, 0.0018f);
+    wm.addSpawnEvent(25000.0f, "trslim", 100.0f, 0.0018f);
 
     // Wave 4: Mixed assault
     wm.addSpawnEvent(32000.0f, "bigbo", 500.0f, 0.0004f);
-    wm.addSpawnEvent(33000.0f, "trslim", 100.0f, 0.0015f);
-    wm.addSpawnEvent(34000.0f, "trslim", 100.0f, 0.0015f);
+    wm.addSpawnEvent(33000.0f, "trslim", 120.0f, 0.0015f);
+    wm.addSpawnEvent(34000.0f, "trslim", 120.0f, 0.0015f);
     wm.addSpawnEvent(37000.0f, "bigbo", 500.0f, 0.0004f);
 
     // Final Wave

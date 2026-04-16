@@ -40,7 +40,7 @@ void LoadingScene::init() {
 
 void LoadingScene::update(float deltaTime) {
     m_Timer += deltaTime;
-    
+
     // Wait for at least 1-2 frames to ensure the screen is drawn
     if (m_Timer > 50.0f && !m_HasStartedLoading) {
         m_HasStartedLoading = true;
