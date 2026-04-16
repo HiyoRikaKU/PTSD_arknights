@@ -313,8 +313,9 @@ void GameScene::update(float deltaTime) {
 
     // Update operators and combat
     for (auto& op : m_Operators) {
-        if (!op->GetVisible() || !op->isAlive()) continue;
+        if (!op->GetVisible()) continue;
         op->update(deltaTime);
+        if (!op->isAlive()) continue;
 
         if (op->canAttack()) {
             Enemy* target = nullptr;

@@ -21,14 +21,18 @@ void Operator::reset() {
     m_CurrentDamageIndex = 0;
     m_DamageReady = false;
     m_BlockedEnemies.clear();
+    SetVisible(false);
     SetDrawable(m_IdleAnimation);
     m_IdleAnimation->Play();
     updateHealthBar();
 }
 
-void Operator::init(const std::vector<std::string>& idleAnimationPaths, const std::vector<std::string>& attackAnimationPaths) {
+void Operator::init(const std::vector<std::string>& idleAnimationPaths,
+                    const std::vector<std::string>& attackAnimationPaths,
+                    const std::vector<std::string>& dieAnimationPaths) {
     m_IdleAnimation = std::make_shared<Util::Animation>(idleAnimationPaths, true, m_AnimationInterval, true, 100);
     m_AttackAnimation = std::make_shared<Util::Animation>(attackAnimationPaths, false, m_AnimationInterval, false, 0);
+    m_DieAnimation = std::make_shared<Util::Animation>(dieAnimationPaths, false, m_AnimationInterval, false, 0);
 
     SetDrawable(m_IdleAnimation);
     SetZIndex(2.0f); // Higher than map (0.0) and enemies (1.5)
@@ -47,6 +51,15 @@ void Operator::init(const std::vector<std::string>& idleAnimationPaths, const st
 }
 
 void Operator::update(float deltaTime) {
+    if (m_State == State::DYING) {
+        if (m_DieAnimation && m_DieAnimation->GetState() == Util::Animation::State::ENDED) {
+            m_State = State::DEAD;
+            SetVisible(false);
+        }
+        updateHealthBar();
+        return;
+    }
+
     if (m_AttackTimer > 0.0f) {
         m_AttackTimer -= deltaTime / 1000.0f;
     }
@@ -69,6 +82,34 @@ void Operator::update(float deltaTime) {
     }
 
     updateHealthBar();
+}
+
+void Operator::takeDamage(float damage) {
+    if (!isAlive()) return;
+
+    m_Hp -= damage;
+    if (m_Hp <= 0.0f) {
+        m_Hp = 0.0f;
+        startDeathAnimation();
+    }
+    updateHealthBar();
+}
+
+void Operator::startDeathAnimation() {
+    if (m_State == State::DYING || m_State == State::DEAD) return;
+    m_State = State::DYING;
+    m_DamageReady = false;
+    m_CurrentDamageIndex = 0;
+    m_AttackTimer = 0.0f;
+    m_BlockedEnemies.clear();
+    if (m_DieAnimation) {
+        SetDrawable(m_DieAnimation);
+        m_DieAnimation->SetCurrentFrame(0);
+        m_DieAnimation->Play();
+    } else {
+        m_State = State::DEAD;
+        SetVisible(false);
+    }
 }
 
 void Operator::playAttackAnimation() {
@@ -187,7 +228,13 @@ Amiya::Amiya() : Operator(Type::AMIYA, 1000.0f, 120.0f) {
         ss << RESOURCE_DIR << "/charactor/operator/amiya/Attack_" << std::setfill('0') << std::setw(2) << i << ".png";
         attackPaths.push_back(ss.str());
     }
-    init(idlePaths, attackPaths);
+    std::vector<std::string> diePaths;
+    for (int i = 1; i <= 31; i += 2) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/operator/amiya/Die_" << std::setfill('0') << std::setw(2) << i << ".png";
+        diePaths.push_back(ss.str());
+    }
+    init(idlePaths, attackPaths, diePaths);
 }
 
 // Chen Implementation
@@ -212,7 +259,13 @@ Chen::Chen() : Operator(Type::CHEN, 1200.0f, 80.0f) {
         ss << RESOURCE_DIR << "/charactor/operator/chen/Attack_" << std::setfill('0') << std::setw(2) << i << ".png";
         attackPaths.push_back(ss.str());
     }
-    init(idlePaths, attackPaths);
+    std::vector<std::string> diePaths;
+    for (int i = 1; i <= 31; i += 2) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/operator/chen/Die_" << std::setfill('0') << std::setw(2) << i << ".png";
+        diePaths.push_back(ss.str());
+    }
+    init(idlePaths, attackPaths, diePaths);
 }
 
 // Angelina Implementation
@@ -236,7 +289,13 @@ Angelina::Angelina() : Operator(Type::ANGELINA, 1100.0f, 100.0f) {
         ss << RESOURCE_DIR << "/charactor/operator/agelina/Attack_" << std::setfill('0') << std::setw(2) << i << ".png";
         attackPaths.push_back(ss.str());
     }
-    init(idlePaths, attackPaths);
+    std::vector<std::string> diePaths;
+    for (int i = 1; i <= 31; i += 2) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/operator/agelina/Die_" << std::setfill('0') << std::setw(2) << i << ".png";
+        diePaths.push_back(ss.str());
+    }
+    init(idlePaths, attackPaths, diePaths);
 }
 
 // Red Implementation
@@ -259,7 +318,13 @@ Red::Red() : Operator(Type::RED, 900.0f, 150.0f) {
         ss << RESOURCE_DIR << "/charactor/operator/red/Attack_" << std::setfill('0') << std::setw(2) << i << ".png";
         attackPaths.push_back(ss.str());
     }
-    init(idlePaths, attackPaths);
+    std::vector<std::string> diePaths;
+    for (int i = 1; i <= 31; i += 2) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/operator/red/Die_" << std::setfill('0') << std::setw(2) << i << ".png";
+        diePaths.push_back(ss.str());
+    }
+    init(idlePaths, attackPaths, diePaths);
 }
 
 // Eyjafjalla Implementation
@@ -283,7 +348,13 @@ Eyjafjalla::Eyjafjalla() : Operator(Type::EYJAFJALLA, 1200.0f, 200.0f) {
         ss << RESOURCE_DIR << "/charactor/operator/eyjafjalla/Attack_" << std::setfill('0') << std::setw(2) << i << ".png";
         attackPaths.push_back(ss.str());
     }
-    init(idlePaths, attackPaths);
+    std::vector<std::string> diePaths;
+    for (int i = 1; i <= 21; i += 2) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/operator/eyjafjalla/Die_" << std::setfill('0') << std::setw(2) << i << ".png";
+        diePaths.push_back(ss.str());
+    }
+    init(idlePaths, attackPaths, diePaths);
 }
 
 // Texas Implementation
@@ -307,7 +378,13 @@ Texas::Texas() : Operator(Type::TEXAS, 1100.0f, 100.0f) {
         ss << RESOURCE_DIR << "/charactor/operator/texas/Attack_Loop_" << std::setfill('0') << std::setw(2) << i << ".png";
         attackPaths.push_back(ss.str());
     }
-    init(idlePaths, attackPaths);
+    std::vector<std::string> diePaths;
+    for (int i = 1; i <= 31; i += 2) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/operator/texas/Die_" << std::setfill('0') << std::setw(2) << i << ".png";
+        diePaths.push_back(ss.str());
+    }
+    init(idlePaths, attackPaths, diePaths);
 }
 
 // Umirin Implementation
@@ -331,7 +408,13 @@ Umirin::Umirin() : Operator(Type::UMIRIN, 1000.0f, 120.0f) {
         ss << RESOURCE_DIR << "/charactor/operator/timoris/Attack_" << std::setfill('0') << std::setw(2) << i << ".png";
         attackPaths.push_back(ss.str());
     }
-    init(idlePaths, attackPaths);
+    std::vector<std::string> diePaths;
+    for (int i = 1; i <= 31; i += 2) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/operator/timoris/Die_" << std::setfill('0') << std::setw(2) << i << ".png";
+        diePaths.push_back(ss.str());
+    }
+    init(idlePaths, attackPaths, diePaths);
 }
 
 } // namespace Arknights

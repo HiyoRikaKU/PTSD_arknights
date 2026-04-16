@@ -24,6 +24,7 @@ public:
         IDLE,
         ATTACK,
         SKILL,
+        DYING,
         DEAD
     };
 
@@ -59,18 +60,11 @@ public:
     float getAttack() const { return m_Attack; }
     int getDeploymentCost() const { return m_DeploymentCost; }
 
-    bool isAlive() const { return m_State != State::DEAD; }
+    bool isAlive() const { return m_State != State::DEAD && m_State != State::DYING; }
 
     Type getType() const { return m_Type; }
 
-    void takeDamage(float damage) {
-        m_Hp -= damage;
-        if (m_Hp <= 0) {
-            m_Hp = 0;
-            setState(State::DEAD);
-        }
-        updateHealthBar();
-    }
+    void takeDamage(float damage);
 
     bool canAttack() const { return m_AttackTimer <= 0.0f && m_State == State::IDLE; }
     void resetAttackTimer() { m_AttackTimer = m_AttackInterval; }
@@ -113,7 +107,10 @@ public:
     std::shared_ptr<Core::Drawable> GetDrawable() const { return m_Drawable; }
 
 protected:
-    void init(const std::vector<std::string>& idleAnimationPaths, const std::vector<std::string>& attackAnimationPaths);
+    void init(const std::vector<std::string>& idleAnimationPaths,
+              const std::vector<std::string>& attackAnimationPaths,
+              const std::vector<std::string>& dieAnimationPaths);
+    void startDeathAnimation();
     void updateHealthBar();
 
 protected:
@@ -136,6 +133,7 @@ protected:
 
     std::shared_ptr<Util::Animation> m_IdleAnimation;
     std::shared_ptr<Util::Animation> m_AttackAnimation;
+    std::shared_ptr<Util::Animation> m_DieAnimation;
 
     std::size_t m_AttackCount = 1;
     int m_AnimationInterval = 30;
