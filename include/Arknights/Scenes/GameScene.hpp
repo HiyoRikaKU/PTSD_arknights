@@ -11,6 +11,7 @@
 #include "Arknights/Entity/Operator.hpp"
 #include "Util/GameObject.hpp"
 #include "Util/Text.hpp"
+#include "Util/Image.hpp"
 #include "Util/BGM.hpp"
 #include "Util/SFX.hpp"
 
@@ -38,6 +39,10 @@ private:
 
     void spawnEnemy(const SpawnEvent& event);
     void handleOperatorDrag(float deltaTime);
+    void beginVictorySequence();
+    void beginFailureSequence();
+    void cleanupCharactersForResult();
+    bool isAnyReturnInput() const;
 
 private:
     // Operation/Map
@@ -63,6 +68,15 @@ private:
     int m_TotalEnemies = 0;
     bool m_IsGameOver = false;
     bool m_IsVictory = false;
+    enum class ResultPhase {
+        NONE,
+        VICTORY_SLIDE,
+        VICTORY_WAIT_BEFORE_WIN,
+        VICTORY_SHOW_WIN,
+        FAILURE_SHOW
+    };
+    ResultPhase m_ResultPhase = ResultPhase::NONE;
+    float m_ResultTimer = 0.0f;
 
     // DP System
     float m_CurrentDP = 10.0f;
@@ -96,6 +110,9 @@ private:
     std::shared_ptr<ExGameObject> m_EyjafjallaCostText;
     std::shared_ptr<ExGameObject> m_TexasCostText;
     std::shared_ptr<ExGameObject> m_UmirinCostText;
+    std::shared_ptr<ExGameObject> m_MissionCompletedImage;
+    std::shared_ptr<ExGameObject> m_YourWinImage;
+    std::shared_ptr<ExGameObject> m_MissionFailedImage;
 
     // Audio
     std::unique_ptr<Util::BGM> m_BattleBGM;

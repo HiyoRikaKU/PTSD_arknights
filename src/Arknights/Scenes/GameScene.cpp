@@ -5,6 +5,8 @@
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Arknights/Map/Operation1.hpp"
+#include "Arknights/Scenes/LobbyScene.hpp"
+#include "config.hpp"
 
 #include <iomanip>
 #include <sstream>
@@ -176,6 +178,21 @@ void GameScene::init() {
     m_RestartText->SetVisible(false);
     m_Root.AddChild(m_RestartText);
 
+    m_MissionCompletedImage = std::make_shared<ExGameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/game_condition/mission_completed.jpg"), 11);
+    m_MissionCompletedImage->m_Transform.translation = {-1200.0f, 0.0f};
+    m_MissionCompletedImage->SetVisible(false);
+    m_Root.AddChild(m_MissionCompletedImage);
+
+    m_YourWinImage = std::make_shared<ExGameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/game_condition/yourWin.jpg"), 11);
+    m_YourWinImage->m_Transform.translation = {0.0f, 0.0f};
+    m_YourWinImage->SetVisible(false);
+    m_Root.AddChild(m_YourWinImage);
+
+    m_MissionFailedImage = std::make_shared<ExGameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/game_condition/mission_failed.jpg"), 11);
+    m_MissionFailedImage->m_Transform.translation = {0.0f, 0.0f};
+    m_MissionFailedImage->SetVisible(false);
+    m_Root.AddChild(m_MissionFailedImage);
+
     m_DPText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 40, "COST: 10", Util::Color(255, 255, 0)), 2);
     m_DPText->m_Transform.translation = {620, -250};
     m_Root.AddChild(m_DPText);
@@ -253,10 +270,30 @@ void GameScene::update(float deltaTime) {
     }
 
     if (m_IsGameOver) {
-        m_GameOverText->SetVisible(true);
-        m_RestartText->SetVisible(true);
-        if (Util::Input::IsKeyDown(Util::Keycode::R)) {
-            reset();
+        if (m_ResultPhase == ResultPhase::VICTORY_SLIDE) {
+            constexpr float kSlideDurationMs = 2000.0f;
+            const float halfWindowWidth = static_cast<float>(WINDOW_WIDTH) * 0.5f;
+            const float halfImageWidth = m_MissionCompletedImage->GetScaledSize().x * 0.5f;
+            const float kStartX = -halfWindowWidth - halfImageWidth;
+            const float kEndX = halfWindowWidth - halfImageWidth;
+            m_ResultTimer += deltaTime;
+            const float t = std::min(1.0f, m_ResultTimer / kSlideDurationMs);
+            m_MissionCompletedImage->m_Transform.translation = {kStartX + (kEndX - kStartX) * t, 0.0f};
+            if (t >= 1.0f) {
+                m_ResultPhase = ResultPhase::VICTORY_WAIT_BEFORE_WIN;
+                m_ResultTimer = 0.0f;
+            }
+        } else if (m_ResultPhase == ResultPhase::VICTORY_WAIT_BEFORE_WIN) {
+            m_ResultTimer += deltaTime;
+            if (m_ResultTimer >= 2500.0f) {
+                m_ResultPhase = ResultPhase::VICTORY_SHOW_WIN;
+                m_MissionCompletedImage->SetVisible(false);
+                m_YourWinImage->SetVisible(true);
+            }
+        } else if (m_ResultPhase == ResultPhase::VICTORY_SHOW_WIN || m_ResultPhase == ResultPhase::FAILURE_SHOW) {
+            if (isAnyReturnInput()) {
+                Core::SceneManager::getInstance().replaceScene(std::make_shared<LobbyScene>());
+            }
         }
         return;
     }
@@ -300,15 +337,9 @@ void GameScene::update(float deltaTime) {
     }
 
     if (m_EscapedEnemies >= MAX_ESCAPED_ENEMIES) {
-        m_IsGameOver = true;
-        auto gameOverDrawable = std::dynamic_pointer_cast<Util::Text>(m_GameOverText->GetDrawable());
-        gameOverDrawable->SetText("MISSION FAILED");
-        gameOverDrawable->SetColor(Util::Color(255, 0, 0));
+        beginFailureSequence();
     } else if (m_CurrentOperation->getWaveManager().isAllSpawned() && m_ActiveEnemies.empty()) {
-        m_IsGameOver = true;
-        auto gameOverDrawable = std::dynamic_pointer_cast<Util::Text>(m_GameOverText->GetDrawable());
-        gameOverDrawable->SetText("MISSION ACCOMPLISHED");
-        gameOverDrawable->SetColor(Util::Color(0, 255, 0));
+        beginVictorySequence();
     }
 
     // Reset blocking
@@ -502,10 +533,15 @@ void GameScene::handleOperatorDrag(float /*deltaTime*/) {
 
 void GameScene::reset() {
     m_IsGameOver = false; m_WaveTimer = 0.0f; m_EscapedEnemies = 0; m_KilledEnemies = 0;
+    m_ResultPhase = ResultPhase::NONE;
+    m_ResultTimer = 0.0f;
     m_CurrentDP = 10.0f; m_DPAccumulator = 0.0f;
     auto dpTextDrawable = std::dynamic_pointer_cast<Util::Text>(m_DPText->GetDrawable());
     dpTextDrawable->SetText("COST: 10");
     m_GameOverText->SetVisible(false); m_RestartText->SetVisible(false);
+    m_MissionCompletedImage->SetVisible(false);
+    m_YourWinImage->SetVisible(false);
+    m_MissionFailedImage->SetVisible(false);
     for (auto* enemy : m_ActiveEnemies) m_EnemyPool->returnEnemy(enemy);
     m_ActiveEnemies.clear();
     for (auto& op : m_Operators) { op->SetVisible(false); op->reset(); }
@@ -517,6 +553,87 @@ void GameScene::reset() {
     enemyCountDrawable->SetText("0 / 4");
     m_CurrentOperation->getWaveManager().reset();
     m_BattleBGM->Play();
+}
+
+void GameScene::beginVictorySequence() {
+    m_IsGameOver = true;
+    m_IsVictory = true;
+    m_ResultPhase = ResultPhase::VICTORY_SLIDE;
+    m_ResultTimer = 0.0f;
+    cleanupCharactersForResult();
+    const float halfWindowWidth = static_cast<float>(WINDOW_WIDTH) * 0.5f;
+    const float halfImageWidth = m_MissionCompletedImage->GetScaledSize().x * 0.5f;
+    m_MissionCompletedImage->m_Transform.translation = {-halfWindowWidth - halfImageWidth, 0.0f};
+    m_MissionCompletedImage->SetVisible(true);
+    m_YourWinImage->SetVisible(false);
+    m_MissionFailedImage->SetVisible(false);
+}
+
+void GameScene::beginFailureSequence() {
+    m_IsGameOver = true;
+    m_IsVictory = false;
+    m_ResultPhase = ResultPhase::FAILURE_SHOW;
+    m_ResultTimer = 0.0f;
+    cleanupCharactersForResult();
+    m_MissionCompletedImage->SetVisible(false);
+    m_YourWinImage->SetVisible(false);
+    m_MissionFailedImage->SetVisible(true);
+}
+
+void GameScene::cleanupCharactersForResult() {
+    for (auto* enemy : m_ActiveEnemies) {
+        m_EnemyPool->returnEnemy(enemy);
+    }
+    m_ActiveEnemies.clear();
+
+    for (auto& op : m_Operators) {
+        op->SetVisible(false);
+    }
+}
+
+bool GameScene::isAnyReturnInput() const {
+    return Util::Input::IsKeyDown(Util::Keycode::SPACE)
+        || Util::Input::IsKeyDown(Util::Keycode::RETURN)
+        || Util::Input::IsKeyDown(Util::Keycode::ESCAPE)
+        || Util::Input::IsKeyDown(Util::Keycode::A)
+        || Util::Input::IsKeyDown(Util::Keycode::B)
+        || Util::Input::IsKeyDown(Util::Keycode::C)
+        || Util::Input::IsKeyDown(Util::Keycode::D)
+        || Util::Input::IsKeyDown(Util::Keycode::E)
+        || Util::Input::IsKeyDown(Util::Keycode::F)
+        || Util::Input::IsKeyDown(Util::Keycode::G)
+        || Util::Input::IsKeyDown(Util::Keycode::H)
+        || Util::Input::IsKeyDown(Util::Keycode::I)
+        || Util::Input::IsKeyDown(Util::Keycode::J)
+        || Util::Input::IsKeyDown(Util::Keycode::K)
+        || Util::Input::IsKeyDown(Util::Keycode::L)
+        || Util::Input::IsKeyDown(Util::Keycode::M)
+        || Util::Input::IsKeyDown(Util::Keycode::N)
+        || Util::Input::IsKeyDown(Util::Keycode::O)
+        || Util::Input::IsKeyDown(Util::Keycode::P)
+        || Util::Input::IsKeyDown(Util::Keycode::Q)
+        || Util::Input::IsKeyDown(Util::Keycode::R)
+        || Util::Input::IsKeyDown(Util::Keycode::S)
+        || Util::Input::IsKeyDown(Util::Keycode::T)
+        || Util::Input::IsKeyDown(Util::Keycode::U)
+        || Util::Input::IsKeyDown(Util::Keycode::V)
+        || Util::Input::IsKeyDown(Util::Keycode::W)
+        || Util::Input::IsKeyDown(Util::Keycode::X)
+        || Util::Input::IsKeyDown(Util::Keycode::Y)
+        || Util::Input::IsKeyDown(Util::Keycode::Z)
+        || Util::Input::IsKeyDown(Util::Keycode::NUM_0)
+        || Util::Input::IsKeyDown(Util::Keycode::NUM_1)
+        || Util::Input::IsKeyDown(Util::Keycode::NUM_2)
+        || Util::Input::IsKeyDown(Util::Keycode::NUM_3)
+        || Util::Input::IsKeyDown(Util::Keycode::NUM_4)
+        || Util::Input::IsKeyDown(Util::Keycode::NUM_5)
+        || Util::Input::IsKeyDown(Util::Keycode::NUM_6)
+        || Util::Input::IsKeyDown(Util::Keycode::NUM_7)
+        || Util::Input::IsKeyDown(Util::Keycode::NUM_8)
+        || Util::Input::IsKeyDown(Util::Keycode::NUM_9)
+        || Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)
+        || Util::Input::IsKeyDown(Util::Keycode::MOUSE_MB)
+        || Util::Input::IsKeyDown(Util::Keycode::MOUSE_RB);
 }
 
 void GameScene::cleanup() {
