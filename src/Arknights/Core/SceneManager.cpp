@@ -98,6 +98,16 @@ void SceneManager::clear() {
     LOG_DEBUG("SceneManager cleared");
 }
 
+void SceneManager::setPreparedGameScene(std::shared_ptr<Scene> scene) {
+    m_PreparedGameScene = std::move(scene);
+}
+
+std::shared_ptr<Scene> SceneManager::takePreparedGameScene() {
+    auto prepared = m_PreparedGameScene;
+    m_PreparedGameScene.reset();
+    return prepared;
+}
+
 Scene* SceneManager::getCurrentScene() const {
     if (m_SceneStack.empty()) {
         return nullptr;

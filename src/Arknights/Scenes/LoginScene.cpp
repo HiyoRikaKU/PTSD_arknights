@@ -1,5 +1,6 @@
 #include "Arknights/Scenes/LoginScene.hpp"
 #include "Arknights/Scenes/LobbyScene.hpp"
+#include "Arknights/Scenes/GameScene.hpp"
 #include "Arknights/Core/SceneManager.hpp"
 #include "Util/Logger.hpp"
 #include "Util/Input.hpp"
@@ -87,6 +88,16 @@ void LoginScene::enterPhase(Phase nextPhase) {
     }
 }
 
+void LoginScene::preloadStageResources() {
+    if (m_StagePreloaded) return;
+
+    LOG_INFO("Preloading stage resources during splash");
+    auto prepared = std::make_shared<GameScene>();
+    prepared->init();
+    Core::SceneManager::getInstance().setPreparedGameScene(prepared);
+    m_StagePreloaded = true;
+}
+
 void LoginScene::update(float deltaTime) {
     if (!m_Initialized) return;
 
@@ -95,6 +106,12 @@ void LoginScene::update(float deltaTime) {
         deltaTime = 50.0f;
     }
     m_PhaseTimerMs += deltaTime;
+
+    if (!m_StagePreloaded &&
+        (m_Phase == Phase::SPLASH1_HOLD || m_Phase == Phase::SPLASH2_HOLD || m_Phase == Phase::SPLASH3_HOLD) &&
+        m_PhaseTimerMs >= 50.0f) {
+        preloadStageResources();
+    }
 
     switch (m_Phase) {
         case Phase::SPLASH1_HOLD:

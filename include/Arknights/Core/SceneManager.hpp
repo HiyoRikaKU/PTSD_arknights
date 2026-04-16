@@ -21,6 +21,9 @@ public:
     void update(float deltaTime);
     void render();
     void clear();
+
+    void setPreparedGameScene(std::shared_ptr<Scene> scene);
+    std::shared_ptr<Scene> takePreparedGameScene();
     
     Scene* getCurrentScene() const;
     bool hasScene() const { return !m_SceneStack.empty(); }
@@ -33,6 +36,7 @@ private:
 
 private:
     std::stack<std::shared_ptr<Scene>> m_SceneStack;
+    std::shared_ptr<Scene> m_PreparedGameScene = nullptr;
 };
 
 } // namespace Core

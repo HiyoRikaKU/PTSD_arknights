@@ -45,6 +45,7 @@ private:
     void createFlowUI();
     std::shared_ptr<Util::GameObject> createFullScreenImage(const std::string& path, float zIndex);
     void hideAllImages();
+    void preloadStageResources();
     void enterPhase(Phase nextPhase);
     void transitToLobby();
 
@@ -67,6 +68,7 @@ private:
     float m_PhaseTimerMs = 0.0f;
     bool m_BgmStarted = false;
     bool m_TransitionQueued = false;
+    bool m_StagePreloaded = false;
 
     static constexpr float SPLASH_HOLD_MS = 700.0f;
     static constexpr float LOGIN_FAST_TOTAL_MS = 1500.0f;
