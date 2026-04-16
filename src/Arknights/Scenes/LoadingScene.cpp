@@ -3,7 +3,6 @@
 #include "Arknights/Core/SceneManager.hpp"
 #include "Util/Logger.hpp"
 #include "Util/Image.hpp"
-#include "Util/Text.hpp"
 namespace Arknights {
 
 LoadingScene::LoadingScene(std::string stageId)
@@ -35,17 +34,6 @@ void LoadingScene::init() {
     m_LoadingImageB->SetVisible(false);
     m_Root.AddChild(m_LoadingImageB);
 
-    const std::string loadingLabel = "Loading " + m_StageId + "...";
-    auto text = std::make_shared<Util::Text>(
-        std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf",
-        38,
-        loadingLabel,
-        Util::Color(255, 255, 255)
-    );
-    m_LoadingText = std::make_shared<Util::GameObject>(text, 20);
-    m_LoadingText->m_Transform.translation = {560, -390};
-    m_Root.AddChild(m_LoadingText);
-
     m_Initialized = true;
 }
 
@@ -72,7 +60,6 @@ void LoadingScene::cleanup() {
     m_Background.reset();
     m_LoadingImageA.reset();
     m_LoadingImageB.reset();
-    m_LoadingText.reset();
     m_PreparedGameScene.reset();
 }
 

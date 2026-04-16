@@ -180,16 +180,19 @@ void GameScene::init() {
 
     m_MissionCompletedImage = std::make_shared<ExGameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/game_condition/mission_completed.jpg"), 11);
     m_MissionCompletedImage->m_Transform.translation = {-1200.0f, 0.0f};
+    m_MissionCompletedImage->m_Transform.scale = {0.50f, 0.50f};
     m_MissionCompletedImage->SetVisible(false);
     m_Root.AddChild(m_MissionCompletedImage);
 
     m_YourWinImage = std::make_shared<ExGameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/game_condition/yourWin.jpg"), 11);
     m_YourWinImage->m_Transform.translation = {0.0f, 0.0f};
+    m_YourWinImage->m_Transform.scale = {0.50f, 0.50f};
     m_YourWinImage->SetVisible(false);
     m_Root.AddChild(m_YourWinImage);
 
     m_MissionFailedImage = std::make_shared<ExGameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/game_condition/mission_failed.jpg"), 11);
     m_MissionFailedImage->m_Transform.translation = {0.0f, 0.0f};
+    m_MissionFailedImage->m_Transform.scale = {0.60f, 0.60f};
     m_MissionFailedImage->SetVisible(false);
     m_Root.AddChild(m_MissionFailedImage);
 

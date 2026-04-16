@@ -30,7 +30,6 @@ private:
     std::shared_ptr<Util::GameObject> m_Background;
     std::shared_ptr<Util::GameObject> m_LoadingImageA;
     std::shared_ptr<Util::GameObject> m_LoadingImageB;
-    std::shared_ptr<Util::GameObject> m_LoadingText;
 
     std::shared_ptr<class GameScene> m_PreparedGameScene;
 
