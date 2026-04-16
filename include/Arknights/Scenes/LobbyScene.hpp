@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <vector>
+#include <string>
 
 #include "Arknights/Scenes/Scene.hpp"
 #include "Arknights/UI/Button.hpp"
@@ -32,10 +33,13 @@ public:
 
 private:
     void createBackground();
+    void createCharacterSlider();
     void createUserInfo();
     void createResourceDisplay();
     void createMainButtons();
     void createTimeDisplay();
+    void startCharacterSlide(int direction);
+    void updateCharacterSlide(float deltaTime);
     
     void onStageButtonClicked();
     void onOperatorButtonClicked();
@@ -45,6 +49,8 @@ private:
     // Background
     std::shared_ptr<Util::GameObject> m_Background;
     std::shared_ptr<Util::GameObject> m_CharacterArt;
+    std::vector<std::shared_ptr<Util::GameObject>> m_CharacterArts;
+    std::vector<std::string> m_CharacterArtPaths;
     
     // User Info (Left side)
     std::shared_ptr<Util::GameObject> m_UserLevelBg;
@@ -72,6 +78,15 @@ private:
     // State
     float m_TimeCounter = 0.0f;
     bool m_RequestStageSelect = false;
+    int m_CurrentCharacterIndex = 0;
+    int m_NextCharacterIndex = -1;
+    int m_CharacterSlideDirection = 0;
+    float m_CharacterSlideTimer = 0.0f;
+    bool m_IsCharacterSliding = false;
+    const glm::vec2 m_CharacterBasePos = {-300.0f, -50.0f};
+    std::vector<glm::vec2> m_CharacterScales;
+    static constexpr float CHARACTER_SLIDE_DURATION_MS = 320.0f;
+    static constexpr float CHARACTER_SLIDE_DISTANCE = 520.0f;
 };
 
 } // namespace Arknights
