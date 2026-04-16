@@ -27,6 +27,7 @@ void GameScene::init() {
     m_EnemyAnimationPathsGopro.clear();
     m_EnemyAttackPathsGopro.clear();
     m_EnemyDiePathsGopro.clear();
+
     for (int i = 1; i <= 25; i += 2) {
         std::stringstream ss;
         ss << RESOURCE_DIR << "/charactor/enemy/enemy_1000_gopro/Move_Loop_" << std::setfill('0') << std::setw(2) << i << ".png";

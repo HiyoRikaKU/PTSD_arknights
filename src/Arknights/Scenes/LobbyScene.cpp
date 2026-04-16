@@ -1,5 +1,5 @@
 #include "Arknights/Scenes/LobbyScene.hpp"
-#include "Arknights/Scenes/LoadingScene.hpp"
+#include "Arknights/Scenes/StageSelectScene.hpp"
 #include "Arknights/Core/SceneManager.hpp"
 #include "Util/Logger.hpp"
 #include "Util/Time.hpp"
@@ -22,9 +22,6 @@ void LobbyScene::init() {
     createResourceDisplay();
     createMainButtons();
     createTimeDisplay();
-    
-    // Load lobby BGM
-    m_LobbyBGM = std::make_unique<Util::BGM>(std::string(RESOURCE_DIR) + "/SFX/battle/battle.mp3");
     
     m_Initialized = true;
 }
@@ -158,7 +155,7 @@ void LobbyScene::createResourceDisplay() {
     m_CurrentStage = std::make_shared<Util::Text>(
         std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf",
         18,
-        "當前: 0-1 行動準備",
+        "當前: 0-2 守衛",
         Util::Color(255, 255, 255)
     );
     auto stageObj = std::make_shared<Util::GameObject>(m_CurrentStage, 10);
@@ -169,7 +166,7 @@ void LobbyScene::createResourceDisplay() {
 void LobbyScene::createMainButtons() {
     // Stage/Combat Button (作戰)
     m_StageButton = std::make_shared<UI::Button>(
-        "作戰",
+        "終端",
         std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf",
         28,
         glm::vec2(610, 230),
@@ -262,34 +259,30 @@ void LobbyScene::update(float deltaTime) {
     for (auto& button : m_Buttons) {
         button->update(deltaTime);
     }
+
+    if (m_RequestStageSelect) {
+        m_RequestStageSelect = false;
+        auto stageSelectScene = std::make_shared<StageSelectScene>();
+        Core::SceneManager::getInstance().replaceScene(stageSelectScene);
+    }
 }
 
 void LobbyScene::cleanup() {
     LOG_DEBUG("Cleaning up LobbyScene");
     m_Buttons.clear();
-    m_LobbyBGM.reset();
 }
 
 void LobbyScene::onEnter() {
     LOG_DEBUG("Entering LobbyScene");
-    if (m_LobbyBGM) {
-        m_LobbyBGM->Play();
-    }
 }
 
 void LobbyScene::onExit() {
     LOG_DEBUG("Exiting LobbyScene");
-    if (m_LobbyBGM) {
-        m_LobbyBGM->FadeOut(500);
-    }
 }
 
 void LobbyScene::onStageButtonClicked() {
-    LOG_INFO("Stage button clicked - Starting game...");
-    
-    // Push LoadingScene
-    auto loadingScene = std::make_shared<LoadingScene>();
-    Core::SceneManager::getInstance().pushScene(loadingScene);
+    LOG_INFO("Terminal button clicked - entering stage select");
+    m_RequestStageSelect = true;
 }
 
 void LobbyScene::onOperatorButtonClicked() {

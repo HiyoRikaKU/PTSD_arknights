@@ -9,7 +9,6 @@
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
 #include "Util/Text.hpp"
-#include "Util/BGM.hpp"
 
 namespace Arknights {
 
@@ -70,11 +69,9 @@ private:
     std::shared_ptr<UI::Button> m_TeamButton;
     std::shared_ptr<UI::Button> m_OperatorButton;
     
-    // BGM
-    std::unique_ptr<Util::BGM> m_LobbyBGM;
-    
     // State
     float m_TimeCounter = 0.0f;
+    bool m_RequestStageSelect = false;
 };
 
 } // namespace Arknights

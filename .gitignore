@@ -154,6 +154,7 @@ artifacts/
 ScaffoldingReadMe.txt
 
 architecture.md
+needs.md
 
 # StyleCop
 StyleCopReport.xml
