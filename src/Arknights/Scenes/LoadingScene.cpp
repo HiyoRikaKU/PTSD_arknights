@@ -77,11 +77,14 @@ void LoadingScene::startLoadingGameScene() {
 
     auto prepared = Core::SceneManager::getInstance().takePreparedGameScene();
     if (prepared) {
-        m_PreparedGameScene = std::dynamic_pointer_cast<GameScene>(prepared);
+        auto preparedGameScene = std::dynamic_pointer_cast<GameScene>(prepared);
+        if (preparedGameScene && preparedGameScene->getStageId() == m_StageId) {
+            m_PreparedGameScene = std::move(preparedGameScene);
+        }
     }
 
     if (!m_PreparedGameScene) {
-        m_PreparedGameScene = std::make_shared<GameScene>();
+        m_PreparedGameScene = std::make_shared<GameScene>(m_StageId);
         m_PreparedGameScene->init();
     }
     m_AssetsLoaded = true;

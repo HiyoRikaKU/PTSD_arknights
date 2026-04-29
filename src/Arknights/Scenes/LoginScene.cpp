@@ -46,7 +46,7 @@ void LoginScene::createFlowUI() {
 
     std::vector<std::string> loginAnimationPaths;
     loginAnimationPaths.reserve(150 - 17 + 1);
-    for (int i = 17; i <= 150; ++i) {
+    for (int i = 17; i <= 150; i+=2) {
         std::stringstream ss;
         ss << RESOURCE_DIR << "/UI/login_animation/ezgif-frame-" << std::setfill('0') << std::setw(3) << i << ".jpg";
         loginAnimationPaths.push_back(ss.str());

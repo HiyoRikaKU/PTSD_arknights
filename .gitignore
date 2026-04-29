@@ -155,6 +155,8 @@ ScaffoldingReadMe.txt
 
 architecture.md
 needs.md
+.github/skills/
+devtools/
 
 # StyleCop
 StyleCopReport.xml

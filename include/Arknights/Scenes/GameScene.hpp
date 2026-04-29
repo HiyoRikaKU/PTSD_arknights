@@ -19,7 +19,7 @@ namespace Arknights {
 
 class GameScene : public Scene {
 public:
-    GameScene();
+    explicit GameScene(std::string stageId = "0-2");
     ~GameScene() override = default;
 
     void init() override;
@@ -30,6 +30,7 @@ public:
     void onExit() override;
     
     void reset();
+    const std::string& getStageId() const { return m_StageId; }
 
 private:
     void initOperation();
@@ -45,6 +46,8 @@ private:
     bool isAnyReturnInput() const;
 
 private:
+    std::string m_StageId;
+
     // Operation/Map
     std::unique_ptr<Operation> m_CurrentOperation;
     

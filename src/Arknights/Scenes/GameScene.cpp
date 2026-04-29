@@ -4,24 +4,26 @@
 #include "Util/Time.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
-#include "Arknights/Map/Operation1.hpp"
+#include "Arknights/Map/StageFactory.hpp"
 #include "Arknights/Scenes/LobbyScene.hpp"
 #include "config.hpp"
 
 #include <iomanip>
 #include <sstream>
+#include <utility>
 
 namespace Arknights {
 
 
-GameScene::GameScene() {
+GameScene::GameScene(std::string stageId)
+    : m_StageId(std::move(stageId)) {
 }
 
 void GameScene::init() {
     LOG_DEBUG("Initializing GameScene");
     
     // 1. Initialize Operation
-    m_CurrentOperation = std::make_unique<Operation1>();
+    m_CurrentOperation = Map::StageFactory::createOperationByStageId(m_StageId);
     m_CurrentOperation->getMap()->SetVisible(true);
     m_Root.AddChild(m_CurrentOperation->getMap());
 
