@@ -58,7 +58,7 @@ void App::preloadHeavyAssets() {
         std::string(RESOURCE_DIR) + "/UI/loadingScene/main_loading.png",
         std::string(RESOURCE_DIR) + "/UI/loadingScene/avg_0_3.png",
         std::string(RESOURCE_DIR) + "/UI/UI_HOME_FRONT_BKG.png",
-        std::string(RESOURCE_DIR) + "/map/operation1.jpg"
+        std::string(RESOURCE_DIR) + "/map/operation0-2.jpg"
     };
 
     m_PreloadedImages.reserve(heavyPaths.size());

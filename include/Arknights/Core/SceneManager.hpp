@@ -4,6 +4,7 @@
 #include <memory>
 #include <stack>
 #include <string>
+#include <vector>
 
 #include "Arknights/Scenes/Scene.hpp"
 
@@ -35,8 +36,14 @@ private:
     SceneManager& operator=(const SceneManager&) = delete;
 
 private:
+    void cleanupScene(const std::shared_ptr<Scene>& scene);
+    void flushDeferredCleanup();
+
+private:
     std::stack<std::shared_ptr<Scene>> m_SceneStack;
     std::shared_ptr<Scene> m_PreparedGameScene = nullptr;
+    std::vector<std::shared_ptr<Scene>> m_DeferredCleanupScenes;
+    bool m_IsUpdating = false;
 };
 
 } // namespace Core

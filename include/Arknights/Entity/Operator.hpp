@@ -57,8 +57,10 @@ public:
     Direction getDirection() const { return m_Direction; }
 
     float getHp() const { return m_Hp; }
+    float getMaxHp() const { return m_MaxHp; }
     float getAttack() const { return m_Attack; }
     int getDeploymentCost() const { return m_DeploymentCost; }
+    float getAttackInterval() const { return m_AttackInterval; }
 
     bool isAlive() const { return m_State != State::DEAD && m_State != State::DYING; }
 

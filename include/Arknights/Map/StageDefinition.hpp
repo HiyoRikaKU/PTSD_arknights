@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "Arknights/Map/Operation.hpp"
-
+ 
 namespace Arknights::Map {
 
 struct StageHomographyDefinition {

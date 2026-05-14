@@ -31,28 +31,35 @@ void StageSelectScene::init() {
     m_Root.AddChild(m_ConfirmBackground);
 
     const auto& stages = Map::StageRepository::getAllStages();
-    if (!stages.empty()) {
-        m_SelectedStageId = stages.front().id;
-    }
+    auto getStageDisplayName = [&stages](const std::string& stageId) {
+        for (const auto& stage : stages) {
+            if (stage.id == stageId) {
+                return stage.id + " " + stage.name;
+            }
+        }
+        return stageId;
+    };
 
-    constexpr float buttonStartY = -80.0f;
-    constexpr float buttonStepY = -100.0f;
-    constexpr float buttonX = 60.0f;
-    for (std::size_t i = 0; i < stages.size(); ++i) {
-        const auto& stage = stages[i];
+    // Keep stage select explicit on temp_0-2_1.jpg page.
+    auto addStageButton = [this, &getStageDisplayName](const std::string& stageId, const glm::vec2& position) {
         auto stageButton = std::make_shared<UI::Button>(
-            stage.id + " " + stage.name,
+            getStageDisplayName(stageId),
             std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf",
             30,
-            glm::vec2(buttonX, buttonStartY + buttonStepY * static_cast<float>(i)),
+            position,
             glm::vec2(360, 80),
             15
         );
-        stageButton->setOnClick([this, stageId = stage.id]() { onStageClicked(stageId); });
+        stageButton->setOnClick([this, stageId]() { onStageClicked(stageId); });
         m_StageButtons.push_back(stageButton);
         m_Buttons.push_back(stageButton);
         m_Root.AddChild(stageButton);
-    }
+    };
+
+    addStageButton("0-2", glm::vec2(60.0f, -80.0f));
+    addStageButton("0-3", glm::vec2(60.0f, -180.0f));
+
+    m_SelectedStageId = "0-2";
 
     m_StartActionButton = std::make_shared<UI::Button>(
         "開始行動",
