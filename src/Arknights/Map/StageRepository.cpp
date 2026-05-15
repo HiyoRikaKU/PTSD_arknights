@@ -56,10 +56,11 @@ std::vector<glm::vec2> makeStage02Waypoints() {
 
 std::vector<glm::vec2> makeStage03Waypoints() {
     // Stage 0-3 enemy path must stay on GROUND(f) tiles only.
-    const glm::vec2 spawnPos = {3.5f, 1.5f};
+    const glm::vec2 spawnPos = {2.5f, 0.5f};
     const std::vector<glm::vec2> steps = {
-        {1,  0}, {1,  0}, {1,  0}, {1,  0}, {1,  0}, {1,  0}, {1,  0}, 
-        {0, -1}, 
+        {1,  0}, {1,  0}, {1,  0}, {1,  0}, {1,  0}, {0,  1}, 
+        {1,  0}, {1, 0}, {1, 0}, 
+        {0, -1}, {0, -1}, {0, -1}
     };
 
     std::vector<glm::vec2> waypoints;

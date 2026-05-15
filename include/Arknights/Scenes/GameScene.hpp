@@ -115,10 +115,6 @@ private:
     std::shared_ptr<ExGameObject> m_GameOverText;
     std::shared_ptr<ExGameObject> m_RestartText;
     std::shared_ptr<ExGameObject> m_DPText;
-    std::shared_ptr<ExGameObject> m_BaseHPText;
-    std::shared_ptr<ExGameObject> m_WaveProgressText;
-    std::shared_ptr<ExGameObject> m_GameSpeedText;
-    std::shared_ptr<ExGameObject> m_HUDHintText;
 
     std::shared_ptr<ExGameObject> m_AmiyaCostText;
     std::shared_ptr<ExGameObject> m_ChenCostText;

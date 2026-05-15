@@ -260,24 +260,6 @@ void GameScene::init() {
     m_UmirinCostText->m_Transform.translation = {m_UmirinIcon->m_Transform.translation.x, m_UmirinIcon->m_Transform.translation.y + 65.0f};
     m_Root.AddChild(m_UmirinCostText);
 
-    // HUD
-    m_BaseHPText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "BASE HP: 4 / 4", Util::Color(255, 255, 255)), 8);
-    m_BaseHPText->m_Transform.translation = {-680, 360};
-    m_Root.AddChild(m_BaseHPText);
-
-    m_WaveProgressText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, "WAVE: 0 / 0", Util::Color(200, 230, 255)), 8);
-    m_WaveProgressText->m_Transform.translation = {-680, 320};
-    m_Root.AddChild(m_WaveProgressText);
-
-    m_GameSpeedText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 28, "SPEED: 1x", Util::Color(255, 220, 120)), 8);
-    m_GameSpeedText->m_Transform.translation = {-680, 280};
-    m_Root.AddChild(m_GameSpeedText);
-
-    m_HUDHintText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 20, "[P] Pause  [2] Toggle 2x", Util::Color(180, 180, 180)), 8);
-    m_HUDHintText->m_Transform.translation = {-640, 240};
-    m_Root.AddChild(m_HUDHintText);
-
-    /*
     // Operator property panel
     m_OperatorPanelTitleText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 28, "Operator: -", Util::Color(255, 255, 255)), 9);
     m_OperatorPanelTitleText->m_Transform.translation = {580, 260};
@@ -297,7 +279,7 @@ void GameScene::init() {
 
     m_OperatorPanelLine4Text = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 22, "STATE: -", Util::Color(220, 220, 220)), 9);
     m_OperatorPanelLine4Text->m_Transform.translation = {580, 120};
-    m_Root.AddChild(m_OperatorPanelLine4Text);*/
+    m_Root.AddChild(m_OperatorPanelLine4Text);
 
     // Pause menu
     m_PauseOverlayText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 90, "PAUSED", Util::Color(255, 255, 255)), 12);
@@ -344,7 +326,11 @@ void GameScene::init() {
     // 7. Battle BGM
     m_BattleBGM = std::make_unique<Util::BGM>(std::string(RESOURCE_DIR) + "/SFX/battle/battle.mp3");
     updateHudText();
-    updateOperatorPanel(Util::Input::GetCursorPosition());
+    if (m_OperatorPanelTitleText && m_OperatorPanelLine1Text &&
+        m_OperatorPanelLine2Text && m_OperatorPanelLine3Text &&
+        m_OperatorPanelLine4Text) {
+        updateOperatorPanel(Util::Input::GetCursorPosition());
+    }
 
     m_Initialized = true;
 }
@@ -564,26 +550,16 @@ void GameScene::update(float deltaTime) {
 void GameScene::updateHudText() {
     auto enemyCountDrawable = std::dynamic_pointer_cast<Util::Text>(m_EnemyCountText->GetDrawable());
     enemyCountDrawable->SetText("ESCAPED: " + std::to_string(m_EscapedEnemies) + " / " + std::to_string(MAX_ESCAPED_ENEMIES));
-
-    auto baseHpDrawable = std::dynamic_pointer_cast<Util::Text>(m_BaseHPText->GetDrawable());
-    baseHpDrawable->SetText("BASE HP: " + std::to_string(m_BaseHP) + " / " + std::to_string(MAX_ESCAPED_ENEMIES));
-
-    const int spawned = static_cast<int>(m_CurrentOperation->getWaveManager().getSpawnedCount());
-    auto waveDrawable = std::dynamic_pointer_cast<Util::Text>(m_WaveProgressText->GetDrawable());
-    waveDrawable->SetText("WAVE: " + std::to_string(spawned) + " / " + std::to_string(m_TotalEnemies));
-
-    auto speedDrawable = std::dynamic_pointer_cast<Util::Text>(m_GameSpeedText->GetDrawable());
-    speedDrawable->SetText("SPEED: " + std::string(m_GameSpeedMultiplier > 1.5f ? "2x" : "1x") + (m_IsPaused ? " (PAUSED)" : ""));
 }
 
 std::shared_ptr<Operator> GameScene::getHoveredOperator(const glm::vec2& mousePos) const {
-    if (m_AmiyaIcon->GetVisible() && glm::distance(mousePos, m_AmiyaIcon->m_Transform.translation) < 60.0f && m_Operators.size() >= 1) return m_Operators[0];
-    if (m_ChenIcon->GetVisible() && glm::distance(mousePos, m_ChenIcon->m_Transform.translation) < 60.0f && m_Operators.size() >= 2) return m_Operators[1];
-    if (m_AngelinaIcon->GetVisible() && glm::distance(mousePos, m_AngelinaIcon->m_Transform.translation) < 60.0f && m_Operators.size() >= 3) return m_Operators[2];
-    if (m_RedIcon->GetVisible() && glm::distance(mousePos, m_RedIcon->m_Transform.translation) < 60.0f && m_Operators.size() >= 4) return m_Operators[3];
-    if (m_EyjafjallaIcon->GetVisible() && glm::distance(mousePos, m_EyjafjallaIcon->m_Transform.translation) < 60.0f && m_Operators.size() >= 5) return m_Operators[4];
-    if (m_TexasIcon->GetVisible() && glm::distance(mousePos, m_TexasIcon->m_Transform.translation) < 60.0f && m_Operators.size() >= 6) return m_Operators[5];
-    if (m_UmirinIcon->GetVisible() && glm::distance(mousePos, m_UmirinIcon->m_Transform.translation) < 60.0f && m_Operators.size() >= 7) return m_Operators[6];
+    if (m_AmiyaIcon && m_AmiyaIcon->GetVisible() && glm::distance(mousePos, m_AmiyaIcon->m_Transform.translation) < 60.0f && m_Operators.size() >= 1) return m_Operators[0];
+    if (m_ChenIcon && m_ChenIcon->GetVisible() && glm::distance(mousePos, m_ChenIcon->m_Transform.translation) < 60.0f && m_Operators.size() >= 2) return m_Operators[1];
+    if (m_AngelinaIcon && m_AngelinaIcon->GetVisible() && glm::distance(mousePos, m_AngelinaIcon->m_Transform.translation) < 60.0f && m_Operators.size() >= 3) return m_Operators[2];
+    if (m_RedIcon && m_RedIcon->GetVisible() && glm::distance(mousePos, m_RedIcon->m_Transform.translation) < 60.0f && m_Operators.size() >= 4) return m_Operators[3];
+    if (m_EyjafjallaIcon && m_EyjafjallaIcon->GetVisible() && glm::distance(mousePos, m_EyjafjallaIcon->m_Transform.translation) < 60.0f && m_Operators.size() >= 5) return m_Operators[4];
+    if (m_TexasIcon && m_TexasIcon->GetVisible() && glm::distance(mousePos, m_TexasIcon->m_Transform.translation) < 60.0f && m_Operators.size() >= 6) return m_Operators[5];
+    if (m_UmirinIcon && m_UmirinIcon->GetVisible() && glm::distance(mousePos, m_UmirinIcon->m_Transform.translation) < 60.0f && m_Operators.size() >= 7) return m_Operators[6];
 
     for (const auto& op : m_Operators) {
         if (op->GetVisible() && glm::distance(mousePos, op->getPosition()) < 55.0f) {
@@ -594,6 +570,12 @@ std::shared_ptr<Operator> GameScene::getHoveredOperator(const glm::vec2& mousePo
 }
 
 void GameScene::updateOperatorPanel(const glm::vec2& mousePos) {
+    if (!m_OperatorPanelTitleText || !m_OperatorPanelLine1Text ||
+        !m_OperatorPanelLine2Text || !m_OperatorPanelLine3Text ||
+        !m_OperatorPanelLine4Text) {
+        return;
+    }
+
     std::shared_ptr<Operator> selected = getHoveredOperator(mousePos);
     if (!selected && m_DraggedOperator) selected = m_DraggedOperator;
     if (!selected && m_ChoosingDirectionOperator) selected = m_ChoosingDirectionOperator;
@@ -603,6 +585,9 @@ void GameScene::updateOperatorPanel(const glm::vec2& mousePos) {
     auto line2Drawable = std::dynamic_pointer_cast<Util::Text>(m_OperatorPanelLine2Text->GetDrawable());
     auto line3Drawable = std::dynamic_pointer_cast<Util::Text>(m_OperatorPanelLine3Text->GetDrawable());
     auto line4Drawable = std::dynamic_pointer_cast<Util::Text>(m_OperatorPanelLine4Text->GetDrawable());
+    if (!titleDrawable || !line1Drawable || !line2Drawable || !line3Drawable || !line4Drawable) {
+        return;
+    }
 
     if (!selected) {
         titleDrawable->SetText("Operator: -");
