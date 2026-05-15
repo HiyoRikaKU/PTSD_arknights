@@ -115,6 +115,25 @@ void GameScene::init() {
         m_EnemyDiePathsTrslim.push_back(ss.str());
     }
 
+    m_EnemyAnimationPathsYokai.clear();
+    m_EnemyAttackPathsYokai.clear();
+    m_EnemyDiePathsYokai.clear();
+    for (int i = 1; i <= 59; i += 2) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/enemy/enemy_1005_yokai/Move_Loop_" << std::setfill('0') << std::setw(2) << i << ".png";
+        m_EnemyAnimationPathsYokai.push_back(ss.str());
+    }
+    for (int i = 1; i <= 31; i += 2) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/enemy/enemy_1005_yokai/Attack_" << std::setfill('0') << std::setw(2) << i << ".png";
+        m_EnemyAttackPathsYokai.push_back(ss.str());
+    }
+    for (int i = 1; i <= 31; i += 2) {
+        std::stringstream ss;
+        ss << RESOURCE_DIR << "/charactor/enemy/enemy_1005_yokai/Die_" << std::setfill('0') << std::setw(2) << i << ".png";
+        m_EnemyDiePathsYokai.push_back(ss.str());
+    }
+
     // 3. Initialize Enemy Pool
     m_EnemyPool = std::make_unique<EnemyPool>(ENEMY_POOL_SIZE, m_EnemyAnimationPathsGopro, m_CurrentOperation->getWaypoints());
     for (const auto &handle : m_EnemyPool->getRenderHandles()) {
@@ -360,9 +379,26 @@ void GameScene::spawnEnemy(const SpawnEvent& event) {
         enemy->setDieAnimation(m_EnemyDiePathsTrslim);
         enemy->setAttack(35.0f);
         enemy->setAttackInterval(800.0f);
+    } else if (event.enemyType == "yokai") {
+        enemy->setAnimation(m_EnemyAnimationPathsYokai);
+        enemy->setAttackAnimation(m_EnemyAttackPathsYokai);
+        enemy->setDieAnimation(m_EnemyDiePathsYokai);
+        enemy->setAttack(45.0f);
+        enemy->setAttackInterval(900.0f);
     }
 
-    enemy->spawn(m_CurrentOperation->getWaypoints(), event.hp, event.speed, m_CurrentOperation->getHomography());
+    std::vector<glm::vec2> spawnPath = m_CurrentOperation->getWaypoints();
+    if (event.enemyType == "yokai" && m_StageId == "0-3" && spawnPath.size() >= 4) {
+        constexpr float kRowOffset = -1.0f; // Spawn one tile higher than regular enemies.
+        const glm::vec2 patrolA = spawnPath[2] + glm::vec2(kRowOffset, 0.0f);
+        const glm::vec2 patrolB = spawnPath[3] + glm::vec2(kRowOffset, 0.0f);
+        spawnPath = {spawnPath[0] + glm::vec2(kRowOffset, 0.0f), patrolA, patrolB};
+        for (int i = 0; i < 24; ++i) {
+            spawnPath.push_back((i % 2 == 0) ? patrolA : patrolB);
+        }
+    }
+
+    enemy->spawn(spawnPath, event.hp, event.speed, m_CurrentOperation->getHomography());
     m_ActiveEnemies.push_back(enemy);
 }
 

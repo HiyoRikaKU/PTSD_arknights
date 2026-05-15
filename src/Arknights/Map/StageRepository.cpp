@@ -26,7 +26,7 @@ const std::vector<std::vector<Operation::TileType>> s_Stage03MapMatrix = {
     {x, x, x, x, x, x, x, x, x, x},
     {x, h, h, h, h, h, h, h, h, x},
     {r, h, f, f, h, f, f, f, f, x},
-    {r, f, f, f, f, f, f, f, f, x},
+    {r, f, f, f, f, f, h, h, f, x},
     {x, h, h, h, h, h, h, h, f, x},
     {x, x, x, x, x, x, x, x, b, x},
 };
@@ -56,7 +56,7 @@ std::vector<glm::vec2> makeStage02Waypoints() {
 
 std::vector<glm::vec2> makeStage03Waypoints() {
     // Stage 0-3 enemy path must stay on GROUND(f) tiles only.
-    const glm::vec2 spawnPos = {2.5f, 0.5f};
+    const glm::vec2 spawnPos = {3.5f, 0.5f};
     const std::vector<glm::vec2> steps = {
         {1,  0}, {1,  0}, {1,  0}, {1,  0}, {1,  0}, {0,  1}, 
         {1,  0}, {1, 0}, {1, 0}, 
@@ -87,7 +87,7 @@ const std::array<glm::vec2, 4> s_Stage03SrcPoints = {
 };
 
 const std::array<glm::vec2, 4> s_Stage03DstPoints = {
-    glm::vec2{-493, 253}, {377, 246}, {-644, -381}, {488, -375}
+    glm::vec2{-513, 373}, {357, 366}, {-664, -261}, {460, -255}
 };
 
 const std::vector<SpawnEvent> s_Stage02Wave = {
@@ -118,19 +118,16 @@ const std::vector<SpawnEvent> s_Stage03Wave = {
     { 2000.0f, "trslim", 100.0f, 0.0018f},
     { 3000.0f, "trslim", 100.0f, 0.0018f},
     { 4000.0f, "trslim", 100.0f, 0.0018f},
-    { 5000.0f, "trslim", 100.0f, 0.0018f},
 
     // Wave 2: trslim * 5 + bigbo * 2
-    {10000.0f, "trslim", 110.0f, 0.0018f},
+    { 9000.0f, "trslim", 110.0f, 0.0018f},
     {11000.0f, "trslim", 110.0f, 0.0018f},
-    {12000.0f, "trslim", 110.0f, 0.0018f},
     {13000.0f, "trslim", 110.0f, 0.0018f},
     {14000.0f, "trslim", 110.0f, 0.0018f},
     {11500.0f, "bigbo",  420.0f, 0.0005f},
     {14500.0f, "bigbo",  420.0f, 0.0005f},
 
-    // Wave 3: trslim * 5 + bigbo * 3
-    {19000.0f, "trslim", 120.0f, 0.0019f},
+    // Wave 3: trslim * 5 + bigbo * 3 + yokai * 2
     {20000.0f, "trslim", 120.0f, 0.0019f},
     {21000.0f, "trslim", 120.0f, 0.0019f},
     {22000.0f, "trslim", 120.0f, 0.0019f},
@@ -138,17 +135,21 @@ const std::vector<SpawnEvent> s_Stage03Wave = {
     {19500.0f, "bigbo",  520.0f, 0.0004f},
     {21500.0f, "bigbo",  520.0f, 0.0004f},
     {23500.0f, "bigbo",  520.0f, 0.0004f},
+    {20500.0f, "yokai",  360.0f, 0.0012f},
 
     // Wave 4: trslim * 5 + gopro * 4
-    {30000.0f, "trslim", 140.0f, 0.0020f},
     {31000.0f, "trslim", 140.0f, 0.0020f},
     {32000.0f, "trslim", 140.0f, 0.0020f},
     {33000.0f, "trslim", 140.0f, 0.0020f},
     {34000.0f, "trslim", 140.0f, 0.0020f},
     {30500.0f, "gopro",  170.0f, 0.0011f},
-    {31500.0f, "gopro",  170.0f, 0.0011f},
     {32500.0f, "gopro",  170.0f, 0.0011f},
     {33500.0f, "gopro",  170.0f, 0.0011f},
+    {30000.0f, "yokai",  420.0f, 0.0013f},
+
+    // Wave 5: yokai focus
+    {40000.0f, "yokai",  480.0f, 0.0014f},
+    {46000.0f, "bigbo",  650.0f, 0.0004f},
 };
 
 const std::vector<StageDefinition>& getStageData() {

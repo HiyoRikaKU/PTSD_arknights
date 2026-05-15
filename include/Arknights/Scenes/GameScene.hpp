@@ -70,6 +70,9 @@ private:
     std::vector<std::string> m_EnemyAnimationPathsTrslim;
     std::vector<std::string> m_EnemyAttackPathsTrslim;
     std::vector<std::string> m_EnemyDiePathsTrslim;
+    std::vector<std::string> m_EnemyAnimationPathsYokai;
+    std::vector<std::string> m_EnemyAttackPathsYokai;
+    std::vector<std::string> m_EnemyDiePathsYokai;
     
     // Stats
     float m_WaveTimer = 0.0f;
