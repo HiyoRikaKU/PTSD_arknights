@@ -3,6 +3,7 @@
 #include "Arknights/Scenes/LobbyScene.hpp"
 #include "Arknights/Scenes/LoadingScene.hpp"
 #include "Arknights/Core/SceneManager.hpp"
+#include "Arknights/Map/StageRepository.hpp"
 #include "Util/Image.hpp"
 #include "Util/Logger.hpp"
 
@@ -29,17 +30,36 @@ void StageSelectScene::init() {
     m_ConfirmBackground->SetVisible(false);
     m_Root.AddChild(m_ConfirmBackground);
 
-    m_Stage02Button = std::make_shared<UI::Button>(
-        "0-2",
-        std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf",
-        34,
-        glm::vec2(60, -80),
-        glm::vec2(180, 80),
-        15
-    );
-    m_Stage02Button->setOnClick([this]() { onStage02Clicked(); });
-    m_Buttons.push_back(m_Stage02Button);
-    m_Root.AddChild(m_Stage02Button);
+    const auto& stages = Map::StageRepository::getAllStages();
+    auto getStageDisplayName = [&stages](const std::string& stageId) {
+        for (const auto& stage : stages) {
+            if (stage.id == stageId) {
+                return stage.id + " " + stage.name;
+            }
+        }
+        return stageId;
+    };
+
+    // Keep stage select explicit on temp_0-2_1.jpg page.
+    auto addStageButton = [this, &getStageDisplayName](const std::string& stageId, const glm::vec2& position) {
+        auto stageButton = std::make_shared<UI::Button>(
+            getStageDisplayName(stageId),
+            std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf",
+            30,
+            position,
+            glm::vec2(360, 80),
+            15
+        );
+        stageButton->setOnClick([this, stageId]() { onStageClicked(stageId); });
+        m_StageButtons.push_back(stageButton);
+        m_Buttons.push_back(stageButton);
+        m_Root.AddChild(stageButton);
+    };
+
+    addStageButton("0-2", glm::vec2(60.0f, -80.0f));
+    addStageButton("0-3", glm::vec2(60.0f, -180.0f));
+
+    m_SelectedStageId = "0-2";
 
     m_StartActionButton = std::make_shared<UI::Button>(
         "開始行動",
@@ -58,7 +78,7 @@ void StageSelectScene::init() {
         "返回",
         std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf",
         24,
-        glm::vec2(-660, -390),
+        glm::vec2(-660, 350),
         glm::vec2(140, 50),
         15
     );
@@ -76,7 +96,7 @@ void StageSelectScene::update(float deltaTime) {
 
     if (m_RequestStartOperation) {
         m_RequestStartOperation = false;
-        auto loadingScene = std::make_shared<LoadingScene>("0-2");
+        auto loadingScene = std::make_shared<LoadingScene>(m_SelectedStageId);
         Core::SceneManager::getInstance().replaceScene(loadingScene);
         return;
     }
@@ -91,11 +111,12 @@ void StageSelectScene::update(float deltaTime) {
 void StageSelectScene::cleanup() {
     LOG_DEBUG("Cleaning up StageSelectScene");
     m_Buttons.clear();
+    m_StageButtons.clear();
     m_SelectBackground.reset();
     m_ConfirmBackground.reset();
-    m_Stage02Button.reset();
     m_StartActionButton.reset();
     m_BackButton.reset();
+    m_SelectedStageId.clear();
 }
 
 void StageSelectScene::onEnter() {
@@ -106,14 +127,20 @@ void StageSelectScene::onExit() {
     LOG_DEBUG("Exiting StageSelectScene");
 }
 
-void StageSelectScene::onStage02Clicked() {
+void StageSelectScene::onStageClicked(const std::string& stageId) {
+    m_SelectedStageId = stageId;
     if (m_SelectBackground) m_SelectBackground->SetVisible(false);
     if (m_ConfirmBackground) m_ConfirmBackground->SetVisible(true);
-    if (m_Stage02Button) m_Stage02Button->SetVisible(false);
+    for (const auto& button : m_StageButtons) {
+        if (button) button->SetVisible(false);
+    }
     if (m_StartActionButton) m_StartActionButton->SetVisible(true);
 }
 
 void StageSelectScene::onStartActionClicked() {
+    if (m_SelectedStageId.empty()) {
+        return;
+    }
     m_RequestStartOperation = true;
 }
 

@@ -52,7 +52,7 @@ namespace {
 }
 
 Operation1::Operation1() 
-    : Operation(std::string(RESOURCE_DIR) + "/map/operation1.jpg", 
+    : Operation(std::string(RESOURCE_DIR) + "/map/operation0-2.jpg", 
                 CalculateWaypoints(), 
                 s_MapMatrix, 
                 s_SrcPoints, 

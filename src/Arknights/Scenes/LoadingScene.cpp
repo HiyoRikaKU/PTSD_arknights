@@ -11,6 +11,8 @@ LoadingScene::LoadingScene(std::string stageId)
 
 void LoadingScene::init() {
     LOG_DEBUG("Initializing LoadingScene");
+    const std::string operationImagePrefix =
+        (m_StageId == "0-3") ? "UI_0-3_" : "UI_0-2_";
 
     m_Background = std::make_shared<Util::GameObject>(
         std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/blackSquare.jpg"),
@@ -20,14 +22,14 @@ void LoadingScene::init() {
     m_Root.AddChild(m_Background);
 
     m_LoadingImageA = std::make_shared<Util::GameObject>(
-        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/operation/UI_0-2_1.jpg"),
+        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/operation/" + operationImagePrefix + "1.jpg"),
         1
     );
     m_LoadingImageA->m_Transform.scale = glm::vec2(1600.0f, 900.0f) / m_LoadingImageA->GetScaledSize();
     m_Root.AddChild(m_LoadingImageA);
 
     m_LoadingImageB = std::make_shared<Util::GameObject>(
-        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/operation/UI_0-2_2.jpg"),
+        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/operation/" + operationImagePrefix + "2.jpg"),
         2
     );
     m_LoadingImageB->m_Transform.scale = glm::vec2(1600.0f, 900.0f) / m_LoadingImageB->GetScaledSize();
@@ -77,11 +79,14 @@ void LoadingScene::startLoadingGameScene() {
 
     auto prepared = Core::SceneManager::getInstance().takePreparedGameScene();
     if (prepared) {
-        m_PreparedGameScene = std::dynamic_pointer_cast<GameScene>(prepared);
+        auto preparedGameScene = std::dynamic_pointer_cast<GameScene>(prepared);
+        if (preparedGameScene && preparedGameScene->getStageId() == m_StageId) {
+            m_PreparedGameScene = std::move(preparedGameScene);
+        }
     }
 
     if (!m_PreparedGameScene) {
-        m_PreparedGameScene = std::make_shared<GameScene>();
+        m_PreparedGameScene = std::make_shared<GameScene>(m_StageId);
         m_PreparedGameScene->init();
     }
     m_AssetsLoaded = true;

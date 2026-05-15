@@ -4,6 +4,26 @@
 namespace Arknights {
 namespace Core {
 
+void SceneManager::cleanupScene(const std::shared_ptr<Scene>& scene) {
+    if (!scene) {
+        return;
+    }
+    if (m_IsUpdating) {
+        m_DeferredCleanupScenes.push_back(scene);
+        return;
+    }
+    scene->cleanup();
+}
+
+void SceneManager::flushDeferredCleanup() {
+    for (const auto& scene : m_DeferredCleanupScenes) {
+        if (scene) {
+            scene->cleanup();
+        }
+    }
+    m_DeferredCleanupScenes.clear();
+}
+
 SceneManager& SceneManager::getInstance() {
     static SceneManager instance;
     return instance;
@@ -40,7 +60,7 @@ void SceneManager::popScene() {
 
     // Cleanup and exit current scene
     m_SceneStack.top()->onExit();
-    m_SceneStack.top()->cleanup();
+    cleanupScene(m_SceneStack.top());
     m_SceneStack.pop();
 
     // Enter previous scene if exists
@@ -60,7 +80,7 @@ void SceneManager::replaceScene(std::shared_ptr<Scene> scene) {
     // Remove current scene without re-entering previous
     if (!m_SceneStack.empty()) {
         m_SceneStack.top()->onExit();
-        m_SceneStack.top()->cleanup();
+        cleanupScene(m_SceneStack.top());
         m_SceneStack.pop();
     }
 
@@ -78,8 +98,13 @@ void SceneManager::replaceScene(std::shared_ptr<Scene> scene) {
 
 void SceneManager::update(float deltaTime) {
     if (!m_SceneStack.empty()) {
+        m_IsUpdating = true;
         m_SceneStack.top()->update(deltaTime);
-        m_SceneStack.top()->getRoot().Update();
+        if (!m_SceneStack.empty()) {
+            m_SceneStack.top()->getRoot().Update();
+        }
+        m_IsUpdating = false;
+        flushDeferredCleanup();
     }
 }
 
@@ -92,9 +117,10 @@ void SceneManager::render() {
 void SceneManager::clear() {
     while (!m_SceneStack.empty()) {
         m_SceneStack.top()->onExit();
-        m_SceneStack.top()->cleanup();
+        cleanupScene(m_SceneStack.top());
         m_SceneStack.pop();
     }
+    flushDeferredCleanup();
     LOG_DEBUG("SceneManager cleared");
 }
 

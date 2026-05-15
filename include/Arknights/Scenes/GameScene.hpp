@@ -9,6 +9,7 @@
 #include "Arknights/Entity/Enemy.hpp"
 #include "Arknights/Map/Operation.hpp"
 #include "Arknights/Entity/Operator.hpp"
+#include "Arknights/UI/Button.hpp"
 #include "Util/GameObject.hpp"
 #include "Util/Text.hpp"
 #include "Util/Image.hpp"
@@ -19,7 +20,7 @@ namespace Arknights {
 
 class GameScene : public Scene {
 public:
-    GameScene();
+    explicit GameScene(std::string stageId = "0-2");
     ~GameScene() override = default;
 
     void init() override;
@@ -30,6 +31,7 @@ public:
     void onExit() override;
     
     void reset();
+    const std::string& getStageId() const { return m_StageId; }
 
 private:
     void initOperation();
@@ -43,8 +45,16 @@ private:
     void beginFailureSequence();
     void cleanupCharactersForResult();
     bool isAnyReturnInput() const;
+    void updateHudText();
+    void updateOperatorPanel(const glm::vec2& mousePos);
+    std::shared_ptr<Operator> getHoveredOperator(const glm::vec2& mousePos) const;
+    void updateButtons(float deltaTime);
+    void togglePause();
+    void setGameSpeed(float speedMultiplier);
 
 private:
+    std::string m_StageId;
+
     // Operation/Map
     std::unique_ptr<Operation> m_CurrentOperation;
     
@@ -66,8 +76,11 @@ private:
     int m_EscapedEnemies = 0;
     int m_KilledEnemies = 0;
     int m_TotalEnemies = 0;
+    int m_BaseHP = 4;
     bool m_IsGameOver = false;
     bool m_IsVictory = false;
+    bool m_IsPaused = false;
+    float m_GameSpeedMultiplier = 1.0f;
     enum class ResultPhase {
         NONE,
         VICTORY_SLIDE,
@@ -113,6 +126,19 @@ private:
     std::shared_ptr<ExGameObject> m_MissionCompletedImage;
     std::shared_ptr<ExGameObject> m_YourWinImage;
     std::shared_ptr<ExGameObject> m_MissionFailedImage;
+    std::shared_ptr<ExGameObject> m_OperatorPanelTitleText;
+    std::shared_ptr<ExGameObject> m_OperatorPanelLine1Text;
+    std::shared_ptr<ExGameObject> m_OperatorPanelLine2Text;
+    std::shared_ptr<ExGameObject> m_OperatorPanelLine3Text;
+    std::shared_ptr<ExGameObject> m_OperatorPanelLine4Text;
+    std::shared_ptr<ExGameObject> m_PauseOverlayText;
+    std::shared_ptr<ExGameObject> m_PauseHintText;
+
+    std::shared_ptr<UI::Button> m_PauseButton;
+    std::shared_ptr<UI::Button> m_SpeedButton;
+    std::shared_ptr<UI::Button> m_ResumeButton;
+    std::shared_ptr<UI::Button> m_RetryButton;
+    std::shared_ptr<UI::Button> m_ExitButton;
 
     // Audio
     std::unique_ptr<Util::BGM> m_BattleBGM;

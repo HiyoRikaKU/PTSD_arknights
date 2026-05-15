@@ -2,7 +2,8 @@ set(SRC_FILES
     Arknights/App.cpp
     Arknights/Entity/Enemy.cpp
     Arknights/Map/Operation.cpp
-    Arknights/Map/Operation1.cpp
+    Arknights/Map/StageRepository.cpp
+    Arknights/Map/StageFactory.cpp
     Arknights/Entity/Operator.cpp
     Arknights/Scenes/Scene.cpp
     Arknights/Scenes/LoginScene.cpp
@@ -18,7 +19,9 @@ set(INCLUDE_FILES
     Arknights/App.hpp
     Arknights/Entity/Enemy.hpp
     Arknights/Map/Operation.hpp
-    Arknights/Map/Operation1.hpp
+    Arknights/Map/StageDefinition.hpp
+    Arknights/Map/StageRepository.hpp
+    Arknights/Map/StageFactory.hpp
     Arknights/UI/HealthBar.hpp
     Arknights/Entity/Operator.hpp
     Arknights/Scenes/Scene.hpp

@@ -4,26 +4,57 @@
 #include "Util/Time.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
-#include "Arknights/Map/Operation1.hpp"
+#include "Arknights/Map/StageFactory.hpp"
 #include "Arknights/Scenes/LobbyScene.hpp"
 #include "config.hpp"
 
 #include <iomanip>
 #include <sstream>
+#include <utility>
+#include <algorithm>
 
 namespace Arknights {
 
+namespace {
+const char* operatorName(Operator::Type type) {
+    switch (type) {
+        case Operator::Type::AMIYA: return "Amiya";
+        case Operator::Type::CHEN: return "Chen";
+        case Operator::Type::ANGELINA: return "Angelina";
+        case Operator::Type::RED: return "Red";
+        case Operator::Type::EYJAFJALLA: return "Eyjafjalla";
+        case Operator::Type::TEXAS: return "Texas";
+        case Operator::Type::UMIRIN: return "Umirin";
+        default: return "Unknown";
+    }
+}
 
-GameScene::GameScene() {
+const char* operatorStateName(Operator::State state) {
+    switch (state) {
+        case Operator::State::IDLE: return "IDLE";
+        case Operator::State::ATTACK: return "ATTACK";
+        case Operator::State::SKILL: return "SKILL";
+        case Operator::State::DYING: return "DYING";
+        case Operator::State::DEAD: return "DEAD";
+        default: return "UNKNOWN";
+    }
+}
+} // namespace
+
+
+GameScene::GameScene(std::string stageId)
+    : m_StageId(std::move(stageId)) {
 }
 
 void GameScene::init() {
     LOG_DEBUG("Initializing GameScene");
     
     // 1. Initialize Operation
-    m_CurrentOperation = std::make_unique<Operation1>();
+    m_CurrentOperation = Map::StageFactory::createOperationByStageId(m_StageId);
     m_CurrentOperation->getMap()->SetVisible(true);
     m_Root.AddChild(m_CurrentOperation->getMap());
+    m_TotalEnemies = static_cast<int>(m_CurrentOperation->getWaveManager().getTotalSpawnCount());
+    m_BaseHP = MAX_ESCAPED_ENEMIES;
 
     // 2. Initialize Enemy Animations
     m_EnemyAnimationPathsGopro.clear();
@@ -229,8 +260,77 @@ void GameScene::init() {
     m_UmirinCostText->m_Transform.translation = {m_UmirinIcon->m_Transform.translation.x, m_UmirinIcon->m_Transform.translation.y + 65.0f};
     m_Root.AddChild(m_UmirinCostText);
 
+    // Operator property panel
+    m_OperatorPanelTitleText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 28, "Operator: -", Util::Color(255, 255, 255)), 9);
+    m_OperatorPanelTitleText->m_Transform.translation = {580, 260};
+    m_Root.AddChild(m_OperatorPanelTitleText);
+
+    m_OperatorPanelLine1Text = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 22, "HP: - / -", Util::Color(220, 220, 220)), 9);
+    m_OperatorPanelLine1Text->m_Transform.translation = {580, 225};
+    m_Root.AddChild(m_OperatorPanelLine1Text);
+
+    m_OperatorPanelLine2Text = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 22, "ATK: -  COST: -", Util::Color(220, 220, 220)), 9);
+    m_OperatorPanelLine2Text->m_Transform.translation = {580, 190};
+    m_Root.AddChild(m_OperatorPanelLine2Text);
+
+    m_OperatorPanelLine3Text = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 22, "INTERVAL: -s  BLOCK: -", Util::Color(220, 220, 220)), 9);
+    m_OperatorPanelLine3Text->m_Transform.translation = {580, 155};
+    m_Root.AddChild(m_OperatorPanelLine3Text);
+
+    m_OperatorPanelLine4Text = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 22, "STATE: -", Util::Color(220, 220, 220)), 9);
+    m_OperatorPanelLine4Text->m_Transform.translation = {580, 120};
+    m_Root.AddChild(m_OperatorPanelLine4Text);
+
+    // Pause menu
+    m_PauseOverlayText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 90, "PAUSED", Util::Color(255, 255, 255)), 12);
+    m_PauseOverlayText->m_Transform.translation = {0, 80};
+    m_PauseOverlayText->SetVisible(false);
+    m_Root.AddChild(m_PauseOverlayText);
+
+    m_PauseHintText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 28, "Resume from menu or press P", Util::Color(220, 220, 220)), 12);
+    m_PauseHintText->m_Transform.translation = {0, 20};
+    m_PauseHintText->SetVisible(false);
+    m_Root.AddChild(m_PauseHintText);
+
+    m_PauseButton = std::make_shared<UI::Button>("Pause", std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 22, glm::vec2(690, 390), glm::vec2(150, 46), 10);
+    m_PauseButton->setOnClick([this]() { togglePause(); });
+    m_Root.AddChild(m_PauseButton);
+
+    m_SpeedButton = std::make_shared<UI::Button>("2x", std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 22, glm::vec2(690, 340), glm::vec2(150, 46), 10);
+    m_SpeedButton->setOnClick([this]() {
+        setGameSpeed(m_GameSpeedMultiplier < 1.5f ? 2.0f : 1.0f);
+    });
+    m_Root.AddChild(m_SpeedButton);
+
+    m_ResumeButton = std::make_shared<UI::Button>("Resume", std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, glm::vec2(0, -40), glm::vec2(220, 60), 13);
+    m_ResumeButton->setOnClick([this]() {
+        m_IsPaused = false;
+    });
+    m_ResumeButton->SetVisible(false);
+    m_Root.AddChild(m_ResumeButton);
+
+    m_RetryButton = std::make_shared<UI::Button>("Retry", std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, glm::vec2(0, -120), glm::vec2(220, 60), 13);
+    m_RetryButton->setOnClick([this]() {
+        reset();
+    });
+    m_RetryButton->SetVisible(false);
+    m_Root.AddChild(m_RetryButton);
+
+    m_ExitButton = std::make_shared<UI::Button>("Back to Lobby", std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, glm::vec2(0, -200), glm::vec2(320, 60), 13);
+    m_ExitButton->setOnClick([]() {
+        Core::SceneManager::getInstance().replaceScene(std::make_shared<LobbyScene>());
+    });
+    m_ExitButton->SetVisible(false);
+    m_Root.AddChild(m_ExitButton);
+
     // 7. Battle BGM
     m_BattleBGM = std::make_unique<Util::BGM>(std::string(RESOURCE_DIR) + "/SFX/battle/battle.mp3");
+    updateHudText();
+    if (m_OperatorPanelTitleText && m_OperatorPanelLine1Text &&
+        m_OperatorPanelLine2Text && m_OperatorPanelLine3Text &&
+        m_OperatorPanelLine4Text) {
+        updateOperatorPanel(Util::Input::GetCursorPosition());
+    }
 
     m_Initialized = true;
 }
@@ -272,6 +372,14 @@ void GameScene::update(float deltaTime) {
         deltaTime = 16.666f;
     }
 
+    updateButtons(deltaTime);
+    if (!m_IsGameOver && Util::Input::IsKeyPressed(Util::Keycode::P)) {
+        togglePause();
+    }
+    if (!m_IsGameOver && Util::Input::IsKeyPressed(Util::Keycode::NUM_2)) {
+        setGameSpeed(m_GameSpeedMultiplier < 1.5f ? 2.0f : 1.0f);
+    }
+
     if (m_IsGameOver) {
         if (m_ResultPhase == ResultPhase::VICTORY_SLIDE) {
             constexpr float kSlideDurationMs = 2000.0f;
@@ -298,13 +406,22 @@ void GameScene::update(float deltaTime) {
                 Core::SceneManager::getInstance().replaceScene(std::make_shared<LobbyScene>());
             }
         }
+        updateHudText();
+        updateOperatorPanel(Util::Input::GetCursorPosition());
         return;
     }
 
-    m_WaveTimer += deltaTime;
+    updateOperatorPanel(Util::Input::GetCursorPosition());
+    if (m_IsPaused) {
+        updateHudText();
+        return;
+    }
+
+    const float gameplayDeltaTime = deltaTime * m_GameSpeedMultiplier;
+    m_WaveTimer += gameplayDeltaTime;
 
     // DP Generation
-    m_DPAccumulator += deltaTime;
+    m_DPAccumulator += gameplayDeltaTime;
     if (m_DPAccumulator >= 1000.0f) {
         m_CurrentDP += 1.0f;
         m_DPAccumulator -= 1000.0f;
@@ -320,20 +437,18 @@ void GameScene::update(float deltaTime) {
     // Update Enemies
     for (std::size_t i = 0; i < m_ActiveEnemies.size();) {
         Enemy *enemy = m_ActiveEnemies[i];
-        enemy->update(deltaTime);
+        enemy->update(gameplayDeltaTime);
 
         if (!enemy->isActive()) {
             if (enemy->reachedEnd()) {
                 m_EscapedEnemies++;
+                m_BaseHP = std::max(0, MAX_ESCAPED_ENEMIES - m_EscapedEnemies);
             } else {
                 m_KilledEnemies++;
             }
             m_EnemyPool->returnEnemy(enemy);
             m_ActiveEnemies[i] = m_ActiveEnemies.back();
             m_ActiveEnemies.pop_back();
-
-            auto enemyCountDrawable = std::dynamic_pointer_cast<Util::Text>(m_EnemyCountText->GetDrawable());
-            enemyCountDrawable->SetText(std::to_string(m_EscapedEnemies) + " / " + std::to_string(MAX_ESCAPED_ENEMIES));
             continue;
         }
         ++i;
@@ -357,7 +472,7 @@ void GameScene::update(float deltaTime) {
     // Update operators and combat
     for (auto& op : m_Operators) {
         if (!op->GetVisible()) continue;
-        op->update(deltaTime);
+        op->update(gameplayDeltaTime);
         if (!op->isAlive()) continue;
 
         if (op->canAttack()) {
@@ -428,6 +543,118 @@ void GameScene::update(float deltaTime) {
     m_EyjafjallaCostText->SetVisible(m_EyjafjallaIcon->GetVisible());
     m_TexasCostText->SetVisible(m_TexasIcon->GetVisible());
     m_UmirinCostText->SetVisible(m_UmirinIcon->GetVisible());
+    updateOperatorPanel(Util::Input::GetCursorPosition());
+    updateHudText();
+}
+
+void GameScene::updateHudText() {
+    auto enemyCountDrawable = std::dynamic_pointer_cast<Util::Text>(m_EnemyCountText->GetDrawable());
+    enemyCountDrawable->SetText("ESCAPED: " + std::to_string(m_EscapedEnemies) + " / " + std::to_string(MAX_ESCAPED_ENEMIES));
+}
+
+std::shared_ptr<Operator> GameScene::getHoveredOperator(const glm::vec2& mousePos) const {
+    if (m_AmiyaIcon && m_AmiyaIcon->GetVisible() && glm::distance(mousePos, m_AmiyaIcon->m_Transform.translation) < 60.0f && m_Operators.size() >= 1) return m_Operators[0];
+    if (m_ChenIcon && m_ChenIcon->GetVisible() && glm::distance(mousePos, m_ChenIcon->m_Transform.translation) < 60.0f && m_Operators.size() >= 2) return m_Operators[1];
+    if (m_AngelinaIcon && m_AngelinaIcon->GetVisible() && glm::distance(mousePos, m_AngelinaIcon->m_Transform.translation) < 60.0f && m_Operators.size() >= 3) return m_Operators[2];
+    if (m_RedIcon && m_RedIcon->GetVisible() && glm::distance(mousePos, m_RedIcon->m_Transform.translation) < 60.0f && m_Operators.size() >= 4) return m_Operators[3];
+    if (m_EyjafjallaIcon && m_EyjafjallaIcon->GetVisible() && glm::distance(mousePos, m_EyjafjallaIcon->m_Transform.translation) < 60.0f && m_Operators.size() >= 5) return m_Operators[4];
+    if (m_TexasIcon && m_TexasIcon->GetVisible() && glm::distance(mousePos, m_TexasIcon->m_Transform.translation) < 60.0f && m_Operators.size() >= 6) return m_Operators[5];
+    if (m_UmirinIcon && m_UmirinIcon->GetVisible() && glm::distance(mousePos, m_UmirinIcon->m_Transform.translation) < 60.0f && m_Operators.size() >= 7) return m_Operators[6];
+
+    for (const auto& op : m_Operators) {
+        if (op->GetVisible() && glm::distance(mousePos, op->getPosition()) < 55.0f) {
+            return op;
+        }
+    }
+    return nullptr;
+}
+
+void GameScene::updateOperatorPanel(const glm::vec2& mousePos) {
+    if (!m_OperatorPanelTitleText || !m_OperatorPanelLine1Text ||
+        !m_OperatorPanelLine2Text || !m_OperatorPanelLine3Text ||
+        !m_OperatorPanelLine4Text) {
+        return;
+    }
+
+    std::shared_ptr<Operator> selected = getHoveredOperator(mousePos);
+    if (!selected && m_DraggedOperator) selected = m_DraggedOperator;
+    if (!selected && m_ChoosingDirectionOperator) selected = m_ChoosingDirectionOperator;
+
+    auto titleDrawable = std::dynamic_pointer_cast<Util::Text>(m_OperatorPanelTitleText->GetDrawable());
+    auto line1Drawable = std::dynamic_pointer_cast<Util::Text>(m_OperatorPanelLine1Text->GetDrawable());
+    auto line2Drawable = std::dynamic_pointer_cast<Util::Text>(m_OperatorPanelLine2Text->GetDrawable());
+    auto line3Drawable = std::dynamic_pointer_cast<Util::Text>(m_OperatorPanelLine3Text->GetDrawable());
+    auto line4Drawable = std::dynamic_pointer_cast<Util::Text>(m_OperatorPanelLine4Text->GetDrawable());
+    if (!titleDrawable || !line1Drawable || !line2Drawable || !line3Drawable || !line4Drawable) {
+        return;
+    }
+
+    if (!selected) {
+        titleDrawable->SetText("Operator: -");
+        line1Drawable->SetText("HP: - / -");
+        line2Drawable->SetText("ATK: -  COST: -");
+        line3Drawable->SetText("INTERVAL: -s  BLOCK: -");
+        line4Drawable->SetText("STATE: Hover icon/operator");
+        return;
+    }
+
+    std::ostringstream hpStream;
+    hpStream << "HP: " << static_cast<int>(selected->getHp()) << " / " << static_cast<int>(selected->getMaxHp());
+    std::ostringstream statStream;
+    statStream << "ATK: " << static_cast<int>(selected->getAttack()) << "  COST: " << selected->getDeploymentCost();
+    std::ostringstream intervalStream;
+    intervalStream << std::fixed << std::setprecision(2) << selected->getAttackInterval();
+
+    titleDrawable->SetText(std::string("Operator: ") + operatorName(selected->getType()));
+    line1Drawable->SetText(hpStream.str());
+    line2Drawable->SetText(statStream.str());
+    line3Drawable->SetText("INTERVAL: " + intervalStream.str() + "s  BLOCK: " + std::to_string(selected->getBlockCount()));
+    line4Drawable->SetText(std::string("STATE: ") + operatorStateName(selected->getState()));
+}
+
+void GameScene::updateButtons(float deltaTime) {
+    const bool showPauseMenu = (!m_IsGameOver && m_IsPaused);
+
+    if (m_PauseButton) {
+        m_PauseButton->SetVisible(!m_IsGameOver);
+        if (!m_IsGameOver) m_PauseButton->update(deltaTime);
+    }
+    if (m_SpeedButton) {
+        m_SpeedButton->SetVisible(!m_IsGameOver);
+        if (!m_IsGameOver) m_SpeedButton->update(deltaTime);
+    }
+
+    if (m_PauseOverlayText) m_PauseOverlayText->SetVisible(showPauseMenu);
+    if (m_PauseHintText) m_PauseHintText->SetVisible(showPauseMenu);
+    if (m_ResumeButton) {
+        m_ResumeButton->SetVisible(showPauseMenu);
+        if (showPauseMenu) m_ResumeButton->update(deltaTime);
+    }
+    if (m_RetryButton) {
+        m_RetryButton->SetVisible(showPauseMenu);
+        if (showPauseMenu) m_RetryButton->update(deltaTime);
+    }
+    if (m_ExitButton) {
+        m_ExitButton->SetVisible(showPauseMenu);
+        if (showPauseMenu) m_ExitButton->update(deltaTime);
+    }
+}
+
+void GameScene::togglePause() {
+    if (m_IsGameOver) return;
+    m_IsPaused = !m_IsPaused;
+    if (m_IsPaused) {
+        m_DraggedOperator = nullptr;
+        m_DraggedIcon = nullptr;
+        m_ChoosingDirectionOperator = nullptr;
+        m_ChoosingDirectionIcon = nullptr;
+    }
+    updateHudText();
+}
+
+void GameScene::setGameSpeed(float speedMultiplier) {
+    m_GameSpeedMultiplier = speedMultiplier >= 1.5f ? 2.0f : 1.0f;
+    updateHudText();
 }
 
 void GameScene::handleOperatorDrag(float /*deltaTime*/) {
@@ -536,6 +763,9 @@ void GameScene::handleOperatorDrag(float /*deltaTime*/) {
 
 void GameScene::reset() {
     m_IsGameOver = false; m_WaveTimer = 0.0f; m_EscapedEnemies = 0; m_KilledEnemies = 0;
+    m_BaseHP = MAX_ESCAPED_ENEMIES;
+    m_IsPaused = false;
+    m_GameSpeedMultiplier = 1.0f;
     m_ResultPhase = ResultPhase::NONE;
     m_ResultTimer = 0.0f;
     m_CurrentDP = 10.0f; m_DPAccumulator = 0.0f;
@@ -552,15 +782,20 @@ void GameScene::reset() {
     m_AngelinaIcon->SetVisible(true); m_RedIcon->SetVisible(true);
     m_EyjafjallaIcon->SetVisible(true); m_TexasIcon->SetVisible(true);
     m_UmirinIcon->SetVisible(true);
-    auto enemyCountDrawable = std::dynamic_pointer_cast<Util::Text>(m_EnemyCountText->GetDrawable());
-    enemyCountDrawable->SetText("0 / 4");
+    m_DraggedOperator = nullptr;
+    m_DraggedIcon = nullptr;
+    m_ChoosingDirectionOperator = nullptr;
+    m_ChoosingDirectionIcon = nullptr;
     m_CurrentOperation->getWaveManager().reset();
+    updateOperatorPanel(Util::Input::GetCursorPosition());
+    updateHudText();
     m_BattleBGM->Play();
 }
 
 void GameScene::beginVictorySequence() {
     m_IsGameOver = true;
     m_IsVictory = true;
+    m_IsPaused = false;
     m_ResultPhase = ResultPhase::VICTORY_SLIDE;
     m_ResultTimer = 0.0f;
     cleanupCharactersForResult();
@@ -575,6 +810,7 @@ void GameScene::beginVictorySequence() {
 void GameScene::beginFailureSequence() {
     m_IsGameOver = true;
     m_IsVictory = false;
+    m_IsPaused = false;
     m_ResultPhase = ResultPhase::FAILURE_SHOW;
     m_ResultTimer = 0.0f;
     cleanupCharactersForResult();
