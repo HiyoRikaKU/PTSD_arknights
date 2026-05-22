@@ -12,7 +12,9 @@ LoadingScene::LoadingScene(std::string stageId)
 void LoadingScene::init() {
     LOG_DEBUG("Initializing LoadingScene");
     const std::string operationImagePrefix =
-        (m_StageId == "0-3") ? "UI_0-3_" : "UI_0-2_";
+        (m_StageId == "0-4") ? "UI_0_4_" :
+        (m_StageId == "0-3") ? "UI_0-3_" : 
+        (m_StageId == "0-2") ? "UI_0-2_" : "";
 
     m_Background = std::make_shared<Util::GameObject>(
         std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/blackSquare.jpg"),

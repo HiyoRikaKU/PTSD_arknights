@@ -16,14 +16,14 @@ void StageSelectScene::init() {
     LOG_DEBUG("Initializing StageSelectScene");
 
     m_SelectBackground = std::make_shared<Util::GameObject>(
-        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/game_condition/temp_0-2_1.jpg"),
+        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/game_condition/selection_0-4_1.jpg"),
         0
     );
     m_SelectBackground->m_Transform.scale = glm::vec2(1600.0f, 900.0f) / m_SelectBackground->GetScaledSize();
     m_Root.AddChild(m_SelectBackground);
 
     m_ConfirmBackground = std::make_shared<Util::GameObject>(
-        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/game_condition/temp_0-2_2.jpg"),
+        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/game_condition/selection_0-4_2.jpg"),
         1
     );
     m_ConfirmBackground->m_Transform.scale = glm::vec2(1600.0f, 900.0f) / m_ConfirmBackground->GetScaledSize();
@@ -58,6 +58,7 @@ void StageSelectScene::init() {
 
     addStageButton("0-2", glm::vec2(60.0f, -80.0f));
     addStageButton("0-3", glm::vec2(60.0f, -180.0f));
+    addStageButton("0-4", glm::vec2(60.0f, -280.0f));
 
     m_SelectedStageId = "0-2";
 
