@@ -50,7 +50,9 @@ private:
     std::shared_ptr<Operator> getHoveredOperator(const glm::vec2& mousePos) const;
     void updateButtons(float deltaTime);
     void togglePause();
+    void toggleHub();
     void setGameSpeed(float speedMultiplier);
+    void setCheatMode(bool enabled);
 
 private:
     std::string m_StageId;
@@ -83,6 +85,8 @@ private:
     bool m_IsGameOver = false;
     bool m_IsVictory = false;
     bool m_IsPaused = false;
+    bool m_IsHubOpen = false;
+    bool m_IsCheatMode = false;
     float m_GameSpeedMultiplier = 1.0f;
     enum class ResultPhase {
         NONE,
@@ -136,12 +140,16 @@ private:
     std::shared_ptr<ExGameObject> m_OperatorPanelLine4Text;
     std::shared_ptr<ExGameObject> m_PauseOverlayText;
     std::shared_ptr<ExGameObject> m_PauseHintText;
+    std::shared_ptr<ExGameObject> m_HubOverlayText;
+    std::shared_ptr<ExGameObject> m_CheatModeText;
 
     std::shared_ptr<UI::Button> m_PauseButton;
     std::shared_ptr<UI::Button> m_SpeedButton;
     std::shared_ptr<UI::Button> m_ResumeButton;
     std::shared_ptr<UI::Button> m_RetryButton;
     std::shared_ptr<UI::Button> m_ExitButton;
+    std::shared_ptr<UI::Button> m_NormalModeButton;
+    std::shared_ptr<UI::Button> m_CheatModeButton;
 
     // Audio
     std::unique_ptr<Util::BGM> m_BattleBGM;

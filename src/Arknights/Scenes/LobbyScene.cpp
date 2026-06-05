@@ -241,7 +241,7 @@ void LobbyScene::createTimeDisplay() {
     m_TimeDisplay = std::make_shared<Util::Text>(
         std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf",
         16,
-        "2024/03/31 14:20",
+        "2026/06/06 14:20",
         Util::Color(41, 36, 33)
     );
     auto timeObj = std::make_shared<Util::GameObject>(m_TimeDisplay, 10);

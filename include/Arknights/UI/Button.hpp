@@ -34,6 +34,18 @@ public:
     bool isHovered() const { return m_IsHovered; }
     bool isPressed() const { return m_IsPressed; }
 
+    void setTextColor(const Util::Color& color) {
+        if (m_TextDrawable) {
+            m_TextDrawable->SetColor(color);
+        }
+    }
+
+    void setText(const std::string& text) {
+        if (m_TextDrawable) {
+            m_TextDrawable->SetText(text);
+        }
+    }
+
 private:
     void init();
     bool containsPoint(const glm::vec2& point) const;

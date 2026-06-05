@@ -228,9 +228,9 @@ void GameScene::init() {
     m_RestartText->SetVisible(false);
     m_Root.AddChild(m_RestartText);
 
-    m_MissionCompletedImage = std::make_shared<ExGameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/game_condition/mission_completed.jpg"), 11);
+    m_MissionCompletedImage = std::make_shared<ExGameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/game_condition/mission_completed.png"), 11);
     m_MissionCompletedImage->m_Transform.translation = {-1200.0f, 0.0f};
-    m_MissionCompletedImage->m_Transform.scale = {0.52f, 0.52f};
+    m_MissionCompletedImage->m_Transform.scale = {0.9f, 0.9f};
     m_MissionCompletedImage->SetVisible(false);
     m_Root.AddChild(m_MissionCompletedImage);
 
@@ -240,9 +240,9 @@ void GameScene::init() {
     m_YourWinImage->SetVisible(false);
     m_Root.AddChild(m_YourWinImage);
 
-    m_MissionFailedImage = std::make_shared<ExGameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/game_condition/mission_failed.jpg"), 11);
+    m_MissionFailedImage = std::make_shared<ExGameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/game_condition/mission_failed.png"), 11);
     m_MissionFailedImage->m_Transform.translation = {0.0f, 0.0f};
-    m_MissionFailedImage->m_Transform.scale = {0.56f, 0.56f};
+    m_MissionFailedImage->m_Transform.scale = {0.9f, 0.9f};
     m_MissionFailedImage->SetVisible(false);
     m_Root.AddChild(m_MissionFailedImage);
 
@@ -311,6 +311,18 @@ void GameScene::init() {
     m_PauseHintText->SetVisible(false);
     m_Root.AddChild(m_PauseHintText);
 
+    m_HubOverlayText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(
+        std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 70, "MODE SELECT", Util::Color(255, 255, 255)), 12);
+    m_HubOverlayText->m_Transform.translation = {0, 120};
+    m_HubOverlayText->SetVisible(false);
+    m_Root.AddChild(m_HubOverlayText);
+
+    m_CheatModeText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(
+        std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 24, "CHEAT MODE", Util::Color(255, 80, 80)), 11);
+    m_CheatModeText->m_Transform.translation = {-650, 420};
+    m_CheatModeText->SetVisible(false);
+    m_Root.AddChild(m_CheatModeText);
+
     m_PauseButton = std::make_shared<UI::Button>("Pause", std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 22, glm::vec2(690, 390), glm::vec2(150, 46), 10);
     m_PauseButton->setOnClick([this]() { togglePause(); });
     m_Root.AddChild(m_PauseButton);
@@ -342,6 +354,18 @@ void GameScene::init() {
     m_ExitButton->SetVisible(false);
     m_Root.AddChild(m_ExitButton);
 
+    m_NormalModeButton = std::make_shared<UI::Button>("Normal Mode", std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 22, glm::vec2(-690, 390), glm::vec2(150, 46), 10);
+    m_NormalModeButton->setOnClick([this]() {
+        setCheatMode(false);
+    });
+    m_Root.AddChild(m_NormalModeButton);
+
+    m_CheatModeButton = std::make_shared<UI::Button>("Cheat Mode", std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 22, glm::vec2(-690, 340), glm::vec2(150, 46), 10);
+    m_CheatModeButton->setOnClick([this]() {
+        setCheatMode(true);
+    });
+    m_Root.AddChild(m_CheatModeButton);
+
     // 7. Battle BGM
     m_BattleBGM = std::make_unique<Util::BGM>(std::string(RESOURCE_DIR) + "/SFX/battle/battle.mp3");
     updateHudText();
@@ -351,6 +375,7 @@ void GameScene::init() {
         updateOperatorPanel(Util::Input::GetCursorPosition());
     }
 
+    setCheatMode(false);
     m_Initialized = true;
 }
 
@@ -388,13 +413,23 @@ void GameScene::spawnEnemy(const SpawnEvent& event) {
     }
 
     std::vector<glm::vec2> spawnPath = m_CurrentOperation->getWaypoints();
-    if (event.enemyType == "yokai" && m_StageId == "0-3" && spawnPath.size() >= 4) {
-        constexpr float kRowOffset = -1.0f; // Spawn one tile higher than regular enemies.
-        const glm::vec2 patrolA = spawnPath[2] + glm::vec2(kRowOffset, 0.0f);
-        const glm::vec2 patrolB = spawnPath[3] + glm::vec2(kRowOffset, 0.0f);
-        spawnPath = {spawnPath[0] + glm::vec2(kRowOffset, 0.0f), patrolA, patrolB};
-        for (int i = 0; i < 24; ++i) {
-            spawnPath.push_back((i % 2 == 0) ? patrolA : patrolB);
+    if (event.enemyType == "yokai") {
+        if (m_StageId == "0-3" && spawnPath.size() >= 4) {
+            constexpr float kRowOffset = -1.0f; // Spawn one tile higher than regular enemies.
+            const glm::vec2 patrolA = spawnPath[2] + glm::vec2(kRowOffset, 0.0f);
+            const glm::vec2 patrolB = spawnPath[3] + glm::vec2(kRowOffset, 0.0f);
+            spawnPath = {spawnPath[0] + glm::vec2(kRowOffset, 0.0f), patrolA, patrolB};
+            for (int i = 0; i < 24; ++i) {
+                spawnPath.push_back((i % 2 == 0) ? patrolA : patrolB);
+            }
+        } else if (m_StageId == "0-4") {
+            const glm::vec2 spawnPos = {1.5f, 0.5f};
+            const glm::vec2 patrolA = {1.5f, 4.5f};
+            const glm::vec2 patrolB = {1.5f, 5.5f};
+            spawnPath = {spawnPos, patrolA, patrolB};
+            for (int i = 0; i < 24; ++i) {
+                spawnPath.push_back((i % 2 == 0) ? patrolA : patrolB);
+            }
         }
     }
 
@@ -477,8 +512,10 @@ void GameScene::update(float deltaTime) {
 
         if (!enemy->isActive()) {
             if (enemy->reachedEnd()) {
-                m_EscapedEnemies++;
-                m_BaseHP = std::max(0, MAX_ESCAPED_ENEMIES - m_EscapedEnemies);
+                if (!m_IsCheatMode) {
+                    m_EscapedEnemies++;
+                    m_BaseHP = std::max(0, MAX_ESCAPED_ENEMIES - m_EscapedEnemies);
+                }
             } else {
                 m_KilledEnemies++;
             }
@@ -659,6 +696,14 @@ void GameScene::updateButtons(float deltaTime) {
         m_SpeedButton->SetVisible(!m_IsGameOver);
         if (!m_IsGameOver) m_SpeedButton->update(deltaTime);
     }
+    if (m_NormalModeButton) {
+        m_NormalModeButton->SetVisible(!m_IsGameOver);
+        if (!m_IsGameOver) m_NormalModeButton->update(deltaTime);
+    }
+    if (m_CheatModeButton) {
+        m_CheatModeButton->SetVisible(!m_IsGameOver);
+        if (!m_IsGameOver) m_CheatModeButton->update(deltaTime);
+    }
 
     if (m_PauseOverlayText) m_PauseOverlayText->SetVisible(showPauseMenu);
     if (m_PauseHintText) m_PauseHintText->SetVisible(showPauseMenu);
@@ -693,6 +738,19 @@ void GameScene::setGameSpeed(float speedMultiplier) {
     updateHudText();
 }
 
+void GameScene::setCheatMode(bool enabled) {
+    m_IsCheatMode = enabled;
+    if (m_CheatModeText) {
+        m_CheatModeText->SetVisible(enabled);
+    }
+    if (m_NormalModeButton) {
+        m_NormalModeButton->setTextColor(enabled ? Util::Color(150, 150, 150) : Util::Color(80, 255, 80));
+    }
+    if (m_CheatModeButton) {
+        m_CheatModeButton->setTextColor(enabled ? Util::Color(255, 80, 80) : Util::Color(150, 150, 150));
+    }
+}
+
 void GameScene::handleOperatorDrag(float /*deltaTime*/) {
     glm::vec2 mousePos = Util::Input::GetCursorPosition();
 
@@ -714,37 +772,37 @@ void GameScene::handleOperatorDrag(float /*deltaTime*/) {
         }
     } else if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
         if (m_AmiyaIcon->GetVisible() && glm::distance(mousePos, m_AmiyaIcon->m_Transform.translation) < 60.0f) {
-            if (m_Operators.size() >= 1 && m_CurrentDP >= m_Operators[0]->getDeploymentCost()) {
+            if (m_Operators.size() >= 1 && (m_IsCheatMode || m_CurrentDP >= m_Operators[0]->getDeploymentCost())) {
                 m_DraggedOperator = m_Operators[0]; m_DraggedIcon = m_AmiyaIcon;
                 m_DraggedOperator->SetVisible(true); m_DraggedIcon->SetVisible(false);
             }
         } else if (m_ChenIcon->GetVisible() && glm::distance(mousePos, m_ChenIcon->m_Transform.translation) < 60.0f) {
-            if (m_Operators.size() >= 2 && m_CurrentDP >= m_Operators[1]->getDeploymentCost()) {
+            if (m_Operators.size() >= 2 && (m_IsCheatMode || m_CurrentDP >= m_Operators[1]->getDeploymentCost())) {
                 m_DraggedOperator = m_Operators[1]; m_DraggedIcon = m_ChenIcon;
                 m_DraggedOperator->SetVisible(true); m_DraggedIcon->SetVisible(false);
             }
         } else if (m_AngelinaIcon->GetVisible() && glm::distance(mousePos, m_AngelinaIcon->m_Transform.translation) < 60.0f) {
-            if (m_Operators.size() >= 3 && m_CurrentDP >= m_Operators[2]->getDeploymentCost()) {
+            if (m_Operators.size() >= 3 && (m_IsCheatMode || m_CurrentDP >= m_Operators[2]->getDeploymentCost())) {
                 m_DraggedOperator = m_Operators[2]; m_DraggedIcon = m_AngelinaIcon;
                 m_DraggedOperator->SetVisible(true); m_DraggedIcon->SetVisible(false);
             }
         } else if (m_RedIcon->GetVisible() && glm::distance(mousePos, m_RedIcon->m_Transform.translation) < 60.0f) {
-            if (m_Operators.size() >= 4 && m_CurrentDP >= m_Operators[3]->getDeploymentCost()) {
+            if (m_Operators.size() >= 4 && (m_IsCheatMode || m_CurrentDP >= m_Operators[3]->getDeploymentCost())) {
                 m_DraggedOperator = m_Operators[3]; m_DraggedIcon = m_RedIcon;
                 m_DraggedOperator->SetVisible(true); m_DraggedIcon->SetVisible(false);
             }
         } else if (m_EyjafjallaIcon->GetVisible() && glm::distance(mousePos, m_EyjafjallaIcon->m_Transform.translation) < 60.0f) {
-            if (m_Operators.size() >= 5 && m_CurrentDP >= m_Operators[4]->getDeploymentCost()) {
+            if (m_Operators.size() >= 5 && (m_IsCheatMode || m_CurrentDP >= m_Operators[4]->getDeploymentCost())) {
                 m_DraggedOperator = m_Operators[4]; m_DraggedIcon = m_EyjafjallaIcon;
                 m_DraggedOperator->SetVisible(true); m_DraggedIcon->SetVisible(false);
             }
         } else if (m_TexasIcon->GetVisible() && glm::distance(mousePos, m_TexasIcon->m_Transform.translation) < 60.0f) {
-            if (m_Operators.size() >= 6 && m_CurrentDP >= m_Operators[5]->getDeploymentCost()) {
+            if (m_Operators.size() >= 6 && (m_IsCheatMode || m_CurrentDP >= m_Operators[5]->getDeploymentCost())) {
                 m_DraggedOperator = m_Operators[5]; m_DraggedIcon = m_TexasIcon;
                 m_DraggedOperator->SetVisible(true); m_DraggedIcon->SetVisible(false);
             }
         } else if (m_UmirinIcon->GetVisible() && glm::distance(mousePos, m_UmirinIcon->m_Transform.translation) < 60.0f) {
-            if (m_Operators.size() >= 7 && m_CurrentDP >= m_Operators[6]->getDeploymentCost()) {
+            if (m_Operators.size() >= 7 && (m_IsCheatMode || m_CurrentDP >= m_Operators[6]->getDeploymentCost())) {
                 m_DraggedOperator = m_Operators[6]; m_DraggedIcon = m_UmirinIcon;
                 m_DraggedOperator->SetVisible(true); m_DraggedIcon->SetVisible(false);
             }
@@ -782,9 +840,11 @@ void GameScene::handleOperatorDrag(float /*deltaTime*/) {
                 if (canPlace) {
                     m_DraggedOperator->setPosition(m_CurrentOperation->getTileCenterPos(r, c));
                     m_DraggedOperator->setGridPosition({static_cast<float>(r) + 0.5f, static_cast<float>(c) + 0.5f});
-                    m_CurrentDP -= m_DraggedOperator->getDeploymentCost();
-                    auto dpTextDrawable = std::dynamic_pointer_cast<Util::Text>(m_DPText->GetDrawable());
-                    dpTextDrawable->SetText("COST: " + std::to_string(static_cast<int>(m_CurrentDP)));
+                    if (!m_IsCheatMode) {
+                        m_CurrentDP -= m_DraggedOperator->getDeploymentCost();
+                        auto dpTextDrawable = std::dynamic_pointer_cast<Util::Text>(m_DPText->GetDrawable());
+                        dpTextDrawable->SetText("COST: " + std::to_string(static_cast<int>(m_CurrentDP)));
+                    }
                     m_ChoosingDirectionOperator = m_DraggedOperator; m_ChoosingDirectionIcon = m_DraggedIcon;
                     dropped = true;
                 }
