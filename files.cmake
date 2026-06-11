@@ -13,6 +13,7 @@ set(SRC_FILES
     Arknights/Scenes/GameScene.cpp
     Arknights/Core/SceneManager.cpp
     Arknights/UI/Button.cpp
+    Arknights/UI/SkewSprite.cpp
 )
 
 set(INCLUDE_FILES
@@ -32,6 +33,7 @@ set(INCLUDE_FILES
     Arknights/Scenes/GameScene.hpp
     Arknights/Core/SceneManager.hpp
     Arknights/UI/Button.hpp
+    Arknights/UI/SkewSprite.hpp
 )
 
 set(TEST_FILES
