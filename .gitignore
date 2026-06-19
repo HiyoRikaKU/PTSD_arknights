@@ -495,6 +495,7 @@ FodyWeavers.xsd
 
 # Default build directory for CMake extension
 build/
+build_release/
 
 # Ignore 3rd party dependencies
 lib/
@@ -503,19 +504,14 @@ lib/
 .venv/
 
 # Doxygen generated files
-docs/html/
+docs/
+UI_sample/
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-UI_sample/*
-=======
-UI_sample*/
->>>>>>> Stashed changes
+# Release and Packaging
+PTSD_Arknights_Release/
+icon.ico
+icon.rc
+deploy.ps1
+fix.py
 
-#
-.claude/
-.github/
-=======
-UI_sample/*
 
->>>>>>> ade6ca5 (Complete lobby UI and resolve rendering bugs)

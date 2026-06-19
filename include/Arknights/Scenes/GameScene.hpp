@@ -143,7 +143,6 @@ private:
     std::shared_ptr<ExGameObject> m_TexasCostText;
     std::shared_ptr<ExGameObject> m_UmirinCostText;
     
-    // ── Mission Complete Animation ──────────────────────────────────
     enum class MissionAnimState {
         IDLE,
         BAR_SLIDE_IN,
@@ -198,6 +197,9 @@ private:
     std::shared_ptr<UI::Button> m_SettingsButton;
     std::shared_ptr<UI::Button> m_ExitCancelButton;
     std::shared_ptr<UI::Button> m_ExitConfirmButton;
+
+    // Speed indicator text
+    std::shared_ptr<ExGameObject> m_SpeedText;
 
     // Audio
     std::unique_ptr<Util::BGM> m_BattleBGM;

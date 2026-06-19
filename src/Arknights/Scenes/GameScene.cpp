@@ -235,7 +235,7 @@ void GameScene::init() {
     m_RestartText->SetVisible(false);
     m_Root.AddChild(m_RestartText);
 
-    // ── Mission Complete：黑色橫條 ───────────────────────────────────
+    // Mission Complete
     m_MissionCompletedBar = std::make_shared<ExGameObject>(
         std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/game_condition/mission_completed_bar.png"),7   
     );
@@ -253,7 +253,6 @@ void GameScene::init() {
     m_MissionCompletedImage->m_Transform.scale       = {0.9f, 0.9f};
     m_MissionCompletedImage->SetVisible(false);
     m_Root.AddChild(m_MissionCompletedImage);
-    // ────────────────────────────────────────────────────────────────
 
     std::string winImagePath = std::string(RESOURCE_DIR) + "/UI/game_condition/yourWin.jpg";
     if (m_StageId == "0-2") {
@@ -276,8 +275,8 @@ void GameScene::init() {
     m_MissionFailedImage->SetVisible(false);
     m_Root.AddChild(m_MissionFailedImage);
 
-    m_DPText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 40, "10", Util::Color(255, 255, 255)),10);
-    m_DPText->m_Transform.translation = {740, -215};
+    m_DPText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 45, "10", Util::Color(255, 255, 255)),10);
+    m_DPText->m_Transform.translation = {740, -211};
     m_Root.AddChild(m_DPText);
 
     // Cost labels
@@ -370,9 +369,6 @@ void GameScene::init() {
     m_PauseOverlayText->SetVisible(false);
     m_Root.AddChild(m_PauseOverlayText);
 
-    m_PauseHintText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 28, "Resume from menu or press P", Util::Color(220, 220, 220)), 12);
-    m_PauseHintText->SetVisible(false);
-    m_Root.AddChild(m_PauseHintText);
 
     m_HubOverlayText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(
         std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 70, "SETTINGS", Util::Color(255, 255, 255)), 13);
@@ -381,8 +377,8 @@ void GameScene::init() {
     m_Root.AddChild(m_HubOverlayText);
 
     m_CheatModeText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(
-        std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 24, "CHEAT MODE", Util::Color(255, 80, 80)), 11);
-    m_CheatModeText->m_Transform.translation = {-650, 420};
+        std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 25, "CHEAT MODE", Util::Color(255, 80, 80)), 11);
+    m_CheatModeText->m_Transform.translation = {-510, 420};
     m_CheatModeText->SetVisible(false);
     m_Root.AddChild(m_CheatModeText);
 
@@ -413,6 +409,10 @@ void GameScene::init() {
         setGameSpeed(m_GameSpeedMultiplier < 1.5f ? 2.0f : 1.0f);
     });
     m_Root.AddChild(m_SpeedButton);
+    m_SpeedText = std::make_shared<ExGameObject>(
+        std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 45, "x1", Util::Color(255, 255, 255)), 16);
+    m_SpeedText->m_Transform.translation = {580.0f, 410.0f};
+    m_Root.AddChild(m_SpeedText);
 
     m_ResumeButton = std::make_shared<UI::Button>("Resume", std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, glm::vec2(0, -40), glm::vec2(220, 60), 13);
     m_ResumeButton->setOnClick([this]() {
@@ -539,7 +539,6 @@ void GameScene::spawnEnemy(const SpawnEvent& event) {
 }
 
 void GameScene::update(float deltaTime) {
-    // Cap deltaTime to prevent huge jumps after loading or lag spikes
     if (deltaTime > 100.0f) {
         deltaTime = 16.666f;
     }
@@ -715,7 +714,7 @@ void GameScene::update(float deltaTime) {
 }
 
 void GameScene::updateDPText() {
-    const int currentDP = static_cast<int>(m_CurrentDP);
+    const int currentDP = std::max(0, std::min(999, static_cast<int>(m_CurrentDP)));
     if (m_DisplayedDP == currentDP) {
         return;
     }
@@ -839,6 +838,12 @@ void GameScene::updateButtons(float deltaTime) {
     if (m_PauseOverlayImage) m_PauseOverlayImage->SetVisible(showPauseMenu);
     if (m_HubOverlayText) m_HubOverlayText->SetVisible(showSettingsMenu);
 
+    // Hide HUD stats when any overlay is covering the screen
+    const bool showHudStats = !m_IsGameOver && !m_IsHubOpen && !m_IsExitConfirmOpen;
+    if (m_DPText) m_DPText->SetVisible(showHudStats);
+    if (m_BaseHPText) m_BaseHPText->SetVisible(showHudStats);
+    if (m_EnemyCountText) m_EnemyCountText->SetVisible(showHudStats);
+
     if (m_SettingsButton) {
         m_SettingsButton->SetVisible(showBaseHud);
         if (showBaseHud) m_SettingsButton->update(deltaTime);
@@ -850,6 +855,9 @@ void GameScene::updateButtons(float deltaTime) {
     if (m_SpeedButton) {
         m_SpeedButton->SetVisible(showBaseHud && !m_IsPaused);
         if (showBaseHud && !m_IsPaused) m_SpeedButton->update(deltaTime);
+    }
+    if (m_SpeedText) {
+        m_SpeedText->SetVisible(showBaseHud && !m_IsPaused);
     }
     if (m_NormalModeButton) {
         m_NormalModeButton->SetVisible(showSettingsMenu);
@@ -937,11 +945,19 @@ void GameScene::playClickSFX() {
 
 void GameScene::setGameSpeed(float speedMultiplier) {
     m_GameSpeedMultiplier = speedMultiplier >= 1.5f ? 2.0f : 1.0f;
+    // Update speed indicator text
+    if (m_SpeedText) {
+        auto drawable = std::dynamic_pointer_cast<Util::Text>(m_SpeedText->GetDrawable());
+        if (drawable) {
+            drawable->SetText(m_GameSpeedMultiplier >= 1.5f ? "x2" : "x1");
+        }
+    }
     updateHudText();
 }
 
 void GameScene::setCheatMode(bool enabled) {
     m_IsCheatMode = enabled;
+    m_IsHubOpen = false;
     if (m_CheatModeText) {
         m_CheatModeText->SetVisible(enabled);
     }

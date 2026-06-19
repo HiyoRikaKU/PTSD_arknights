@@ -10,7 +10,8 @@
 
 namespace Arknights {
 
-LobbyScene::LobbyScene() {
+LobbyScene::LobbyScene(bool showEventPopup)
+    : m_ShowEventPopup(showEventPopup) {
 }
 
 void LobbyScene::init() {
@@ -24,6 +25,7 @@ void LobbyScene::init() {
     createBackground();        // background image + character slider
     createLobbyUI();           // static lobbyUI.png overlay (right side)
     createTerminalButton();    // only interactive button
+    createEventPopup();        // event popup (visible only on first login)
 
     m_Initialized = true;
 }
@@ -99,7 +101,13 @@ void LobbyScene::createTerminalButton() {
 }
 
 void LobbyScene::update(float deltaTime) {
-    // Character slide 
+    // While event popup is open, handle only popup input and skip all else
+    if (m_EventPopupOpen) {
+        updateEventPopup(deltaTime);
+        return;
+    }
+
+    // Character slide
     if (!m_IsCharacterSliding) {
         if (Util::Input::IsKeyPressed(Util::Keycode::RIGHT)) {
             startCharacterSlide(1);
@@ -275,6 +283,58 @@ void LobbyScene::onExit() {
     LOG_DEBUG("Exiting LobbyScene");
     if (m_LobbyBGM) {
         m_LobbyBGM->FadeOut(250);
+    }
+}
+
+void LobbyScene::createEventPopup() {
+    // Build the popup image (drawn on top of everything at z=20)
+    m_EventPopupImage = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/lobby/Event.png"),
+        20
+    );
+    // Scale to fill the 1600x900 window
+    m_EventPopupImage->m_Transform.scale =
+        glm::vec2(1600.0f, 900.0f) / m_EventPopupImage->GetScaledSize();
+    m_EventPopupImage->m_Transform.translation = {0.0f, 0.0f};
+
+    // Show popup only if this is a first-login entry
+    m_EventPopupOpen = m_ShowEventPopup;
+    m_EventPopupImage->SetVisible(m_EventPopupOpen);
+
+    m_Root.AddChild(m_EventPopupImage);
+}
+
+void LobbyScene::updateEventPopup(float /*deltaTime*/) {
+    if (!m_EventPopupOpen || !m_EventPopupImage) return;
+
+    // ---- Hit-test the X button ----
+    // Event.png native size: 1456 x 900
+    // Scaled to 1600x900: scaleX = 1600/1456 ≈ 1.0989, scaleY = 1.0
+    // X button center in image pixels: (1261, 138)
+    // In game coords (origin = screen center, y up):
+    //   gx = 1261 * scaleX - 800  ≈ 586
+    //   gy = 900/2 - 138 * scaleY ≈ 312
+    constexpr float kXCenterGX = 586.0f;
+    constexpr float kXCenterGY = 312.0f;
+    constexpr float kXRadius   = 38.0f;   // hit radius in game pixels
+
+    const glm::vec2 mouse = Util::Input::GetCursorPosition();
+    const float dist = glm::distance(mouse, glm::vec2(kXCenterGX, kXCenterGY));
+    const bool overX = dist <= kXRadius;
+
+    const bool mouseDown = Util::Input::IsKeyPressed(Util::Keycode::MOUSE_LB);
+
+    if (overX && mouseDown) {
+        m_WasMousePressedOnX = true;
+    } else if (m_WasMousePressedOnX && !mouseDown) {
+        if (overX) {
+            // Close the popup
+            m_EventPopupOpen = false;
+            m_EventPopupImage->SetVisible(false);
+        }
+        m_WasMousePressedOnX = false;
+    } else if (!mouseDown) {
+        m_WasMousePressedOnX = false;
     }
 }
 

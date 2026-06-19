@@ -17,19 +17,21 @@ namespace Arknights {
 
 /**
  * @brief Main lobby scene - Shows home screen with all main menu options
- * 
+ *
  * This scene is shown after login.
  * Players can access: Stage, Team, Operator, Task, Base
  */
 class LobbyScene : public Scene {
 public:
-    LobbyScene();
+    // showEventPopup=true  → first login (shows event announcement popup)
+    // showEventPopup=false → returning from a completed stage (no popup)
+    explicit LobbyScene(bool showEventPopup = true);
     ~LobbyScene() override = default;
 
     void init() override;
     void update(float deltaTime) override;
     void cleanup() override;
-    
+
     void onEnter() override;
     void onExit() override;
 
@@ -38,6 +40,8 @@ private:
     void createCharacterSlider();
     void createLobbyUI();
     void createTerminalButton();
+    void createEventPopup();
+    void updateEventPopup(float deltaTime);
     void startCharacterSlide(int direction);
     void updateCharacterSlide(float deltaTime);
     void updateTerminalButton(float deltaTime);
@@ -50,7 +54,7 @@ private:
     // Background
     std::shared_ptr<Util::GameObject> m_Background;
 
-    // Character art (unchanged)
+    // Character art
     std::shared_ptr<Util::GameObject> m_CharacterArt;
     std::vector<std::shared_ptr<Util::GameObject>> m_CharacterArts;
     std::vector<std::string> m_CharacterArtPaths;
@@ -62,19 +66,26 @@ private:
     // Terminal button (terminal.png) — only interactive element
     std::shared_ptr<UI::Button> m_TerminalButton;
 
+    // Audio
     std::unique_ptr<Util::BGM> m_LobbyBGM;
     std::unique_ptr<Util::SFX> m_DuctorSFX;
     std::unique_ptr<Util::SFX> m_HazeVoiceSFX;
     std::unique_ptr<Util::SFX> m_HazeVoice2SFX;
     bool m_WasMousePressedOnHaze = false;
 
+    // Event popup (shown only on first login from splash)
+    bool m_ShowEventPopup = true;
+    bool m_EventPopupOpen = false;
+    std::shared_ptr<Util::GameObject> m_EventPopupImage;
+    bool m_WasMousePressedOnX = false;
+
     // Fade-out state for terminal button
     enum class FadeState { IDLE, WAITING };
     FadeState m_FadeState = FadeState::IDLE;
     float m_FadeTimer = 0.0f;
     static constexpr float FADE_DURATION_MS = 350.0f;
-    // Scale-based fade: we shrink terminal button to 0 to simulate fade
     glm::vec2 m_TerminalOriginalScale = {1.0f, 1.0f};
+
     // State
     bool m_RequestStageSelect = false;
     int m_CurrentCharacterIndex = 0;

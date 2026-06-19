@@ -25,7 +25,7 @@ void ReturnLoadingScene::update(float deltaTime) {
     }
     m_Timer += deltaTime;
     if (m_Timer >= DURATION_MS) {
-        Core::SceneManager::getInstance().replaceScene(std::make_shared<LobbyScene>());
+        Core::SceneManager::getInstance().replaceScene(std::make_shared<LobbyScene>(false));
     }
 }
 
