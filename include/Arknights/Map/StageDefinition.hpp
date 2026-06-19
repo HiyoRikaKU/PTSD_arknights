@@ -16,7 +16,6 @@ struct StageHomographyDefinition {
 
 struct StageDefinition {
     std::string id;
-    std::string name;
     std::string mapImagePath;
     std::vector<std::vector<Operation::TileType>> tileMatrix;
     std::vector<glm::vec2> waypoints;

@@ -57,7 +57,7 @@ void GameScene::init() {
     m_CurrentOperation->getMap()->SetVisible(true);
     m_Root.AddChild(m_CurrentOperation->getMap());
     m_TotalEnemies = static_cast<int>(m_CurrentOperation->getWaveManager().getTotalSpawnCount());
-    m_BaseHP = MAX_ESCAPED_ENEMIES;
+    m_BaseHP = MAX_BASE_HP;
 
     // 2. Initialize Enemy Animations
     m_EnemyAnimationPathsGopro.clear();
@@ -217,9 +217,13 @@ void GameScene::init() {
     m_Root.AddChild(m_UmirinIcon);
 
     // 6. Initialize UI Text
-    m_EnemyCountText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 36, "0 / 4", Util::Color(255, 255, 255)), 2);
-    m_EnemyCountText->m_Transform.translation = {0, 400};
+    m_EnemyCountText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 34, "0/0", Util::Color(255, 255, 255)), 11);
+    m_EnemyCountText->m_Transform.translation = {-115, 395};
     m_Root.AddChild(m_EnemyCountText);
+
+    m_BaseHPText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 34, std::to_string(MAX_BASE_HP), Util::Color(255, 255, 255)), 11);
+    m_BaseHPText->m_Transform.translation = {245, 395};
+    m_Root.AddChild(m_BaseHPText);
 
     m_GameOverText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 100, " ", Util::Color(255, 0, 0)), 10);
     m_GameOverText->m_Transform.translation = {0, 0};
@@ -272,8 +276,8 @@ void GameScene::init() {
     m_MissionFailedImage->SetVisible(false);
     m_Root.AddChild(m_MissionFailedImage);
 
-    m_DPText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 40, "COST: 10", Util::Color(255, 255, 0)), 2);
-    m_DPText->m_Transform.translation = {620, -250};
+    m_DPText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 40, "10", Util::Color(255, 255, 255)),10);
+    m_DPText->m_Transform.translation = {730, -180};
     m_Root.AddChild(m_DPText);
 
     // Cost labels
@@ -357,11 +361,11 @@ void GameScene::init() {
     m_PauseOverlayImage->SetVisible(false);
     m_Root.AddChild(m_PauseOverlayImage);
 
-    m_PauseOverlayText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 1, " ", Util::Color(255, 255, 255)), 12);
+    m_PauseOverlayText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 28, "PAUSED", Util::Color(255, 255, 255)), 12);
     m_PauseOverlayText->SetVisible(false);
     m_Root.AddChild(m_PauseOverlayText);
 
-    m_PauseHintText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 1, " ", Util::Color(220, 220, 220)), 12);
+    m_PauseHintText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 28, "Resume from menu or press P", Util::Color(220, 220, 220)), 12);
     m_PauseHintText->SetVisible(false);
     m_Root.AddChild(m_PauseHintText);
 
@@ -384,7 +388,7 @@ void GameScene::init() {
     m_SettingsButton->setHitBox(glm::vec2(-700.0f, 382.0f), glm::vec2(180.0f, 130.0f));
     m_SettingsButton->setHoverScale(1.0f);
     m_SettingsButton->setClickScale(1.0f);
-    m_SettingsButton->setOnClick([this]() { playClickSFX(); toggleHub(); });
+    m_SettingsButton->setOnClick([this]() { toggleHub(); });
     m_Root.AddChild(m_SettingsButton);
 
     m_PauseButton = std::make_shared<UI::Button>(hitImagePath, glm::vec2(0.0f), 15.0f);
@@ -392,7 +396,7 @@ void GameScene::init() {
     m_PauseButton->setHitBox(glm::vec2(695.0f, 382.0f), glm::vec2(145.0f, 125.0f));
     m_PauseButton->setHoverScale(1.0f);
     m_PauseButton->setClickScale(1.0f);
-    m_PauseButton->setOnClick([this]() { playClickSFX(); togglePause(); });
+    m_PauseButton->setOnClick([this]() { togglePause(); });
     m_Root.AddChild(m_PauseButton);
 
     m_SpeedButton = std::make_shared<UI::Button>(hitImagePath, glm::vec2(0.0f), 15.0f);
@@ -401,7 +405,6 @@ void GameScene::init() {
     m_SpeedButton->setHoverScale(1.0f);
     m_SpeedButton->setClickScale(1.0f);
     m_SpeedButton->setOnClick([this]() {
-        playClickSFX();
         setGameSpeed(m_GameSpeedMultiplier < 1.5f ? 2.0f : 1.0f);
     });
     m_Root.AddChild(m_SpeedButton);
@@ -421,13 +424,12 @@ void GameScene::init() {
     m_Root.AddChild(m_RetryButton);
 
     m_ExitButton = std::make_shared<UI::Button>("退出行動", std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, glm::vec2(0, -170), glm::vec2(320, 70), 13);
-    m_ExitButton->setOnClick([this]() { playClickSFX(); openExitConfirm(); });
+    m_ExitButton->setOnClick([this]() { openExitConfirm(); });
     m_ExitButton->SetVisible(false);
     m_Root.AddChild(m_ExitButton);
 
     m_NormalModeButton = std::make_shared<UI::Button>("Normal Mode", std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, glm::vec2(-170, 10), glm::vec2(280, 70), 13);
     m_NormalModeButton->setOnClick([this]() {
-        playClickSFX();
         setCheatMode(false);
     });
     m_NormalModeButton->SetVisible(false);
@@ -435,7 +437,6 @@ void GameScene::init() {
 
     m_CheatModeButton = std::make_shared<UI::Button>("Cheat Mode", std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, glm::vec2(170, 10), glm::vec2(280, 70), 13);
     m_CheatModeButton->setOnClick([this]() {
-        playClickSFX();
         setCheatMode(true);
     });
     m_CheatModeButton->SetVisible(false);
@@ -446,7 +447,7 @@ void GameScene::init() {
     m_ExitCancelButton->setHitBox(glm::vec2(-400.0f, -185.0f), glm::vec2(800.0f, 100.0f));
     m_ExitCancelButton->setHoverScale(1.0f);
     m_ExitCancelButton->setClickScale(1.0f);
-    m_ExitCancelButton->setOnClick([this]() { playClickSFX(); closeExitConfirm(); });
+    m_ExitCancelButton->setOnClick([this]() { closeExitConfirm(); });
     m_ExitCancelButton->SetVisible(false);
     m_Root.AddChild(m_ExitCancelButton);
 
@@ -455,7 +456,7 @@ void GameScene::init() {
     m_ExitConfirmButton->setHitBox(glm::vec2(400.0f, -185.0f), glm::vec2(800.0f, 100.0f));
     m_ExitConfirmButton->setHoverScale(1.0f);
     m_ExitConfirmButton->setClickScale(1.0f);
-    m_ExitConfirmButton->setOnClick([this]() { playClickSFX(); returnToStageSelect(); });
+    m_ExitConfirmButton->setOnClick([this]() { returnToStageSelect(); });
     m_ExitConfirmButton->SetVisible(false);
     m_Root.AddChild(m_ExitConfirmButton);
 
@@ -479,6 +480,7 @@ void GameScene::spawnEnemy(const SpawnEvent& event) {
 
     Enemy *enemy = m_EnemyPool->getEnemy();
     if (enemy == nullptr) return;
+    m_SpawnedEnemies = std::min(m_TotalEnemies, m_SpawnedEnemies + 1);
 
     if (event.enemyType == "gopro") {
         enemy->setAnimation(m_EnemyAnimationPathsGopro);
@@ -538,21 +540,24 @@ void GameScene::update(float deltaTime) {
     }
 
     updateButtons(deltaTime);
-    if (!m_IsGameOver && Util::Input::IsKeyPressed(Util::Keycode::ESCAPE)) {
+    if (!m_IsGameOver && Util::Input::IsKeyUp(Util::Keycode::SPACE)) {
+        playClickSFX();
         if (m_IsExitConfirmOpen) {
             closeExitConfirm();
         } else if (m_IsHubOpen || m_IsPaused) {
             m_IsHubOpen = false;
             m_IsPaused = false;
+        } else {
+            togglePause();
         }
     }
     if (!m_IsGameOver && !m_IsHubOpen && !m_IsExitConfirmOpen &&
-        Util::Input::IsKeyPressed(Util::Keycode::P)) {
+        Util::Input::IsKeyDown(Util::Keycode::P)) {
         playClickSFX();
         togglePause();
     }
     if (!m_IsGameOver && !m_IsHubOpen && !m_IsExitConfirmOpen &&
-        Util::Input::IsKeyPressed(Util::Keycode::NUM_2)) {
+        Util::Input::IsKeyDown(Util::Keycode::NUM_2)) {
         playClickSFX();
         setGameSpeed(m_GameSpeedMultiplier < 1.5f ? 2.0f : 1.0f);
     }
@@ -597,8 +602,9 @@ void GameScene::update(float deltaTime) {
     if (m_DPAccumulator >= 1000.0f) {
         m_CurrentDP += 1.0f;
         m_DPAccumulator -= 1000.0f;
-        auto dpTextDrawable = std::dynamic_pointer_cast<Util::Text>(m_DPText->GetDrawable());
-        dpTextDrawable->SetText("COST: " + std::to_string(static_cast<int>(m_CurrentDP)));
+        if (auto dpTextDrawable = std::dynamic_pointer_cast<Util::Text>(m_DPText->GetDrawable())) {
+            dpTextDrawable->SetText(std::to_string(static_cast<int>(m_CurrentDP)));
+        }
     }
 
     SpawnEvent event;
@@ -614,8 +620,7 @@ void GameScene::update(float deltaTime) {
         if (!enemy->isActive()) {
             if (enemy->reachedEnd()) {
                 if (!m_IsCheatMode) {
-                    m_EscapedEnemies++;
-                    m_BaseHP = std::max(0, MAX_ESCAPED_ENEMIES - m_EscapedEnemies);
+                    m_BaseHP = std::max(0, m_BaseHP - 1);
                 }
             } else {
                 m_KilledEnemies++;
@@ -628,7 +633,7 @@ void GameScene::update(float deltaTime) {
         ++i;
     }
 
-    if (m_EscapedEnemies >= MAX_ESCAPED_ENEMIES) {
+    if (m_BaseHP <= 0) {
         beginFailureSequence();
     } else if (m_CurrentOperation->getWaveManager().isAllSpawned() && m_ActiveEnemies.empty()) {
         beginVictorySequence();
@@ -723,7 +728,15 @@ void GameScene::update(float deltaTime) {
 
 void GameScene::updateHudText() {
     auto enemyCountDrawable = std::dynamic_pointer_cast<Util::Text>(m_EnemyCountText->GetDrawable());
-    enemyCountDrawable->SetText("ESCAPED: " + std::to_string(m_EscapedEnemies) + " / " + std::to_string(MAX_ESCAPED_ENEMIES));
+    if (enemyCountDrawable) {
+        enemyCountDrawable->SetText(std::to_string(m_SpawnedEnemies) + "/" + std::to_string(m_TotalEnemies));
+    }
+    if (m_BaseHPText) {
+        auto baseHpDrawable = std::dynamic_pointer_cast<Util::Text>(m_BaseHPText->GetDrawable());
+        if (baseHpDrawable) {
+            baseHpDrawable->SetText(std::to_string(m_BaseHP));
+        }
+    }
 }
 
 std::shared_ptr<Operator> GameScene::getHoveredOperator(const glm::vec2& mousePos) const {
@@ -1003,8 +1016,9 @@ void GameScene::handleOperatorDrag(float /*deltaTime*/) {
                     m_DraggedOperator->setGridPosition({static_cast<float>(r) + 0.5f, static_cast<float>(c) + 0.5f});
                     if (!m_IsCheatMode) {
                         m_CurrentDP -= m_DraggedOperator->getDeploymentCost();
-                        auto dpTextDrawable = std::dynamic_pointer_cast<Util::Text>(m_DPText->GetDrawable());
-                        dpTextDrawable->SetText("COST: " + std::to_string(static_cast<int>(m_CurrentDP)));
+                        if (auto dpTextDrawable = std::dynamic_pointer_cast<Util::Text>(m_DPText->GetDrawable())) {
+                            dpTextDrawable->SetText(std::to_string(static_cast<int>(m_CurrentDP)));
+                        }
                     }
                     m_ChoosingDirectionOperator = m_DraggedOperator; m_ChoosingDirectionIcon = m_DraggedIcon;
                     dropped = true;
@@ -1019,17 +1033,18 @@ void GameScene::handleOperatorDrag(float /*deltaTime*/) {
 }
 
 void GameScene::reset() {
-    m_IsGameOver = false; m_WaveTimer = 0.0f; m_EscapedEnemies = 0; m_KilledEnemies = 0;
-    m_BaseHP = MAX_ESCAPED_ENEMIES;
+    m_IsGameOver = false; m_WaveTimer = 0.0f; m_SpawnedEnemies = 0; m_KilledEnemies = 0;
+    m_BaseHP = MAX_BASE_HP;
     m_IsPaused = false;
     m_IsHubOpen = false;
     m_IsExitConfirmOpen = false;
     m_GameSpeedMultiplier = 1.0f;
     m_ResultPhase = ResultPhase::NONE;
     m_ResultTimer = 0.0f;
-    m_CurrentDP = 10.0f; m_DPAccumulator = 0.0f;
-    auto dpTextDrawable = std::dynamic_pointer_cast<Util::Text>(m_DPText->GetDrawable());
-    dpTextDrawable->SetText("COST: 10");
+    m_CurrentDP = 10.0f;
+    if (auto dpTextDrawable = std::dynamic_pointer_cast<Util::Text>(m_DPText->GetDrawable())) {
+        dpTextDrawable->SetText("10");
+    }
     m_GameOverText->SetVisible(false); m_RestartText->SetVisible(false);
     m_MissionCompletedImage->SetVisible(false);
     m_YourWinImage->SetVisible(false);

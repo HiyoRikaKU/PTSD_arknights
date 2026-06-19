@@ -240,7 +240,6 @@ const std::vector<StageDefinition>& getStageData() {
     static const std::vector<StageDefinition> stages = {
         StageDefinition{
             "0-2",
-            "守衛",
             std::string(RESOURCE_DIR) + "/map/operation0-2.jpg",
             s_Stage02MapMatrix,
             makeStage02Waypoints(),
@@ -252,7 +251,6 @@ const std::vector<StageDefinition>& getStageData() {
         },
         StageDefinition{
             "0-3",
-            "追擊",
             std::string(RESOURCE_DIR) + "/map/operation0-3.png",
             s_Stage03MapMatrix,
             makeStage03Waypoints(),
@@ -264,7 +262,6 @@ const std::vector<StageDefinition>& getStageData() {
         },
         StageDefinition{
             "0-4",
-            "混戰",
             std::string(RESOURCE_DIR) + "/map/operation0-4.png",
             s_Stage04MapMatrix,
             makeStage04Waypoints(),

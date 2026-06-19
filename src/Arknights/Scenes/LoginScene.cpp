@@ -3,6 +3,8 @@
 #include "Arknights/Scenes/GameScene.hpp"
 #include "Arknights/Core/SceneManager.hpp"
 #include "Util/Logger.hpp"
+#include "Util/SFX.hpp"
+#include "config.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -234,6 +236,12 @@ void LoginScene::onExit() {
 
 void LoginScene::transitToLobby() {
     LOG_INFO("Login flow complete - transitioning to lobby");
+    static std::shared_ptr<Util::SFX> s_ClickSFX = nullptr;
+    if (!s_ClickSFX) {
+        s_ClickSFX = std::make_shared<Util::SFX>(std::string(RESOURCE_DIR) + "/SFX/click.mp3");
+    }
+    if (s_ClickSFX) s_ClickSFX->Play();
+
     auto lobbyScene = std::make_shared<LobbyScene>();
     Core::SceneManager::getInstance().replaceScene(lobbyScene);
 }

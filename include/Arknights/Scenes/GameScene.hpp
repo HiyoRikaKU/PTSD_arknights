@@ -85,10 +85,10 @@ private:
     
     // Stats
     float m_WaveTimer = 0.0f;
-    int m_EscapedEnemies = 0;
+    int m_SpawnedEnemies = 0;
     int m_KilledEnemies = 0;
     int m_TotalEnemies = 0;
-    int m_BaseHP = 4;
+    int m_BaseHP = 6;
     bool m_IsGameOver = false;
     bool m_IsVictory = false;
     bool m_IsPaused = false;
@@ -127,6 +127,7 @@ private:
     std::shared_ptr<ExGameObject> m_UmirinIcon;
 
     std::shared_ptr<ExGameObject> m_EnemyCountText;
+    std::shared_ptr<ExGameObject> m_BaseHPText;
     std::shared_ptr<ExGameObject> m_GameOverText;
     std::shared_ptr<ExGameObject> m_RestartText;
     std::shared_ptr<ExGameObject> m_DPText;
@@ -201,7 +202,7 @@ private:
     
     // Constants
     static constexpr std::size_t ENEMY_POOL_SIZE = 64;
-    static constexpr int MAX_ESCAPED_ENEMIES = 4;
+    static constexpr int MAX_BASE_HP = 6;
 };
 
 } // namespace Arknights

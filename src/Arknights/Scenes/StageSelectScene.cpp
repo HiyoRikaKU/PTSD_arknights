@@ -35,7 +35,7 @@ void StageSelectScene::init() {
     auto getStageDisplayName = [&stages](const std::string& stageId) {
         for (const auto& stage : stages) {
             if (stage.id == stageId) {
-                return stage.id + " " + stage.name;
+                return stage.id;
             }
         }
         return stageId;
@@ -57,9 +57,9 @@ void StageSelectScene::init() {
         m_Root.AddChild(stageButton);
     };
 
-    addStageButton("0-2", glm::vec2(60.0f, -80.0f));
-    addStageButton("0-3", glm::vec2(60.0f, -180.0f));
-    addStageButton("0-4", glm::vec2(60.0f, -280.0f));
+    addStageButton("0-2", glm::vec2(-600.0f, -80.0f));
+    addStageButton("0-3", glm::vec2(70.0f, 60.0f));
+    addStageButton("0-4", glm::vec2(700.0f, 170.0f));
 
     m_SelectedStageId = "0-2";
 
