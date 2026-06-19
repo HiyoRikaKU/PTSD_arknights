@@ -53,6 +53,9 @@ private:
     void toggleHub();
     void setGameSpeed(float speedMultiplier);
     void setCheatMode(bool enabled);
+    
+    void TriggerMissionComplete();
+    void UpdateMissionAnimation();
 
 private:
     std::string m_StageId;
@@ -130,7 +133,36 @@ private:
     std::shared_ptr<ExGameObject> m_EyjafjallaCostText;
     std::shared_ptr<ExGameObject> m_TexasCostText;
     std::shared_ptr<ExGameObject> m_UmirinCostText;
+    
+    // ── Mission Complete Animation ──────────────────────────────────
+    enum class MissionAnimState {
+        IDLE,
+        BAR_SLIDE_IN,
+        LOGO_SLIDE_IN,
+        HOLD,
+        FADE_OUT,
+        DONE
+    };
+
+    MissionAnimState m_MissionAnimState = MissionAnimState::IDLE;
+    float            m_MissionAnimTimer = 0.0f;
+
+    static constexpr float ANIM_BAR_SLIDE_DURATION  = 0.20f;
+    static constexpr float ANIM_LOGO_SLIDE_DURATION = 0.33f;
+    static constexpr float ANIM_HOLD_DURATION       = 0.90f;
+    static constexpr float ANIM_FADE_DURATION       = 0.20f;
+
+    static constexpr float BAR_OFFSCREEN_X   =  1100.0f;
+    static constexpr float BAR_TARGET_X      =     0.0f;
+    static constexpr float BAR_TARGET_Y      =    23.0f;
+    static constexpr float LOGO_OFFSCREEN_X  = -1100.0f;
+    static constexpr float LOGO_TARGET_X     =    -6.5f;
+    static constexpr float LOGO_TARGET_Y     =    54.0f;
+
+    std::shared_ptr<ExGameObject> m_MissionCompletedBar;
     std::shared_ptr<ExGameObject> m_MissionCompletedImage;
+    // ────────────────────────────────────────────────────────────────
+
     std::shared_ptr<ExGameObject> m_YourWinImage;
     std::shared_ptr<ExGameObject> m_MissionFailedImage;
     std::shared_ptr<ExGameObject> m_OperatorPanelTitleText;

@@ -19,9 +19,9 @@ public:
     static inline glm::vec2 s_DefaultSize = {80.0f, 8.0f}; 
     static inline float s_DefaultOffset = 50.0f; 
 
-    HealthBar(float zIndex) {
-        m_FillImage = std::make_shared<Util::Image>(  // ← 先建 Image
-        std::string(RESOURCE_DIR) + "/red.png"
+    HealthBar(float zIndex, const std::string& imagePath = "/red.png") {
+        m_FillImage = std::make_shared<Util::Image>(
+            std::string(RESOURCE_DIR) + imagePath
         );
         m_Fill = std::make_shared<Util::GameObject>(
             m_FillImage,

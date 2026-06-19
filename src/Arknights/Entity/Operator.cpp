@@ -42,7 +42,7 @@ void Operator::init(const std::vector<std::string>& idleAnimationPaths,
     SetPivot({0, -m_IdleAnimation->GetSize().y / 2.0f - m_VisualOffset / m_BaseScale});
 
     // Initialize Health Bar
-    m_HealthBar = std::make_shared<HealthBar>(2.1f);
+    m_HealthBar = std::make_shared<HealthBar>(2.1f, "/blue.png");
     m_HealthBar->SetVisible(false);
     AddChild(m_HealthBar);
     

@@ -5,7 +5,7 @@ namespace Arknights {
 namespace UI {
 
 Button::Button(const std::string& imagePath, const glm::vec2& position, float zIndex) {
-    auto image = std::make_shared<Util::Image>(imagePath);
+    auto image = std::make_shared<UI::FadeImage>(imagePath);
     SetDrawable(image);
     m_Transform.translation = position;
     SetZIndex(zIndex);
@@ -33,6 +33,15 @@ Button::Button(const std::string& text, const std::string& fontPath, int fontSiz
 
 void Button::init() {
     // Button is ready for use
+}
+
+void Button::setAlpha(float alpha) {
+    if (m_Drawable) {
+        auto fadeImage = std::dynamic_pointer_cast<UI::FadeImage>(m_Drawable);
+        if (fadeImage) {
+            fadeImage->SetAlpha(alpha);
+        }
+    }
 }
 
 void Button::update(float /*deltaTime*/) {
@@ -68,8 +77,9 @@ void Button::update(float /*deltaTime*/) {
 }
 
 bool Button::containsPoint(const glm::vec2& point) const {
-    glm::vec2 pos = m_Transform.translation;
-    glm::vec2 halfSize = m_Size * m_Transform.scale * 0.5f;
+    glm::vec2 pos = m_Transform.translation + m_HitBoxOffset;
+    glm::vec2 size = (m_HitBoxSize.x > 0.0f || m_HitBoxSize.y > 0.0f) ? m_HitBoxSize : m_Size;
+    glm::vec2 halfSize = size * m_Transform.scale * 0.5f;
 
     return point.x >= pos.x - halfSize.x && point.x <= pos.x + halfSize.x &&
            point.y >= pos.y - halfSize.y && point.y <= pos.y + halfSize.y;

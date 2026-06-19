@@ -8,6 +8,7 @@
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
 #include "Util/Text.hpp"
+#include "Arknights/UI/FadeImage.hpp"
 #include "Util/Input.hpp"
 
 namespace Arknights {
@@ -31,6 +32,14 @@ public:
     void setHoverScale(float scale) { m_HoverScale = scale; }
     void setClickScale(float scale) { m_ClickScale = scale; }
     
+    void setAlpha(float alpha);
+    
+    // 自訂點擊判定範圍 (相對於 translation 的偏移, 以及自訂大小)
+    void setHitBox(const glm::vec2& offset, const glm::vec2& size) {
+        m_HitBoxOffset = offset;
+        m_HitBoxSize = size;
+    }
+
     bool isHovered() const { return m_IsHovered; }
     bool isPressed() const { return m_IsPressed; }
 
@@ -62,6 +71,9 @@ private:
     
     float m_HoverScale = 1.1f;
     float m_ClickScale = 0.95f;
+    
+    glm::vec2 m_HitBoxOffset = {0.0f, 0.0f};
+    glm::vec2 m_HitBoxSize = {0.0f, 0.0f};
     
     std::shared_ptr<Util::Text> m_TextDrawable;
 };

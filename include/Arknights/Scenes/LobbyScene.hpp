@@ -34,49 +34,38 @@ public:
 private:
     void createBackground();
     void createCharacterSlider();
-    void createUserInfo();
-    void createResourceDisplay();
-    void createMainButtons();
-    void createTimeDisplay();
+    void createLobbyUI();
+    void createTerminalButton();
     void startCharacterSlide(int direction);
     void updateCharacterSlide(float deltaTime);
-    
-    void onStageButtonClicked();
-    void onOperatorButtonClicked();
-    void onTeamButtonClicked();
+    void updateTerminalButton(float deltaTime);
+    void onTerminalClicked();
 
 private:
     // Background
     std::shared_ptr<Util::GameObject> m_Background;
+
+    // Character art (unchanged)
     std::shared_ptr<Util::GameObject> m_CharacterArt;
     std::vector<std::shared_ptr<Util::GameObject>> m_CharacterArts;
     std::vector<std::string> m_CharacterArtPaths;
-    
-    // User Info (Left side)
-    std::shared_ptr<Util::GameObject> m_UserLevelBg;
-    std::shared_ptr<Util::Text> m_UserLevel;
-    std::shared_ptr<Util::Text> m_UserName;
-    std::shared_ptr<Util::Text> m_UserID;
-    std::shared_ptr<Util::Text> m_DialogText;
-    
-    // Resource Display (Top right)
-    std::shared_ptr<Util::Text> m_TimeDisplay;
-    std::shared_ptr<Util::Text> m_Money;
-    std::shared_ptr<Util::Text> m_Jasper;
-    std::shared_ptr<Util::Text> m_Stone;
-    
-    // Sanity Display
-    std::shared_ptr<Util::Text> m_SanityDisplay;
-    std::shared_ptr<Util::Text> m_CurrentStage;
-    
-    // Main Buttons
-    std::vector<std::shared_ptr<UI::Button>> m_Buttons;
-    std::shared_ptr<UI::Button> m_StageButton;
-    std::shared_ptr<UI::Button> m_TeamButton;
-    std::shared_ptr<UI::Button> m_OperatorButton;
-    
+    std::vector<glm::vec2> m_CharacterScales;
+
+    // Static lobby UI overlay (lobbyUI.png)
+    std::shared_ptr<Util::GameObject> m_LobbyUI;
+
+    // Terminal button (terminal.png) — only interactive element
+    std::shared_ptr<UI::Button> m_TerminalButton;
+
+    // Fade-out state for terminal button
+    enum class FadeState { IDLE, WAITING };
+    FadeState m_FadeState = FadeState::IDLE;
+    float m_FadeTimer = 0.0f;
+    static constexpr float FADE_DURATION_MS = 350.0f;
+    // Scale-based fade: we shrink terminal button to 0 to simulate fade
+    glm::vec2 m_TerminalOriginalScale = {1.0f, 1.0f};
+
     // State
-    float m_TimeCounter = 0.0f;
     bool m_RequestStageSelect = false;
     int m_CurrentCharacterIndex = 0;
     int m_NextCharacterIndex = -1;
@@ -84,7 +73,6 @@ private:
     float m_CharacterSlideTimer = 0.0f;
     bool m_IsCharacterSliding = false;
     const glm::vec2 m_CharacterBasePos = {-300.0f, -50.0f};
-    std::vector<glm::vec2> m_CharacterScales;
     static constexpr float CHARACTER_SLIDE_DURATION_MS = 320.0f;
     static constexpr float CHARACTER_SLIDE_DISTANCE = 520.0f;
 };

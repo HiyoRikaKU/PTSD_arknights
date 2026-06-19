@@ -228,11 +228,25 @@ void GameScene::init() {
     m_RestartText->SetVisible(false);
     m_Root.AddChild(m_RestartText);
 
-    m_MissionCompletedImage = std::make_shared<ExGameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/game_condition/mission_completed.png"), 11);
-    m_MissionCompletedImage->m_Transform.translation = {-1200.0f, 0.0f};
-    m_MissionCompletedImage->m_Transform.scale = {0.9f, 0.9f};
+    // ── Mission Complete：黑色橫條 ───────────────────────────────────
+    m_MissionCompletedBar = std::make_shared<ExGameObject>(
+        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/game_condition/mission_completed_bar.png"),7   
+    );
+    m_MissionCompletedBar->m_Transform.translation = {BAR_OFFSCREEN_X, BAR_TARGET_Y};
+    m_MissionCompletedBar->m_Transform.scale       = {1.0f, 1.0f};
+    m_MissionCompletedBar->SetVisible(false);
+    m_Root.AddChild(m_MissionCompletedBar);
+
+    m_MissionCompletedImage = std::make_shared<ExGameObject>(
+        std::make_shared<Util::Image>(
+            std::string(RESOURCE_DIR) + "/UI/game_condition/mission_completed.png"),
+        8   
+    );
+    m_MissionCompletedImage->m_Transform.translation = {LOGO_OFFSCREEN_X, LOGO_TARGET_Y};
+    m_MissionCompletedImage->m_Transform.scale       = {0.9f, 0.9f};
     m_MissionCompletedImage->SetVisible(false);
     m_Root.AddChild(m_MissionCompletedImage);
+    // ────────────────────────────────────────────────────────────────
 
     m_YourWinImage = std::make_shared<ExGameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/game_condition/yourWin.jpg"), 11);
     m_YourWinImage->m_Transform.translation = {0.0f, 0.0f};
@@ -453,17 +467,11 @@ void GameScene::update(float deltaTime) {
 
     if (m_IsGameOver) {
         if (m_ResultPhase == ResultPhase::VICTORY_SLIDE) {
-            constexpr float kSlideDurationMs = 2000.0f;
-            const float halfWindowWidth = static_cast<float>(WINDOW_WIDTH) * 0.5f;
-            const float halfImageWidth = m_MissionCompletedImage->GetScaledSize().x * 0.5f;
-            const float kStartX = -halfWindowWidth - halfImageWidth;
-            const float kEndX = halfWindowWidth - halfImageWidth;
-            m_ResultTimer += deltaTime;
-            const float t = std::min(1.0f, m_ResultTimer / kSlideDurationMs);
-            m_MissionCompletedImage->m_Transform.translation = {kStartX + (kEndX - kStartX) * t, 0.0f};
-            if (t >= 1.0f) {
-                m_ResultPhase = ResultPhase::VICTORY_WAIT_BEFORE_WIN;
-                m_ResultTimer = 0.0f;
+            if (m_MissionAnimState == MissionAnimState::DONE) {
+                m_ResultPhase = ResultPhase::VICTORY_SHOW_WIN;
+                m_MissionCompletedImage->SetVisible(false);
+                if (m_MissionCompletedBar) m_MissionCompletedBar->SetVisible(false);
+                m_YourWinImage->SetVisible(true);
             }
         } else if (m_ResultPhase == ResultPhase::VICTORY_WAIT_BEFORE_WIN) {
             m_ResultTimer += deltaTime;
@@ -477,6 +485,7 @@ void GameScene::update(float deltaTime) {
                 Core::SceneManager::getInstance().replaceScene(std::make_shared<LobbyScene>());
             }
         }
+        UpdateMissionAnimation();
         updateHudText();
         updateOperatorPanel(Util::Input::GetCursorPosition());
         return;
@@ -895,10 +904,7 @@ void GameScene::beginVictorySequence() {
     m_ResultPhase = ResultPhase::VICTORY_SLIDE;
     m_ResultTimer = 0.0f;
     cleanupCharactersForResult();
-    const float halfWindowWidth = static_cast<float>(WINDOW_WIDTH) * 0.5f;
-    const float halfImageWidth = m_MissionCompletedImage->GetScaledSize().x * 0.5f;
-    m_MissionCompletedImage->m_Transform.translation = {-halfWindowWidth - halfImageWidth, 0.0f};
-    m_MissionCompletedImage->SetVisible(true);
+    TriggerMissionComplete();
     m_YourWinImage->SetVisible(false);
     m_MissionFailedImage->SetVisible(false);
 }
@@ -986,6 +992,94 @@ void GameScene::onEnter() {
 void GameScene::onExit() {
     LOG_DEBUG("Exiting GameScene");
     if (m_BattleBGM) m_BattleBGM->FadeOut(500);
+}
+
+void GameScene::TriggerMissionComplete() {
+    if (m_MissionAnimState != MissionAnimState::IDLE &&
+        m_MissionAnimState != MissionAnimState::DONE) return;
+
+    m_MissionCompletedBar->m_Transform.translation   = {BAR_OFFSCREEN_X,  BAR_TARGET_Y};
+    m_MissionCompletedImage->m_Transform.translation = {LOGO_OFFSCREEN_X, LOGO_TARGET_Y};
+
+    m_MissionCompletedBar->SetVisible(true);
+    m_MissionCompletedImage->SetVisible(true);
+
+    m_MissionAnimTimer = 0.0f;
+    m_MissionAnimState = MissionAnimState::BAR_SLIDE_IN;
+}
+
+void GameScene::UpdateMissionAnimation() {
+    if (m_MissionAnimState == MissionAnimState::IDLE ||
+        m_MissionAnimState == MissionAnimState::DONE) return;
+
+    const float dt = Util::Time::GetDeltaTimeMs() / 1000.0f; 
+    m_MissionAnimTimer += dt;
+
+    auto easeOut = [](float t) -> float {
+        t = std::clamp(t, 0.0f, 1.0f);
+        return 1.0f - (1.0f - t) * (1.0f - t);
+    };
+    
+    auto easeIn = [](float t) -> float {
+        t = std::clamp(t, 0.0f, 1.0f);
+        return t * t;
+    };
+
+    auto lerp = [](float a, float b, float t) -> float {
+        return a + (b - a) * t;
+    };
+
+    switch (m_MissionAnimState) {
+    case MissionAnimState::BAR_SLIDE_IN: {
+        float t = m_MissionAnimTimer / ANIM_BAR_SLIDE_DURATION;
+        float x = lerp(BAR_OFFSCREEN_X, BAR_TARGET_X, easeOut(t));
+        m_MissionCompletedBar->m_Transform.translation = {x, BAR_TARGET_Y};
+
+        if (t >= 1.0f) {
+            m_MissionCompletedBar->m_Transform.translation = {BAR_TARGET_X, BAR_TARGET_Y};
+            m_MissionAnimState = MissionAnimState::LOGO_SLIDE_IN;
+            m_MissionAnimTimer = 0.0f;
+        }
+        break;
+    }
+    case MissionAnimState::LOGO_SLIDE_IN: {
+        float t = m_MissionAnimTimer / ANIM_LOGO_SLIDE_DURATION;
+        float x = lerp(LOGO_OFFSCREEN_X, LOGO_TARGET_X, easeOut(t));
+        m_MissionCompletedImage->m_Transform.translation = {x, LOGO_TARGET_Y};
+
+        if (t >= 1.0f) {
+            m_MissionCompletedImage->m_Transform.translation = {LOGO_TARGET_X, LOGO_TARGET_Y};
+            m_MissionAnimState = MissionAnimState::HOLD;
+            m_MissionAnimTimer = 0.0f;
+        }
+        break;
+    }
+    case MissionAnimState::HOLD: {
+        if (m_MissionAnimTimer >= ANIM_HOLD_DURATION) {
+            m_MissionAnimState = MissionAnimState::FADE_OUT; // Actually sliding out right
+            m_MissionAnimTimer = 0.0f;
+        }
+        break;
+    }
+    case MissionAnimState::FADE_OUT: {
+        float t = m_MissionAnimTimer / ANIM_FADE_DURATION;
+        float targetX = 1500.0f; // Far enough right to clear the screen
+        
+        float barX = lerp(BAR_TARGET_X, targetX, easeIn(t));
+        m_MissionCompletedBar->m_Transform.translation = {barX, BAR_TARGET_Y};
+        
+        float logoX = lerp(LOGO_TARGET_X, targetX, easeIn(t));
+        m_MissionCompletedImage->m_Transform.translation = {logoX, LOGO_TARGET_Y};
+
+        if (t >= 1.0f) {
+            m_MissionCompletedBar->SetVisible(false);
+            m_MissionCompletedImage->SetVisible(false);
+            m_MissionAnimState = MissionAnimState::DONE;
+        }
+        break;
+    }
+    default: break;
+    }
 }
 
 } // namespace Arknights

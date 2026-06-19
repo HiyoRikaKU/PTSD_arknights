@@ -14,6 +14,7 @@ set(SRC_FILES
     Arknights/Core/SceneManager.cpp
     Arknights/UI/Button.cpp
     Arknights/UI/SkewSprite.cpp
+    Arknights/UI/FadeImage.cpp
 )
 
 set(INCLUDE_FILES
@@ -34,6 +35,7 @@ set(INCLUDE_FILES
     Arknights/Core/SceneManager.hpp
     Arknights/UI/Button.hpp
     Arknights/UI/SkewSprite.hpp
+    Arknights/UI/FadeImage.hpp
 )
 
 set(TEST_FILES
