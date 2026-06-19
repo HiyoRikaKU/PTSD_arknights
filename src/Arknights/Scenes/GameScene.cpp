@@ -218,11 +218,11 @@ void GameScene::init() {
 
     // 6. Initialize UI Text
     m_EnemyCountText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 34, "0/0", Util::Color(255, 255, 255)), 11);
-    m_EnemyCountText->m_Transform.translation = {-105, 400};
+    m_EnemyCountText->m_Transform.translation = {-100, 410};
     m_Root.AddChild(m_EnemyCountText);
 
     m_BaseHPText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 34, std::to_string(MAX_BASE_HP), Util::Color(255, 255, 255)), 11);
-    m_BaseHPText->m_Transform.translation = {230, 400};
+    m_BaseHPText->m_Transform.translation = {220, 410};
     m_Root.AddChild(m_BaseHPText);
 
     m_GameOverText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 100, " ", Util::Color(255, 0, 0)), 10);
@@ -277,7 +277,7 @@ void GameScene::init() {
     m_Root.AddChild(m_MissionFailedImage);
 
     m_DPText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 40, "10", Util::Color(255, 255, 255)),10);
-    m_DPText->m_Transform.translation = {730, -180};
+    m_DPText->m_Transform.translation = {740, -215};
     m_Root.AddChild(m_DPText);
 
     // Cost labels
@@ -607,9 +607,7 @@ void GameScene::update(float deltaTime) {
     if (m_DPAccumulator >= 1000.0f) {
         m_CurrentDP += 1.0f;
         m_DPAccumulator -= 1000.0f;
-        if (auto dpTextDrawable = std::dynamic_pointer_cast<Util::Text>(m_DPText->GetDrawable())) {
-            dpTextDrawable->SetText(std::to_string(static_cast<int>(m_CurrentDP)));
-        }
+        updateDPText();
     }
 
     SpawnEvent event;
@@ -711,24 +709,47 @@ void GameScene::update(float deltaTime) {
         }
     }
 
-    // Sync visibility
-    m_AmiyaCostText->m_Transform.translation = {m_AmiyaIcon->m_Transform.translation.x, m_AmiyaIcon->m_Transform.translation.y + 67.0f};
-    m_ChenCostText->m_Transform.translation = {m_ChenIcon->m_Transform.translation.x, m_ChenIcon->m_Transform.translation.y + 67.0f};
-    m_AngelinaCostText->m_Transform.translation = {m_AngelinaIcon->m_Transform.translation.x, m_AngelinaIcon->m_Transform.translation.y + 67.0f};
-    m_RedCostText->m_Transform.translation = {m_RedIcon->m_Transform.translation.x, m_RedIcon->m_Transform.translation.y + 67.0f};
-    m_EyjafjallaCostText->m_Transform.translation = {m_EyjafjallaIcon->m_Transform.translation.x, m_EyjafjallaIcon->m_Transform.translation.y + 67.0f};
-    m_TexasCostText->m_Transform.translation = {m_TexasIcon->m_Transform.translation.x, m_TexasIcon->m_Transform.translation.y + 67.0f};
-    m_UmirinCostText->m_Transform.translation = {m_UmirinIcon->m_Transform.translation.x, m_UmirinIcon->m_Transform.translation.y + 67.0f};
-
-    m_AmiyaCostText->SetVisible(m_AmiyaIcon->GetVisible());
-    m_ChenCostText->SetVisible(m_ChenIcon->GetVisible());
-    m_AngelinaCostText->SetVisible(m_AngelinaIcon->GetVisible());
-    m_RedCostText->SetVisible(m_RedIcon->GetVisible());
-    m_EyjafjallaCostText->SetVisible(m_EyjafjallaIcon->GetVisible());
-    m_TexasCostText->SetVisible(m_TexasIcon->GetVisible());
-    m_UmirinCostText->SetVisible(m_UmirinIcon->GetVisible());
+    updateCostLabels();
     updateOperatorPanel(Util::Input::GetCursorPosition());
     updateHudText();
+}
+
+void GameScene::updateDPText() {
+    const int currentDP = static_cast<int>(m_CurrentDP);
+    if (m_DisplayedDP == currentDP) {
+        return;
+    }
+    m_DisplayedDP = currentDP;
+
+    if (!m_DPText) {
+        return;
+    }
+    auto dpTextDrawable = std::dynamic_pointer_cast<Util::Text>(m_DPText->GetDrawable());
+    if (dpTextDrawable) {
+        dpTextDrawable->SetText(std::to_string(currentDP));
+    }
+}
+
+void GameScene::updateCostLabels() {
+    auto syncCostLabel = [](const std::shared_ptr<ExGameObject>& label,
+                            const std::shared_ptr<ExGameObject>& icon) {
+        if (!label || !icon) {
+            return;
+        }
+        label->m_Transform.translation = {
+            icon->m_Transform.translation.x,
+            icon->m_Transform.translation.y + 67.0f
+        };
+        label->SetVisible(icon->GetVisible());
+    };
+
+    syncCostLabel(m_AmiyaCostText, m_AmiyaIcon);
+    syncCostLabel(m_ChenCostText, m_ChenIcon);
+    syncCostLabel(m_AngelinaCostText, m_AngelinaIcon);
+    syncCostLabel(m_RedCostText, m_RedIcon);
+    syncCostLabel(m_EyjafjallaCostText, m_EyjafjallaIcon);
+    syncCostLabel(m_TexasCostText, m_TexasIcon);
+    syncCostLabel(m_UmirinCostText, m_UmirinIcon);
 }
 
 void GameScene::updateHudText() {
@@ -1023,9 +1044,7 @@ void GameScene::handleOperatorDrag(float /*deltaTime*/) {
                     m_DraggedOperator->setGridPosition({static_cast<float>(r) + 0.5f, static_cast<float>(c) + 0.5f});
                     if (!m_IsCheatMode) {
                         m_CurrentDP -= m_DraggedOperator->getDeploymentCost();
-                        if (auto dpTextDrawable = std::dynamic_pointer_cast<Util::Text>(m_DPText->GetDrawable())) {
-                            dpTextDrawable->SetText(std::to_string(static_cast<int>(m_CurrentDP)));
-                        }
+                        updateDPText();
                     }
                     m_ChoosingDirectionOperator = m_DraggedOperator; m_ChoosingDirectionIcon = m_DraggedIcon;
                     dropped = true;
@@ -1049,9 +1068,9 @@ void GameScene::reset() {
     m_ResultPhase = ResultPhase::NONE;
     m_ResultTimer = 0.0f;
     m_CurrentDP = 10.0f;
-    if (auto dpTextDrawable = std::dynamic_pointer_cast<Util::Text>(m_DPText->GetDrawable())) {
-        dpTextDrawable->SetText("10");
-    }
+    m_DPAccumulator = 0.0f;
+    m_DisplayedDP = -1;
+    updateDPText();
     m_GameOverText->SetVisible(false); m_RestartText->SetVisible(false);
     m_MissionCompletedImage->SetVisible(false);
     m_YourWinImage->SetVisible(false);

@@ -46,6 +46,8 @@ private:
     void cleanupCharactersForResult();
     bool isAnyReturnInput() const;
     void updateHudText();
+    void updateDPText();
+    void updateCostLabels();
     void updateOperatorPanel(const glm::vec2& mousePos);
     std::shared_ptr<Operator> getHoveredOperator(const glm::vec2& mousePos) const;
     void updateButtons(float deltaTime);
@@ -109,6 +111,7 @@ private:
     // DP System
     float m_CurrentDP = 10.0f;
     float m_DPAccumulator = 0.0f;
+    int m_DisplayedDP = -1;
 
     // Operator system
     std::vector<std::shared_ptr<Operator>> m_Operators;
