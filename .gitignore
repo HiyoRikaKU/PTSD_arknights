@@ -508,7 +508,6 @@ docs/
 UI_sample/
 
 # Release and Packaging
-PTSD_Arknights_Release/
 icon.ico
 icon.rc
 deploy.ps1
