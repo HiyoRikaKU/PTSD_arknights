@@ -218,11 +218,11 @@ void GameScene::init() {
 
     // 6. Initialize UI Text
     m_EnemyCountText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 34, "0/0", Util::Color(255, 255, 255)), 11);
-    m_EnemyCountText->m_Transform.translation = {-115, 395};
+    m_EnemyCountText->m_Transform.translation = {-105, 400};
     m_Root.AddChild(m_EnemyCountText);
 
     m_BaseHPText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 34, std::to_string(MAX_BASE_HP), Util::Color(255, 255, 255)), 11);
-    m_BaseHPText->m_Transform.translation = {245, 395};
+    m_BaseHPText->m_Transform.translation = {230, 400};
     m_Root.AddChild(m_BaseHPText);
 
     m_GameOverText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 100, " ", Util::Color(255, 0, 0)), 10);
@@ -312,22 +312,27 @@ void GameScene::init() {
     // Operator property panel
     m_OperatorPanelTitleText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 28, "Operator: -", Util::Color(255, 255, 255)), 9);
     m_OperatorPanelTitleText->m_Transform.translation = {580, 260};
+    m_OperatorPanelTitleText->SetVisible(false);
     m_Root.AddChild(m_OperatorPanelTitleText);
 
     m_OperatorPanelLine1Text = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 22, "HP: - / -", Util::Color(220, 220, 220)), 9);
     m_OperatorPanelLine1Text->m_Transform.translation = {580, 225};
+    m_OperatorPanelLine1Text->SetVisible(false);
     m_Root.AddChild(m_OperatorPanelLine1Text);
 
     m_OperatorPanelLine2Text = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 22, "ATK: -  COST: -", Util::Color(220, 220, 220)), 9);
     m_OperatorPanelLine2Text->m_Transform.translation = {580, 190};
+    m_OperatorPanelLine2Text->SetVisible(false);
     m_Root.AddChild(m_OperatorPanelLine2Text);
 
     m_OperatorPanelLine3Text = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 22, "INTERVAL: -s  BLOCK: -", Util::Color(220, 220, 220)), 9);
     m_OperatorPanelLine3Text->m_Transform.translation = {580, 155};
+    m_OperatorPanelLine3Text->SetVisible(false);
     m_Root.AddChild(m_OperatorPanelLine3Text);
 
     m_OperatorPanelLine4Text = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 22, "STATE: -", Util::Color(220, 220, 220)), 9);
     m_OperatorPanelLine4Text->m_Transform.translation = {580, 120};
+    m_OperatorPanelLine4Text->SetVisible(false);
     m_Root.AddChild(m_OperatorPanelLine4Text);
 
     m_GameUIOverlay = std::make_shared<ExGameObject>(
@@ -757,15 +762,26 @@ std::shared_ptr<Operator> GameScene::getHoveredOperator(const glm::vec2& mousePo
 }
 
 void GameScene::updateOperatorPanel(const glm::vec2& mousePos) {
+    (void)mousePos;
     if (!m_OperatorPanelTitleText || !m_OperatorPanelLine1Text ||
         !m_OperatorPanelLine2Text || !m_OperatorPanelLine3Text ||
         !m_OperatorPanelLine4Text) {
         return;
     }
 
-    std::shared_ptr<Operator> selected = getHoveredOperator(mousePos);
-    if (!selected && m_DraggedOperator) selected = m_DraggedOperator;
+    std::shared_ptr<Operator> selected = m_DraggedOperator;
     if (!selected && m_ChoosingDirectionOperator) selected = m_ChoosingDirectionOperator;
+
+    const bool showPanel = selected != nullptr;
+    m_OperatorPanelTitleText->SetVisible(showPanel);
+    m_OperatorPanelLine1Text->SetVisible(showPanel);
+    m_OperatorPanelLine2Text->SetVisible(showPanel);
+    m_OperatorPanelLine3Text->SetVisible(showPanel);
+    m_OperatorPanelLine4Text->SetVisible(showPanel);
+
+    if (!showPanel) {
+        return;
+    }
 
     auto titleDrawable = std::dynamic_pointer_cast<Util::Text>(m_OperatorPanelTitleText->GetDrawable());
     auto line1Drawable = std::dynamic_pointer_cast<Util::Text>(m_OperatorPanelLine1Text->GetDrawable());
@@ -773,15 +789,6 @@ void GameScene::updateOperatorPanel(const glm::vec2& mousePos) {
     auto line3Drawable = std::dynamic_pointer_cast<Util::Text>(m_OperatorPanelLine3Text->GetDrawable());
     auto line4Drawable = std::dynamic_pointer_cast<Util::Text>(m_OperatorPanelLine4Text->GetDrawable());
     if (!titleDrawable || !line1Drawable || !line2Drawable || !line3Drawable || !line4Drawable) {
-        return;
-    }
-
-    if (!selected) {
-        titleDrawable->SetText("Operator: -");
-        line1Drawable->SetText("HP: - / -");
-        line2Drawable->SetText("ATK: -  COST: -");
-        line3Drawable->SetText("INTERVAL: -s  BLOCK: -");
-        line4Drawable->SetText("STATE: Hover icon/operator");
         return;
     }
 
