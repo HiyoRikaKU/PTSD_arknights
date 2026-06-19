@@ -48,12 +48,12 @@ inline Quad FigmaQuadToWorld(const Quad& quad,
     };
 }
 
-class SkewSprite final : public Core::Drawable {
+class SkewSprite final : public ::Core::Drawable {
 public:
     SkewSprite(const std::string& atlasPath, const AtlasRect& sourceRect,
                const Quad& worldQuad);
 
-    void Draw(const Core::Matrices& data) override;
+    void Draw(const ::Core::Matrices& data) override;
     glm::vec2 GetSize() const override { return {1.0f, 1.0f}; }
 
 private:
@@ -62,12 +62,12 @@ private:
 
     static constexpr int UNIFORM_SURFACE_LOCATION = 0;
 
-    static std::unique_ptr<Core::Program> s_Program;
+    static std::unique_ptr<::Core::Program> s_Program;
     static Util::AssetStore<std::shared_ptr<SDL_Surface>> s_Store;
 
-    std::unique_ptr<Core::VertexArray> m_VertexArray;
-    std::unique_ptr<Core::UniformBuffer<Core::Matrices>> m_UniformBuffer;
-    std::unique_ptr<Core::Texture> m_Texture;
+    std::unique_ptr<::Core::VertexArray> m_VertexArray;
+    std::unique_ptr<::Core::UniformBuffer<::Core::Matrices>> m_UniformBuffer;
+    std::unique_ptr<::Core::Texture> m_Texture;
     glm::vec2 m_AtlasSize = {1.0f, 1.0f};
 };
 

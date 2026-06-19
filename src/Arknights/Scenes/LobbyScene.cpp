@@ -1,11 +1,12 @@
 #include "Arknights/Scenes/LobbyScene.hpp"
-#include "Arknights/Scenes/StageSelectScene.hpp"
+#include "Arknights/Scenes/ZoneScene.hpp"
 #include "Arknights/Core/SceneManager.hpp"
 #include "Util/Logger.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 
 #include <algorithm>
+#include <random>
 
 namespace Arknights {
 
@@ -14,6 +15,11 @@ LobbyScene::LobbyScene() {
 
 void LobbyScene::init() {
     LOG_DEBUG("Initializing LobbyScene");
+
+    m_LobbyBGM = std::make_unique<Util::BGM>(std::string(RESOURCE_DIR) + "/SFX/lobby.mp3");
+    m_DuctorSFX = std::make_unique<Util::SFX>(std::string(RESOURCE_DIR) + "/SFX/Ductor.mp3");
+    m_HazeVoiceSFX = std::make_unique<Util::SFX>(std::string(RESOURCE_DIR) + "/SFX/はぜボイス.mp3");
+    m_HazeVoice2SFX = std::make_unique<Util::SFX>(std::string(RESOURCE_DIR) + "/SFX/はぜボイス2.mp3");
 
     createBackground();        // background image + character slider
     createLobbyUI();           // static lobbyUI.png overlay (right side)
@@ -102,13 +108,14 @@ void LobbyScene::update(float deltaTime) {
         }
     }
     updateCharacterSlide(deltaTime);
+    updateCharacterVoiceButton(deltaTime);
 
     updateTerminalButton(deltaTime);
 
     if (m_RequestStageSelect) {
         m_RequestStageSelect = false;
-        auto stageSelectScene = std::make_shared<StageSelectScene>();
-        Core::SceneManager::getInstance().replaceScene(stageSelectScene);
+        auto zoneScene = std::make_shared<ZoneScene>();
+        Core::SceneManager::getInstance().replaceScene(zoneScene);
     }
 }
 
@@ -140,6 +147,49 @@ void LobbyScene::onTerminalClicked() {
     // Start fading
     m_FadeState = FadeState::WAITING;
     m_FadeTimer = 0.0f;
+}
+
+void LobbyScene::updateCharacterVoiceButton(float /*deltaTime*/) {
+    const bool mouseDown = Util::Input::IsKeyPressed(Util::Keycode::MOUSE_LB);
+    const bool canClickHaze =
+        !m_IsCharacterSliding &&
+        m_CurrentCharacterIndex == 0 &&
+        m_CharacterArt &&
+        isPointInHazeArt(Util::Input::GetCursorPosition());
+
+    if (canClickHaze && mouseDown) {
+        m_WasMousePressedOnHaze = true;
+    } else if (m_WasMousePressedOnHaze && !mouseDown) {
+        if (canClickHaze) {
+            onHazeClicked();
+        }
+        m_WasMousePressedOnHaze = false;
+    } else if (!mouseDown) {
+        m_WasMousePressedOnHaze = false;
+    }
+}
+
+bool LobbyScene::isPointInHazeArt(const glm::vec2& point) const {
+    if (!m_CharacterArt) return false;
+
+    const glm::vec2 center = m_CharacterArt->m_Transform.translation;
+    const glm::vec2 halfSize = m_CharacterArt->GetScaledSize() * 0.5f;
+    return point.x >= center.x - halfSize.x &&
+           point.x <= center.x + halfSize.x &&
+           point.y >= center.y - halfSize.y &&
+           point.y <= center.y + halfSize.y;
+}
+
+void LobbyScene::onHazeClicked() {
+    static std::random_device randomDevice;
+    static std::mt19937 generator(randomDevice());
+    std::uniform_int_distribution<int> distribution(0, 1);
+
+    if (distribution(generator) == 0) {
+        if (m_HazeVoiceSFX) m_HazeVoiceSFX->Play();
+    } else {
+        if (m_HazeVoice2SFX) m_HazeVoice2SFX->Play();
+    }
 }
 
 void LobbyScene::startCharacterSlide(int direction) {
@@ -205,14 +255,27 @@ void LobbyScene::updateCharacterSlide(float deltaTime) {
 
 void LobbyScene::cleanup() {
     LOG_DEBUG("Cleaning up LobbyScene");
+    m_LobbyBGM.reset();
+    m_DuctorSFX.reset();
+    m_HazeVoiceSFX.reset();
+    m_HazeVoice2SFX.reset();
 }
 
 void LobbyScene::onEnter() {
     LOG_DEBUG("Entering LobbyScene");
+    if (m_DuctorSFX) {
+        m_DuctorSFX->Play();
+    }
+    if (m_LobbyBGM) {
+        m_LobbyBGM->Play();
+    }
 }
 
 void LobbyScene::onExit() {
     LOG_DEBUG("Exiting LobbyScene");
+    if (m_LobbyBGM) {
+        m_LobbyBGM->FadeOut(250);
+    }
 }
 
 } // namespace Arknights

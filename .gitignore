@@ -499,8 +499,23 @@ build/
 # Ignore 3rd party dependencies
 lib/
 
+# Python virtual environment (devtools/home_preview.py)
+.venv/
+
 # Doxygen generated files
 docs/html/
 
+<<<<<<< HEAD
+<<<<<<< Updated upstream
+UI_sample/*
+=======
+UI_sample*/
+>>>>>>> Stashed changes
+
+#
+.claude/
+.github/
+=======
 UI_sample/*
 
+>>>>>>> ade6ca5 (Complete lobby UI and resolve rendering bugs)

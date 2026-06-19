@@ -5,7 +5,8 @@
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Arknights/Map/StageFactory.hpp"
-#include "Arknights/Scenes/LobbyScene.hpp"
+#include "Arknights/Scenes/ReturnLoadingScene.hpp"
+#include "Arknights/Scenes/StageSelectScene.hpp"
 #include "config.hpp"
 
 #include <iomanip>
@@ -16,6 +17,8 @@
 namespace Arknights {
 
 namespace {
+constexpr glm::vec2 kScreenSize{1600.0f, 900.0f};
+
 const char* operatorName(Operator::Type type) {
     switch (type) {
         case Operator::Type::AMIYA: return "Amiya";
@@ -248,9 +251,18 @@ void GameScene::init() {
     m_Root.AddChild(m_MissionCompletedImage);
     // ────────────────────────────────────────────────────────────────
 
-    m_YourWinImage = std::make_shared<ExGameObject>(std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/game_condition/yourWin.jpg"), 11);
+    std::string winImagePath = std::string(RESOURCE_DIR) + "/UI/game_condition/yourWin.jpg";
+    if (m_StageId == "0-2") {
+        winImagePath = std::string(RESOURCE_DIR) + "/UI/game_condition/yourWin/0_2_star3.png";
+    } else if (m_StageId == "0-3") {
+        winImagePath = std::string(RESOURCE_DIR) + "/UI/game_condition/yourWin/0_3_star3.png";
+    } else if (m_StageId == "0-4") {
+        winImagePath = std::string(RESOURCE_DIR) + "/UI/game_condition/yourWin/0_4_star3.png";
+    }
+
+    m_YourWinImage = std::make_shared<ExGameObject>(std::make_shared<Util::Image>(winImagePath), 11);
     m_YourWinImage->m_Transform.translation = {0.0f, 0.0f};
-    m_YourWinImage->m_Transform.scale = {0.53f, 0.53f};
+    m_YourWinImage->m_Transform.scale = {1.0f, 1.0f};
     m_YourWinImage->SetVisible(false);
     m_Root.AddChild(m_YourWinImage);
 
@@ -314,20 +326,48 @@ void GameScene::init() {
     m_OperatorPanelLine4Text->m_Transform.translation = {580, 120};
     m_Root.AddChild(m_OperatorPanelLine4Text);
 
-    // Pause menu
-    m_PauseOverlayText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 90, "PAUSED", Util::Color(255, 255, 255)), 12);
-    m_PauseOverlayText->m_Transform.translation = {0, 80};
+    m_GameUIOverlay = std::make_shared<ExGameObject>(
+        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/UI_component/gameUI.png"),
+        10
+    );
+    m_GameUIOverlay->m_Transform.scale = kScreenSize / m_GameUIOverlay->GetScaledSize();
+    m_Root.AddChild(m_GameUIOverlay);
+
+    m_SettingsOverlayImage = std::make_shared<ExGameObject>(
+        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/UI_component/scene.png"),
+        12
+    );
+    m_SettingsOverlayImage->m_Transform.scale = kScreenSize / m_SettingsOverlayImage->GetScaledSize();
+    m_SettingsOverlayImage->SetVisible(false);
+    m_Root.AddChild(m_SettingsOverlayImage);
+
+    m_ExitOverlayImage = std::make_shared<ExGameObject>(
+        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/UI_component/exit.png"),
+        14
+    );
+    m_ExitOverlayImage->m_Transform.scale = kScreenSize / m_ExitOverlayImage->GetScaledSize();
+    m_ExitOverlayImage->SetVisible(false);
+    m_Root.AddChild(m_ExitOverlayImage);
+
+    m_PauseOverlayImage = std::make_shared<ExGameObject>(
+        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/UI_component/pause.png"),
+        12
+    );
+    m_PauseOverlayImage->m_Transform.scale = kScreenSize / m_PauseOverlayImage->GetScaledSize();
+    m_PauseOverlayImage->SetVisible(false);
+    m_Root.AddChild(m_PauseOverlayImage);
+
+    m_PauseOverlayText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 1, " ", Util::Color(255, 255, 255)), 12);
     m_PauseOverlayText->SetVisible(false);
     m_Root.AddChild(m_PauseOverlayText);
 
-    m_PauseHintText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 28, "Resume from menu or press P", Util::Color(220, 220, 220)), 12);
-    m_PauseHintText->m_Transform.translation = {0, 20};
+    m_PauseHintText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 1, " ", Util::Color(220, 220, 220)), 12);
     m_PauseHintText->SetVisible(false);
     m_Root.AddChild(m_PauseHintText);
 
     m_HubOverlayText = std::make_shared<ExGameObject>(std::make_shared<Util::Text>(
-        std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 70, "MODE SELECT", Util::Color(255, 255, 255)), 12);
-    m_HubOverlayText->m_Transform.translation = {0, 120};
+        std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 70, "SETTINGS", Util::Color(255, 255, 255)), 13);
+    m_HubOverlayText->m_Transform.translation = {0, 160};
     m_HubOverlayText->SetVisible(false);
     m_Root.AddChild(m_HubOverlayText);
 
@@ -337,12 +377,31 @@ void GameScene::init() {
     m_CheatModeText->SetVisible(false);
     m_Root.AddChild(m_CheatModeText);
 
-    m_PauseButton = std::make_shared<UI::Button>("Pause", std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 22, glm::vec2(690, 390), glm::vec2(150, 46), 10);
-    m_PauseButton->setOnClick([this]() { togglePause(); });
+    const std::string hitImagePath = std::string(RESOURCE_DIR) + "/UI/UI_component/gameUI.png";
+
+    m_SettingsButton = std::make_shared<UI::Button>(hitImagePath, glm::vec2(0.0f), 15.0f);
+    m_SettingsButton->setAlpha(0.0f);
+    m_SettingsButton->setHitBox(glm::vec2(-700.0f, 382.0f), glm::vec2(180.0f, 130.0f));
+    m_SettingsButton->setHoverScale(1.0f);
+    m_SettingsButton->setClickScale(1.0f);
+    m_SettingsButton->setOnClick([this]() { playClickSFX(); toggleHub(); });
+    m_Root.AddChild(m_SettingsButton);
+
+    m_PauseButton = std::make_shared<UI::Button>(hitImagePath, glm::vec2(0.0f), 15.0f);
+    m_PauseButton->setAlpha(0.0f);
+    m_PauseButton->setHitBox(glm::vec2(695.0f, 382.0f), glm::vec2(145.0f, 125.0f));
+    m_PauseButton->setHoverScale(1.0f);
+    m_PauseButton->setClickScale(1.0f);
+    m_PauseButton->setOnClick([this]() { playClickSFX(); togglePause(); });
     m_Root.AddChild(m_PauseButton);
 
-    m_SpeedButton = std::make_shared<UI::Button>("2x", std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 22, glm::vec2(690, 340), glm::vec2(150, 46), 10);
+    m_SpeedButton = std::make_shared<UI::Button>(hitImagePath, glm::vec2(0.0f), 15.0f);
+    m_SpeedButton->setAlpha(0.0f);
+    m_SpeedButton->setHitBox(glm::vec2(565.0f, 382.0f), glm::vec2(130.0f, 125.0f));
+    m_SpeedButton->setHoverScale(1.0f);
+    m_SpeedButton->setClickScale(1.0f);
     m_SpeedButton->setOnClick([this]() {
+        playClickSFX();
         setGameSpeed(m_GameSpeedMultiplier < 1.5f ? 2.0f : 1.0f);
     });
     m_Root.AddChild(m_SpeedButton);
@@ -361,27 +420,48 @@ void GameScene::init() {
     m_RetryButton->SetVisible(false);
     m_Root.AddChild(m_RetryButton);
 
-    m_ExitButton = std::make_shared<UI::Button>("Back to Lobby", std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, glm::vec2(0, -200), glm::vec2(320, 60), 13);
-    m_ExitButton->setOnClick([]() {
-        Core::SceneManager::getInstance().replaceScene(std::make_shared<LobbyScene>());
-    });
+    m_ExitButton = std::make_shared<UI::Button>("退出行動", std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, glm::vec2(0, -170), glm::vec2(320, 70), 13);
+    m_ExitButton->setOnClick([this]() { playClickSFX(); openExitConfirm(); });
     m_ExitButton->SetVisible(false);
     m_Root.AddChild(m_ExitButton);
 
-    m_NormalModeButton = std::make_shared<UI::Button>("Normal Mode", std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 22, glm::vec2(-690, 390), glm::vec2(150, 46), 10);
+    m_NormalModeButton = std::make_shared<UI::Button>("Normal Mode", std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, glm::vec2(-170, 10), glm::vec2(280, 70), 13);
     m_NormalModeButton->setOnClick([this]() {
+        playClickSFX();
         setCheatMode(false);
     });
+    m_NormalModeButton->SetVisible(false);
     m_Root.AddChild(m_NormalModeButton);
 
-    m_CheatModeButton = std::make_shared<UI::Button>("Cheat Mode", std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 22, glm::vec2(-690, 340), glm::vec2(150, 46), 10);
+    m_CheatModeButton = std::make_shared<UI::Button>("Cheat Mode", std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf", 30, glm::vec2(170, 10), glm::vec2(280, 70), 13);
     m_CheatModeButton->setOnClick([this]() {
+        playClickSFX();
         setCheatMode(true);
     });
+    m_CheatModeButton->SetVisible(false);
     m_Root.AddChild(m_CheatModeButton);
+
+    m_ExitCancelButton = std::make_shared<UI::Button>(hitImagePath, glm::vec2(0.0f), 16.0f);
+    m_ExitCancelButton->setAlpha(0.0f);
+    m_ExitCancelButton->setHitBox(glm::vec2(-400.0f, -185.0f), glm::vec2(800.0f, 100.0f));
+    m_ExitCancelButton->setHoverScale(1.0f);
+    m_ExitCancelButton->setClickScale(1.0f);
+    m_ExitCancelButton->setOnClick([this]() { playClickSFX(); closeExitConfirm(); });
+    m_ExitCancelButton->SetVisible(false);
+    m_Root.AddChild(m_ExitCancelButton);
+
+    m_ExitConfirmButton = std::make_shared<UI::Button>(hitImagePath, glm::vec2(0.0f), 16.0f);
+    m_ExitConfirmButton->setAlpha(0.0f);
+    m_ExitConfirmButton->setHitBox(glm::vec2(400.0f, -185.0f), glm::vec2(800.0f, 100.0f));
+    m_ExitConfirmButton->setHoverScale(1.0f);
+    m_ExitConfirmButton->setClickScale(1.0f);
+    m_ExitConfirmButton->setOnClick([this]() { playClickSFX(); returnToStageSelect(); });
+    m_ExitConfirmButton->SetVisible(false);
+    m_Root.AddChild(m_ExitConfirmButton);
 
     // 7. Battle BGM
     m_BattleBGM = std::make_unique<Util::BGM>(std::string(RESOURCE_DIR) + "/SFX/battle/battle.mp3");
+    m_ClickSFX = std::make_unique<Util::SFX>(std::string(RESOURCE_DIR) + "/SFX/click.mp3");
     updateHudText();
     if (m_OperatorPanelTitleText && m_OperatorPanelLine1Text &&
         m_OperatorPanelLine2Text && m_OperatorPanelLine3Text &&
@@ -458,10 +538,22 @@ void GameScene::update(float deltaTime) {
     }
 
     updateButtons(deltaTime);
-    if (!m_IsGameOver && Util::Input::IsKeyPressed(Util::Keycode::P)) {
+    if (!m_IsGameOver && Util::Input::IsKeyPressed(Util::Keycode::ESCAPE)) {
+        if (m_IsExitConfirmOpen) {
+            closeExitConfirm();
+        } else if (m_IsHubOpen || m_IsPaused) {
+            m_IsHubOpen = false;
+            m_IsPaused = false;
+        }
+    }
+    if (!m_IsGameOver && !m_IsHubOpen && !m_IsExitConfirmOpen &&
+        Util::Input::IsKeyPressed(Util::Keycode::P)) {
+        playClickSFX();
         togglePause();
     }
-    if (!m_IsGameOver && Util::Input::IsKeyPressed(Util::Keycode::NUM_2)) {
+    if (!m_IsGameOver && !m_IsHubOpen && !m_IsExitConfirmOpen &&
+        Util::Input::IsKeyPressed(Util::Keycode::NUM_2)) {
+        playClickSFX();
         setGameSpeed(m_GameSpeedMultiplier < 1.5f ? 2.0f : 1.0f);
     }
 
@@ -482,7 +574,7 @@ void GameScene::update(float deltaTime) {
             }
         } else if (m_ResultPhase == ResultPhase::VICTORY_SHOW_WIN || m_ResultPhase == ResultPhase::FAILURE_SHOW) {
             if (isAnyReturnInput()) {
-                Core::SceneManager::getInstance().replaceScene(std::make_shared<LobbyScene>());
+                Core::SceneManager::getInstance().replaceScene(std::make_shared<ReturnLoadingScene>());
             }
         }
         UpdateMissionAnimation();
@@ -492,7 +584,7 @@ void GameScene::update(float deltaTime) {
     }
 
     updateOperatorPanel(Util::Input::GetCursorPosition());
-    if (m_IsPaused) {
+    if (m_IsPaused || m_IsHubOpen || m_IsExitConfirmOpen) {
         updateHudText();
         return;
     }
@@ -695,43 +787,76 @@ void GameScene::updateOperatorPanel(const glm::vec2& mousePos) {
 }
 
 void GameScene::updateButtons(float deltaTime) {
-    const bool showPauseMenu = (!m_IsGameOver && m_IsPaused);
+    const bool showBaseHud = !m_IsGameOver && !m_IsHubOpen && !m_IsExitConfirmOpen;
+    const bool showPauseMenu = showBaseHud && m_IsPaused;
+    const bool showSettingsMenu = !m_IsGameOver && m_IsHubOpen && !m_IsExitConfirmOpen;
+    const bool showExitConfirm = !m_IsGameOver && m_IsExitConfirmOpen;
 
+    if (m_GameUIOverlay) m_GameUIOverlay->SetVisible(!m_IsGameOver);
+    if (m_SettingsOverlayImage) m_SettingsOverlayImage->SetVisible(showSettingsMenu);
+    if (m_ExitOverlayImage) m_ExitOverlayImage->SetVisible(showExitConfirm);
+    if (m_PauseOverlayImage) m_PauseOverlayImage->SetVisible(showPauseMenu);
+    if (m_HubOverlayText) m_HubOverlayText->SetVisible(showSettingsMenu);
+
+    if (m_SettingsButton) {
+        m_SettingsButton->SetVisible(showBaseHud);
+        if (showBaseHud) m_SettingsButton->update(deltaTime);
+    }
     if (m_PauseButton) {
-        m_PauseButton->SetVisible(!m_IsGameOver);
-        if (!m_IsGameOver) m_PauseButton->update(deltaTime);
+        m_PauseButton->SetVisible(showBaseHud);
+        if (showBaseHud) m_PauseButton->update(deltaTime);
     }
     if (m_SpeedButton) {
-        m_SpeedButton->SetVisible(!m_IsGameOver);
-        if (!m_IsGameOver) m_SpeedButton->update(deltaTime);
+        m_SpeedButton->SetVisible(showBaseHud && !m_IsPaused);
+        if (showBaseHud && !m_IsPaused) m_SpeedButton->update(deltaTime);
     }
     if (m_NormalModeButton) {
-        m_NormalModeButton->SetVisible(!m_IsGameOver);
-        if (!m_IsGameOver) m_NormalModeButton->update(deltaTime);
+        m_NormalModeButton->SetVisible(showSettingsMenu);
+        if (showSettingsMenu) m_NormalModeButton->update(deltaTime);
     }
     if (m_CheatModeButton) {
-        m_CheatModeButton->SetVisible(!m_IsGameOver);
-        if (!m_IsGameOver) m_CheatModeButton->update(deltaTime);
+        m_CheatModeButton->SetVisible(showSettingsMenu);
+        if (showSettingsMenu) m_CheatModeButton->update(deltaTime);
     }
 
     if (m_PauseOverlayText) m_PauseOverlayText->SetVisible(showPauseMenu);
     if (m_PauseHintText) m_PauseHintText->SetVisible(showPauseMenu);
     if (m_ResumeButton) {
-        m_ResumeButton->SetVisible(showPauseMenu);
-        if (showPauseMenu) m_ResumeButton->update(deltaTime);
+        m_ResumeButton->SetVisible(false);
     }
     if (m_RetryButton) {
-        m_RetryButton->SetVisible(showPauseMenu);
-        if (showPauseMenu) m_RetryButton->update(deltaTime);
+        m_RetryButton->SetVisible(false);
     }
     if (m_ExitButton) {
-        m_ExitButton->SetVisible(showPauseMenu);
-        if (showPauseMenu) m_ExitButton->update(deltaTime);
+        m_ExitButton->SetVisible(showSettingsMenu);
+        if (showSettingsMenu) m_ExitButton->update(deltaTime);
+    }
+    if (m_ExitCancelButton) {
+        m_ExitCancelButton->SetVisible(showExitConfirm);
+        if (showExitConfirm) m_ExitCancelButton->update(deltaTime);
+    }
+    if (m_ExitConfirmButton) {
+        m_ExitConfirmButton->SetVisible(showExitConfirm);
+        if (showExitConfirm) m_ExitConfirmButton->update(deltaTime);
+    }
+}
+
+void GameScene::toggleHub() {
+    if (m_IsGameOver) return;
+    m_IsHubOpen = !m_IsHubOpen;
+    m_IsExitConfirmOpen = false;
+    if (m_IsHubOpen) {
+        m_IsPaused = false;
+        m_DraggedOperator = nullptr;
+        m_DraggedIcon = nullptr;
+        m_ChoosingDirectionOperator = nullptr;
+        m_ChoosingDirectionIcon = nullptr;
     }
 }
 
 void GameScene::togglePause() {
     if (m_IsGameOver) return;
+    if (m_IsHubOpen || m_IsExitConfirmOpen) return;
     m_IsPaused = !m_IsPaused;
     if (m_IsPaused) {
         m_DraggedOperator = nullptr;
@@ -740,6 +865,33 @@ void GameScene::togglePause() {
         m_ChoosingDirectionIcon = nullptr;
     }
     updateHudText();
+}
+
+void GameScene::openExitConfirm() {
+    if (m_IsGameOver) return;
+    m_IsExitConfirmOpen = true;
+    m_IsHubOpen = false;
+    m_IsPaused = false;
+    m_DraggedOperator = nullptr;
+    m_DraggedIcon = nullptr;
+    m_ChoosingDirectionOperator = nullptr;
+    m_ChoosingDirectionIcon = nullptr;
+}
+
+void GameScene::closeExitConfirm() {
+    m_IsExitConfirmOpen = false;
+    m_IsHubOpen = false;
+    m_IsPaused = false;
+}
+
+void GameScene::returnToStageSelect() {
+    Core::SceneManager::getInstance().replaceScene(std::make_shared<StageSelectScene>());
+}
+
+void GameScene::playClickSFX() {
+    if (m_ClickSFX) {
+        m_ClickSFX->Play();
+    }
 }
 
 void GameScene::setGameSpeed(float speedMultiplier) {
@@ -870,6 +1022,8 @@ void GameScene::reset() {
     m_IsGameOver = false; m_WaveTimer = 0.0f; m_EscapedEnemies = 0; m_KilledEnemies = 0;
     m_BaseHP = MAX_ESCAPED_ENEMIES;
     m_IsPaused = false;
+    m_IsHubOpen = false;
+    m_IsExitConfirmOpen = false;
     m_GameSpeedMultiplier = 1.0f;
     m_ResultPhase = ResultPhase::NONE;
     m_ResultTimer = 0.0f;
@@ -982,6 +1136,7 @@ void GameScene::cleanup() {
     m_ActiveEnemies.clear();
     m_Operators.clear();
     m_BattleBGM.reset();
+    m_ClickSFX.reset();
 }
 
 void GameScene::onEnter() {

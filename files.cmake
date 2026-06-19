@@ -8,8 +8,10 @@ set(SRC_FILES
     Arknights/Scenes/Scene.cpp
     Arknights/Scenes/LoginScene.cpp
     Arknights/Scenes/LobbyScene.cpp
+    Arknights/Scenes/ZoneScene.cpp
     Arknights/Scenes/StageSelectScene.cpp
     Arknights/Scenes/LoadingScene.cpp
+    Arknights/Scenes/ReturnLoadingScene.cpp
     Arknights/Scenes/GameScene.cpp
     Arknights/Core/SceneManager.cpp
     Arknights/UI/Button.cpp
@@ -29,8 +31,10 @@ set(INCLUDE_FILES
     Arknights/Scenes/Scene.hpp
     Arknights/Scenes/LoginScene.hpp
     Arknights/Scenes/LobbyScene.hpp
+    Arknights/Scenes/ZoneScene.hpp
     Arknights/Scenes/StageSelectScene.hpp
     Arknights/Scenes/LoadingScene.hpp
+    Arknights/Scenes/ReturnLoadingScene.hpp
     Arknights/Scenes/GameScene.hpp
     Arknights/Core/SceneManager.hpp
     Arknights/UI/Button.hpp

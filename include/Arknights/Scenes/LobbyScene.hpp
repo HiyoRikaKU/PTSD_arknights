@@ -9,6 +9,8 @@
 #include "Arknights/UI/Button.hpp"
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
+#include "Util/BGM.hpp"
+#include "Util/SFX.hpp"
 #include "Util/Text.hpp"
 
 namespace Arknights {
@@ -39,7 +41,10 @@ private:
     void startCharacterSlide(int direction);
     void updateCharacterSlide(float deltaTime);
     void updateTerminalButton(float deltaTime);
+    void updateCharacterVoiceButton(float deltaTime);
     void onTerminalClicked();
+    void onHazeClicked();
+    bool isPointInHazeArt(const glm::vec2& point) const;
 
 private:
     // Background
@@ -57,6 +62,12 @@ private:
     // Terminal button (terminal.png) — only interactive element
     std::shared_ptr<UI::Button> m_TerminalButton;
 
+    std::unique_ptr<Util::BGM> m_LobbyBGM;
+    std::unique_ptr<Util::SFX> m_DuctorSFX;
+    std::unique_ptr<Util::SFX> m_HazeVoiceSFX;
+    std::unique_ptr<Util::SFX> m_HazeVoice2SFX;
+    bool m_WasMousePressedOnHaze = false;
+
     // Fade-out state for terminal button
     enum class FadeState { IDLE, WAITING };
     FadeState m_FadeState = FadeState::IDLE;
@@ -64,7 +75,6 @@ private:
     static constexpr float FADE_DURATION_MS = 350.0f;
     // Scale-based fade: we shrink terminal button to 0 to simulate fade
     glm::vec2 m_TerminalOriginalScale = {1.0f, 1.0f};
-
     // State
     bool m_RequestStageSelect = false;
     int m_CurrentCharacterIndex = 0;

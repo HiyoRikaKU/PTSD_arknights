@@ -230,9 +230,6 @@ void LoginScene::onEnter() {
 
 void LoginScene::onExit() {
     LOG_DEBUG("Exiting LoginScene");
-    if (m_LoginBGM) {
-        m_LoginBGM->FadeOut(400);
-    }
 }
 
 void LoginScene::transitToLobby() {

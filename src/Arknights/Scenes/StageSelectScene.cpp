@@ -2,6 +2,7 @@
 
 #include "Arknights/Scenes/LobbyScene.hpp"
 #include "Arknights/Scenes/LoadingScene.hpp"
+#include "Arknights/Scenes/ZoneScene.hpp"
 #include "Arknights/Core/SceneManager.hpp"
 #include "Arknights/Map/StageRepository.hpp"
 #include "Util/Image.hpp"
@@ -75,17 +76,33 @@ void StageSelectScene::init() {
     m_Buttons.push_back(m_StartActionButton);
     m_Root.AddChild(m_StartActionButton);
 
-    m_BackButton = std::make_shared<UI::Button>(
-        "返回",
-        std::string(RESOURCE_DIR) + "/font/NotoSerifTC.ttf",
-        24,
-        glm::vec2(-660, 350),
-        glm::vec2(140, 50),
+    m_BackNavigation = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Image>(std::string(RESOURCE_DIR) + "/UI/UI_component/back.png"),
         15
     );
+    m_BackNavigation->m_Transform.scale =
+        glm::vec2(1600.0f, 900.0f) / m_BackNavigation->GetScaledSize();
+    m_Root.AddChild(m_BackNavigation);
+
+    const std::string hitImagePath = std::string(RESOURCE_DIR) + "/UI/UI_component/back.png";
+
+    m_BackButton = std::make_shared<UI::Button>(hitImagePath, glm::vec2(0.0f), 16.0f);
+    m_BackButton->setAlpha(0.0f);
+    m_BackButton->setHitBox(glm::vec2(-695.0f, 395.0f), glm::vec2(150.0f, 90.0f));
+    m_BackButton->setHoverScale(1.0f);
+    m_BackButton->setClickScale(1.0f);
     m_BackButton->setOnClick([this]() { onBackClicked(); });
     m_Buttons.push_back(m_BackButton);
     m_Root.AddChild(m_BackButton);
+
+    m_HomeButton = std::make_shared<UI::Button>(hitImagePath, glm::vec2(0.0f), 16.0f);
+    m_HomeButton->setAlpha(0.0f);
+    m_HomeButton->setHitBox(glm::vec2(-410.0f, 395.0f), glm::vec2(300.0f, 90.0f));
+    m_HomeButton->setHoverScale(1.0f);
+    m_HomeButton->setClickScale(1.0f);
+    m_HomeButton->setOnClick([this]() { onHomeClicked(); });
+    m_Buttons.push_back(m_HomeButton);
+    m_Root.AddChild(m_HomeButton);
 
     m_Initialized = true;
 }
@@ -104,6 +121,13 @@ void StageSelectScene::update(float deltaTime) {
 
     if (m_RequestBack) {
         m_RequestBack = false;
+        auto zoneScene = std::make_shared<ZoneScene>();
+        Core::SceneManager::getInstance().replaceScene(zoneScene);
+        return;
+    }
+
+    if (m_RequestHome) {
+        m_RequestHome = false;
         auto lobbyScene = std::make_shared<LobbyScene>();
         Core::SceneManager::getInstance().replaceScene(lobbyScene);
     }
@@ -116,7 +140,9 @@ void StageSelectScene::cleanup() {
     m_SelectBackground.reset();
     m_ConfirmBackground.reset();
     m_StartActionButton.reset();
+    m_BackNavigation.reset();
     m_BackButton.reset();
+    m_HomeButton.reset();
     m_SelectedStageId.clear();
 }
 
@@ -147,6 +173,10 @@ void StageSelectScene::onStartActionClicked() {
 
 void StageSelectScene::onBackClicked() {
     m_RequestBack = true;
+}
+
+void StageSelectScene::onHomeClicked() {
+    m_RequestHome = true;
 }
 
 } // namespace Arknights

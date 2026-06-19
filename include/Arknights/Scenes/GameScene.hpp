@@ -51,6 +51,10 @@ private:
     void updateButtons(float deltaTime);
     void togglePause();
     void toggleHub();
+    void openExitConfirm();
+    void closeExitConfirm();
+    void returnToStageSelect();
+    void playClickSFX();
     void setGameSpeed(float speedMultiplier);
     void setCheatMode(bool enabled);
     
@@ -89,6 +93,7 @@ private:
     bool m_IsVictory = false;
     bool m_IsPaused = false;
     bool m_IsHubOpen = false;
+    bool m_IsExitConfirmOpen = false;
     bool m_IsCheatMode = false;
     float m_GameSpeedMultiplier = 1.0f;
     enum class ResultPhase {
@@ -170,6 +175,10 @@ private:
     std::shared_ptr<ExGameObject> m_OperatorPanelLine2Text;
     std::shared_ptr<ExGameObject> m_OperatorPanelLine3Text;
     std::shared_ptr<ExGameObject> m_OperatorPanelLine4Text;
+    std::shared_ptr<ExGameObject> m_GameUIOverlay;
+    std::shared_ptr<ExGameObject> m_SettingsOverlayImage;
+    std::shared_ptr<ExGameObject> m_ExitOverlayImage;
+    std::shared_ptr<ExGameObject> m_PauseOverlayImage;
     std::shared_ptr<ExGameObject> m_PauseOverlayText;
     std::shared_ptr<ExGameObject> m_PauseHintText;
     std::shared_ptr<ExGameObject> m_HubOverlayText;
@@ -182,9 +191,13 @@ private:
     std::shared_ptr<UI::Button> m_ExitButton;
     std::shared_ptr<UI::Button> m_NormalModeButton;
     std::shared_ptr<UI::Button> m_CheatModeButton;
+    std::shared_ptr<UI::Button> m_SettingsButton;
+    std::shared_ptr<UI::Button> m_ExitCancelButton;
+    std::shared_ptr<UI::Button> m_ExitConfirmButton;
 
     // Audio
     std::unique_ptr<Util::BGM> m_BattleBGM;
+    std::unique_ptr<Util::SFX> m_ClickSFX;
     
     // Constants
     static constexpr std::size_t ENEMY_POOL_SIZE = 64;
