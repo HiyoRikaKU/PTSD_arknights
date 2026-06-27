@@ -48,7 +48,7 @@
 **2. 部署幹員**
 
 - 從底部面板將幹員拖放至地圖格子，近戰幹員只能放在地面格（`GROUND`），遠程幹員只能放在高地格（`HIGH_GROUND`）
-- 放置後出現方向選擇器，選擇朝向後幹員正式部署並開始自動攻擊
+- 放置後依照選擇器，選擇朝向後幹員正式部署並開始自動攻擊
 
 **3. DP 系統**
 
@@ -68,9 +68,10 @@
 
 **6. 其他操作**
 
-- 按 `P` 鍵或點擊暫停按鈕暫停遊戲
-- 2 倍速模式切換
-- Cheat Mode 切換可免費部署，並不計逃脫數
+- 按畫面右上方的 `play/pause` 按鈕，可以暫停遊戲
+- 按畫面右上方的 `×1` / `×2` 按鈕，可以 1 倍速或 2 倍速模式切換
+- 按畫面右上方的 `settings(齒輪)` 按鈕，可以切換 `Cheat Mode` 與 `Normal Mode`，以及中途放棄遊戲
+  - `Cheat Mode` 切換可免費部署，並不計點數，即使敵人衝進塔內，防守血量也不會扣
 
 ### 遊戲畫面
 
@@ -91,6 +92,15 @@
 
 戰鬥畫面<br>
 ![戰鬥畫面 0-3](https://raw.githubusercontent.com/HiyoRikaKU/PTSD_arknights/main/Resources/img/operation.png)
+
+暫停畫面<br>
+![暫停畫面](https://raw.githubusercontent.com/HiyoRikaKU/PTSD_arknights/main/Resources/img/pause.png)
+
+遊戲內設定畫面<br>
+![遊戲內設定畫面](https://raw.githubusercontent.com/HiyoRikaKU/PTSD_arknights/main/Resources/img/settings.png)
+
+放棄遊戲畫面<br>
+![放棄遊戲畫面](https://raw.githubusercontent.com/HiyoRikaKU/PTSD_arknights/main/Resources/img/giveup.png)
 
 任務完成畫面<br>
 ![任務完成畫面](https://raw.githubusercontent.com/HiyoRikaKU/PTSD_arknights/main/Resources/img/win.png)
