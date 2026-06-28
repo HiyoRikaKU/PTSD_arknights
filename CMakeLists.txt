@@ -22,8 +22,6 @@ set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
 list(TRANSFORM SRC_FILES PREPEND ${SRC_DIR}/)
 list(TRANSFORM INCLUDE_FILES PREPEND ${INCLUDE_DIR}/)
 
-set(CMAKE_RC_COMPILER "D:/Strawberry/c/bin/windres.exe")
-
 add_executable(${PROJECT_NAME} WIN32
     ${SRC_DIR}/main.cpp
     ${SRC_FILES}

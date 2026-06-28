@@ -69,7 +69,7 @@
 - 任務結束後進入多階段結果畫面（VICTORY_SLIDE → VICTORY_SHOW_WIN 或 FAILURE_SHOW）
 
 **6. 其他操作**
-
+- 在大廳點擊角色立繪會撥放有語音
 - 按畫面右上方的 `play/pause` 按鈕，可以暫停遊戲
 - 按畫面右上方的 `×1` / `×2` 按鈕，可以 1 倍速或 2 倍速模式切換
 - 按畫面右上方的 `settings(齒輪)` 按鈕，可以切換 `Cheat Mode` 與 `Normal Mode`，以及中途放棄遊戲

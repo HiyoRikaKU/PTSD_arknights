@@ -507,10 +507,12 @@ lib/
 docs/
 UI_sample/
 
-# Release and Packaging
+# Release build output
+PTSD_Arknights_Release/
+
+# Packaging scripts and assets
 icon.ico
 icon.rc
 deploy.ps1
 fix.py
-
 
