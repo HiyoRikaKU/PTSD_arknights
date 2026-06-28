@@ -14,6 +14,10 @@ FetchContent_Declare(
     SOURCE_DIR  ${CMAKE_CURRENT_SOURCE_DIR}/PTSD
 )
 
+# Disable SDL2 DirectX backends (PTSD uses OpenGL; D3D headers break older MinGW)
+set(SDL_DIRECTX OFF CACHE BOOL "" FORCE)
+set(SDL_RENDER_D3D OFF CACHE BOOL "" FORCE)
+
 FetchContent_MakeAvailable(ptsd)
 
 include(files.cmake)
