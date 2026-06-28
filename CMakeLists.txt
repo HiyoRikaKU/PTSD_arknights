@@ -28,7 +28,6 @@ add_executable(${PROJECT_NAME} WIN32
     ${SRC_DIR}/main.cpp
     ${SRC_FILES}
     ${INCLUDE_FILES}
-    ${CMAKE_CURRENT_SOURCE_DIR}/icon.rc
 )
 
 if(MSVC)
